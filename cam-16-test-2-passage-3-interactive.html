@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAM 16 · Test 2 · Passage 3 — How to make wise decisions</title>
+<style>
+:root {
+  --bg: #f0efea;
+  --q-bg: #ffffff;
+  --p-bg: #fffdf6;
+  --header: #1c3557;
+  --accent: #2a7d6f;
+  --hl-active: rgba(255,160,0,0.55);
+  --correct-bg: #d4edda;
+  --correct-bd: #28a745;
+  --wrong-bg: #fcd5d5;
+  --wrong-bd: #dc3545;
+  --text: #222;
+  --muted: #777;
+  --border: #e0ddd5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Georgia','Times New Roman',serif;color:var(--text);background:var(--bg);overflow:hidden}
+
+.app{display:flex;flex-direction:column;height:100%}
+
+header{flex-shrink:0;background:var(--header);color:#fff;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:.95rem;font-weight:600;letter-spacing:.3px}
+.badge{font-size:.75rem;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:12px;white-space:nowrap}
+
+.prog-bar{flex-shrink:0;height:3px;background:rgba(255,255,255,.1)}
+.prog-fill{height:100%;background:#4ecba3;width:0;transition:width .4s ease}
+
+.body{flex:1;display:flex;overflow:hidden}
+
+.q-panel{width:44%;min-width:300px;background:var(--q-bg);border-right:1px solid var(--border);overflow-y:auto;padding:18px 16px 32px}
+.q-panel::-webkit-scrollbar{width:4px}
+.q-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+
+.p-panel{flex:1;background:var(--p-bg);overflow-y:auto;padding:26px 34px 40px}
+.p-panel::-webkit-scrollbar{width:5px}
+.p-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+
+.score-chip{display:flex;align-items:center;justify-content:space-between;background:#f0f9f7;border:1px solid #b2dfdb;border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:.81rem}
+.score-chip .lbl{color:var(--muted)}
+.score-chip .cnt{font-weight:700;color:var(--accent);font-size:.98rem}
+
+.q-section{margin-bottom:26px}
+.sec-header{margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--header)}
+.sec-title{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--header);margin-bottom:2px}
+.sec-inst{font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.45}
+
+.q-block{border:1px solid var(--border);border-radius:8px;background:#fcfcfa;margin-bottom:12px;overflow:hidden}
+.q-head{display:flex;align-items:flex-start;gap:9px;padding:11px 13px 7px}
+.q-num{flex-shrink:0;width:22px;height:22px;background:var(--header);color:#fff;border-radius:50%;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.q-text{font-size:.85rem;line-height:1.5}
+
+.opts{padding:2px 11px 9px;display:flex;flex-direction:column;gap:5px}
+.opt{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:.81rem;line-height:1.4;background:#fff;transition:border-color .15s,background .15s;user-select:none}
+.opt:hover{border-color:var(--accent);background:#f0f9f7}
+.opt.selected{border-color:#4a80b0;background:#eaf2fc}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.opt-key{font-weight:700;color:var(--header);min-width:14px}
+
+/* Drag-and-drop card (Q31-35) */
+.dnd-card{border:1px solid var(--border);border-radius:8px;background:#fcfcfa;overflow:hidden;margin-bottom:4px}
+.summary-dnd{padding:13px 15px 10px;font-size:.84rem;line-height:2.8;background:#f7f6f0;border-bottom:1px solid var(--border)}
+.drop-zone{display:inline-flex;align-items:center;justify-content:center;min-width:96px;padding:3px 9px;background:#d6eaf8;border:2px dashed #4a80b0;border-radius:5px;margin:0 3px;vertical-align:middle;cursor:pointer;transition:background .15s,border-color .15s;font-size:.79rem;color:var(--header);user-select:none;white-space:nowrap}
+.drop-zone .dz-num{font-size:.72rem;color:var(--muted);font-style:italic;font-weight:400}
+.drop-zone.drag-over{background:#b8d4f5;border-color:#1a6fc4;border-style:solid}
+.drop-zone.filled{background:#fff;border-color:#4a80b0;border-style:solid;font-weight:600}
+.drop-zone.pick-target{background:#fff3cd;border-color:#f0a000;border-style:solid}
+.drop-zone.correct{border-color:var(--correct-bd) !important;background:var(--correct-bg) !important;color:#155724;font-weight:600;border-style:solid !important}
+.drop-zone.wrong{border-color:var(--wrong-bd) !important;background:var(--wrong-bg) !important;color:#721c24;font-weight:600;border-style:solid !important}
+.dz-key{font-weight:700;margin-right:3px}
+.wb-section{padding:10px 14px 12px}
+.wb-lbl{font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.drag-bank{display:flex;flex-wrap:wrap;gap:5px}
+.drag-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1.5px solid var(--border);border-radius:13px;cursor:grab;font-size:.79rem;background:#fff;transition:border-color .15s,background .15s,opacity .2s;user-select:none}
+.drag-chip:not(.placed):hover{border-color:var(--accent);background:#f0f9f7}
+.drag-chip.placed{opacity:.35;cursor:grab}
+.drag-chip.picked{border-color:#f0a000;background:#fff8e1}
+.drag-chip.dragging{opacity:.2}
+.chip-lbl{font-weight:700;color:var(--header)}
+.dnd-footer{display:flex;gap:7px;padding:2px 14px 12px}
+
+.tfng{display:flex;gap:5px;padding:2px 11px 9px}
+.tfng-btn{flex:1;padding:6px 5px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:.73rem;font-weight:700;letter-spacing:.4px;text-align:center;background:#fff;color:var(--text);font-family:inherit;transition:border-color .15s,background .15s;user-select:none}
+.tfng-btn:hover{background:#f5f5f3}
+.tfng-btn.selected{border-color:#4a80b0;background:#eaf2fc;color:#1b4a80}
+.tfng-btn.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:#155724}
+.tfng-btn.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:#721c24}
+
+.q-footer{display:flex;align-items:center;gap:7px;padding:0 11px 10px}
+.btn-reveal{padding:5px 13px;background:var(--accent);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.77rem;font-family:inherit;transition:opacity .2s}
+.btn-reveal:hover{opacity:.85}
+.btn-reveal:disabled{opacity:.4;cursor:default}
+.btn-reset{padding:5px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:.73rem;font-family:inherit}
+.btn-reset:hover{color:#333;border-color:#aaa}
+
+.ans-display{display:none;padding:9px 13px;background:#f0f9f7;border-top:1px solid #b2dfdb;font-size:.79rem;line-height:1.55}
+.ans-display.shown{display:block}
+
+
+.p-title{font-size:1.45rem;line-height:1.3;margin-bottom:4px;color:var(--header)}
+.p-sub{font-size:.87rem;color:var(--muted);font-style:italic;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border)}
+.para{font-size:.9rem;line-height:1.9;margin-bottom:16px;text-align:justify}
+
+.hl{border-radius:3px;transition:background .5s,box-shadow .5s;padding:1px 0}
+.hl.active{background:var(--hl-active);box-shadow:0 1px 0 2px rgba(255,140,0,.25)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>Cambridge IELTS 16 &nbsp;·&nbsp; Test 2 &nbsp;·&nbsp; Reading Passage 3</h1>
+  <span class="badge">Questions 27–40 · ~20 min</span>
+</header>
+<div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+
+<div class="body">
+
+<!-- ═══ QUESTIONS PANEL ═══ -->
+<div class="q-panel">
+
+  <div class="score-chip">
+    <span class="lbl">Answered</span>
+    <span class="cnt" id="scoreDisp">0 / 14</span>
+  </div>
+
+  <!-- Q27–30 -->
+  <div class="q-section">
+    <div class="sec-header">
+      <div class="sec-title">Questions 27–30</div>
+      <div class="sec-inst">Choose the correct letter, A, B, C or D.</div>
+    </div>
+
+    <div class="q-block" data-qid="q27">
+      <div class="q-head"><div class="q-num">27</div><div class="q-text">What point does the writer make in the first paragraph?</div></div>
+      <div class="opts">
+        <div class="opt" data-value="A" onclick="sel(this,'q27','A')"><span class="opt-key">A</span>Wisdom appears to be unique to the human race.</div>
+        <div class="opt" data-value="B" onclick="sel(this,'q27','B')"><span class="opt-key">B</span>A basic assumption about wisdom may be wrong.</div>
+        <div class="opt" data-value="C" onclick="sel(this,'q27','C')"><span class="opt-key">C</span>Concepts of wisdom may depend on the society we belong to.</div>
+        <div class="opt" data-value="D" onclick="sel(this,'q27','D')"><span class="opt-key">D</span>There is still much to be discovered about the nature of wisdom.</div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q27')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q27')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q27"></div>
+    </div>
+
+    <div class="q-block" data-qid="q28">
+      <div class="q-head"><div class="q-num">28</div><div class="q-text">What does Igor Grossmann suggest about the ability to make wise decisions?</div></div>
+      <div class="opts">
+        <div class="opt" data-value="A" onclick="sel(this,'q28','A')"><span class="opt-key">A</span>It can vary greatly from one person to another.</div>
+        <div class="opt" data-value="B" onclick="sel(this,'q28','B')"><span class="opt-key">B</span>Earlier research into it was based on unreliable data.</div>
+        <div class="opt" data-value="C" onclick="sel(this,'q28','C')"><span class="opt-key">C</span>The importance of certain influences on it was underestimated.</div>
+        <div class="opt" data-value="D" onclick="sel(this,'q28','D')"><span class="opt-key">D</span>Various branches of psychology define it according to their own criteria.</div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q28')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q28')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q28"></div>
+    </div>
+
+    <div class="q-block" data-qid="q29">
+      <div class="q-head"><div class="q-num">29</div><div class="q-text">According to the third paragraph, Grossmann claims that the level of wisdom an individual shows</div></div>
+      <div class="opts">
+        <div class="opt" data-value="A" onclick="sel(this,'q29','A')"><span class="opt-key">A</span>can be greater than they think it is.</div>
+        <div class="opt" data-value="B" onclick="sel(this,'q29','B')"><span class="opt-key">B</span>will be different in different circumstances.</div>
+        <div class="opt" data-value="C" onclick="sel(this,'q29','C')"><span class="opt-key">C</span>may be determined by particular aspects of their personality.</div>
+        <div class="opt" data-value="D" onclick="sel(this,'q29','D')"><span class="opt-key">D</span>should develop over time as a result of their life experiences.</div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q29')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q29')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q29"></div>
+    </div>
+
+    <div class="q-block" data-qid="q30">
+      <div class="q-head"><div class="q-num">30</div><div class="q-text">What is described in the fifth paragraph?</div></div>
+      <div class="opts">
+        <div class="opt" data-value="A" onclick="sel(this,'q30','A')"><span class="opt-key">A</span>a difficulty encountered when attempting to reason wisely</div>
+        <div class="opt" data-value="B" onclick="sel(this,'q30','B')"><span class="opt-key">B</span>an example of the type of person who is likely to reason wisely</div>
+        <div class="opt" data-value="C" onclick="sel(this,'q30','C')"><span class="opt-key">C</span>a controversial view about the benefits of reasoning wisely</div>
+        <div class="opt" data-value="D" onclick="sel(this,'q30','D')"><span class="opt-key">D</span>a recommended strategy that can help people to reason wisely</div>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q30')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q30')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q30"></div>
+    </div>
+  </div>
+
+  <!-- Q31–35 drag-and-drop -->
+  <div class="q-section">
+    <div class="sec-header">
+      <div class="sec-title">Questions 31–35</div>
+      <div class="sec-inst">Drag words from the bank into the gaps. Tap a word then tap a gap on mobile.</div>
+    </div>
+
+    <div class="dnd-card">
+      <!-- Summary with drop zones -->
+      <div class="summary-dnd"
+           ondragover="bankOver(event)" ondrop="bankDrop(event)">
+        <strong>The characteristics of wise reasoning</strong>
+        Igor Grossmann and colleagues have established four characteristics which enable us to make wise decisions. It is important to have a certain degree of
+        <span class="drop-zone" id="dz31" data-blank="31"
+              ondragover="dzOver(event)" ondrop="dzDrop(event,31)" ondragleave="dzLeave(event)"
+              onclick="zoneClick(31)"><span class="dz-num">31</span></span>
+        regarding the extent of our knowledge, and to take into account
+        <span class="drop-zone" id="dz32" data-blank="32"
+              ondragover="dzOver(event)" ondrop="dzDrop(event,32)" ondragleave="dzLeave(event)"
+              onclick="zoneClick(32)"><span class="dz-num">32</span></span>
+        which may not be the same as our own. We should also be able to take a broad
+        <span class="drop-zone" id="dz33" data-blank="33"
+              ondragover="dzOver(event)" ondrop="dzDrop(event,33)" ondragleave="dzLeave(event)"
+              onclick="zoneClick(33)"><span class="dz-num">33</span></span>
+        of any situation. Another key characteristic is being aware of the likelihood of alterations in the way that people relate to each other.<br><br>
+        Grossmann also believes that it is better to regard scenarios with
+        <span class="drop-zone" id="dz34" data-blank="34"
+              ondragover="dzOver(event)" ondrop="dzDrop(event,34)" ondragleave="dzLeave(event)"
+              onclick="zoneClick(34)"><span class="dz-num">34</span></span>.
+        By avoiding the first-person perspective, we focus more on
+        <span class="drop-zone" id="dz35" data-blank="35"
+              ondragover="dzOver(event)" ondrop="dzDrop(event,35)" ondragleave="dzLeave(event)"
+              onclick="zoneClick(35)"><span class="dz-num">35</span></span>
+        and on other moral ideals, which in turn leads to wiser decision-making.
+      </div>
+
+      <!-- Word bank -->
+      <div class="wb-section">
+        <div class="wb-lbl">Word Bank</div>
+        <div class="drag-bank" id="dragBank"
+             ondragover="bankOver(event)" ondrop="bankDrop(event)">
+          <div class="drag-chip" id="chip-A" data-key="A" draggable="true"
+               ondragstart="chipDragStart(event,'A')" ondragend="chipDragEnd(event,'A')"
+               onclick="chipClick('A')"><span class="chip-lbl">A</span>opinions</div>
+          <div class="drag-chip" id="chip-B" data-key="B" draggable="true"
+               ondragstart="chipDragStart(event,'B')" ondragend="chipDragEnd(event,'B')"
+               onclick="chipClick('B')"><span class="chip-lbl">B</span>confidence</div>
+          <div class="drag-chip" id="chip-C" data-key="C" draggable="true"
+               ondragstart="chipDragStart(event,'C')" ondragend="chipDragEnd(event,'C')"
+               onclick="chipClick('C')"><span class="chip-lbl">C</span>view</div>
+          <div class="drag-chip" id="chip-D" data-key="D" draggable="true"
+               ondragstart="chipDragStart(event,'D')" ondragend="chipDragEnd(event,'D')"
+               onclick="chipClick('D')"><span class="chip-lbl">D</span>modesty</div>
+          <div class="drag-chip" id="chip-E" data-key="E" draggable="true"
+               ondragstart="chipDragStart(event,'E')" ondragend="chipDragEnd(event,'E')"
+               onclick="chipClick('E')"><span class="chip-lbl">E</span>problems</div>
+          <div class="drag-chip" id="chip-F" data-key="F" draggable="true"
+               ondragstart="chipDragStart(event,'F')" ondragend="chipDragEnd(event,'F')"
+               onclick="chipClick('F')"><span class="chip-lbl">F</span>objectivity</div>
+          <div class="drag-chip" id="chip-G" data-key="G" draggable="true"
+               ondragstart="chipDragStart(event,'G')" ondragend="chipDragEnd(event,'G')"
+               onclick="chipClick('G')"><span class="chip-lbl">G</span>fairness</div>
+          <div class="drag-chip" id="chip-H" data-key="H" draggable="true"
+               ondragstart="chipDragStart(event,'H')" ondragend="chipDragEnd(event,'H')"
+               onclick="chipClick('H')"><span class="chip-lbl">H</span>experiences</div>
+          <div class="drag-chip" id="chip-I" data-key="I" draggable="true"
+               ondragstart="chipDragStart(event,'I')" ondragend="chipDragEnd(event,'I')"
+               onclick="chipClick('I')"><span class="chip-lbl">I</span>range</div>
+          <div class="drag-chip" id="chip-J" data-key="J" draggable="true"
+               ondragstart="chipDragStart(event,'J')" ondragend="chipDragEnd(event,'J')"
+               onclick="chipClick('J')"><span class="chip-lbl">J</span>reasons</div>
+        </div>
+      </div>
+
+      <div class="dnd-footer">
+        <button class="btn-reveal" id="btnRevealDnd" onclick="revealDnD()">Check Answers</button>
+        <button class="btn-reset" onclick="resetDnD()">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-dnd"></div>
+    </div>
+  </div>
+
+  <!-- Q36–40 -->
+  <div class="q-section">
+    <div class="sec-header">
+      <div class="sec-title">Questions 36–40</div>
+      <div class="sec-inst">Do the following statements agree with the information given in Reading Passage 3?<br>Write TRUE, FALSE, or NOT GIVEN.</div>
+    </div>
+
+    <div class="q-block" data-qid="q36">
+      <div class="q-head"><div class="q-num">36</div><div class="q-text">Students participating in the job prospects experiment could choose one of two perspectives to take.</div></div>
+      <div class="tfng">
+        <button class="tfng-btn" data-value="TRUE" onclick="sel(this,'q36','TRUE')">TRUE</button>
+        <button class="tfng-btn" data-value="FALSE" onclick="sel(this,'q36','FALSE')">FALSE</button>
+        <button class="tfng-btn" data-value="NOT GIVEN" onclick="sel(this,'q36','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q36')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q36')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q36"></div>
+    </div>
+
+    <div class="q-block" data-qid="q37">
+      <div class="q-head"><div class="q-num">37</div><div class="q-text">Participants in the couples experiment were aware that they were taking part in a study about wise reasoning.</div></div>
+      <div class="tfng">
+        <button class="tfng-btn" data-value="TRUE" onclick="sel(this,'q37','TRUE')">TRUE</button>
+        <button class="tfng-btn" data-value="FALSE" onclick="sel(this,'q37','FALSE')">FALSE</button>
+        <button class="tfng-btn" data-value="NOT GIVEN" onclick="sel(this,'q37','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q37')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q37')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q37"></div>
+    </div>
+
+    <div class="q-block" data-qid="q38">
+      <div class="q-head"><div class="q-num">38</div><div class="q-text">In the couples experiment, the length of the couples' relationships had an impact on the results.</div></div>
+      <div class="tfng">
+        <button class="tfng-btn" data-value="TRUE" onclick="sel(this,'q38','TRUE')">TRUE</button>
+        <button class="tfng-btn" data-value="FALSE" onclick="sel(this,'q38','FALSE')">FALSE</button>
+        <button class="tfng-btn" data-value="NOT GIVEN" onclick="sel(this,'q38','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q38')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q38')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q38"></div>
+    </div>
+
+    <div class="q-block" data-qid="q39">
+      <div class="q-head"><div class="q-num">39</div><div class="q-text">In both experiments, the participants who looked at the situation from a more detached viewpoint tended to make wiser decisions.</div></div>
+      <div class="tfng">
+        <button class="tfng-btn" data-value="TRUE" onclick="sel(this,'q39','TRUE')">TRUE</button>
+        <button class="tfng-btn" data-value="FALSE" onclick="sel(this,'q39','FALSE')">FALSE</button>
+        <button class="tfng-btn" data-value="NOT GIVEN" onclick="sel(this,'q39','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q39')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q39')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q39"></div>
+    </div>
+
+    <div class="q-block" data-qid="q40">
+      <div class="q-head"><div class="q-num">40</div><div class="q-text">Grossmann believes that a person's wisdom is determined by their intelligence to only a very limited extent.</div></div>
+      <div class="tfng">
+        <button class="tfng-btn" data-value="TRUE" onclick="sel(this,'q40','TRUE')">TRUE</button>
+        <button class="tfng-btn" data-value="FALSE" onclick="sel(this,'q40','FALSE')">FALSE</button>
+        <button class="tfng-btn" data-value="NOT GIVEN" onclick="sel(this,'q40','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q40')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q40')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q40"></div>
+    </div>
+  </div>
+
+</div><!-- /q-panel -->
+
+<!-- ═══ PASSAGE PANEL ═══ -->
+<div class="p-panel" id="passagePanel">
+
+  <h2 class="p-title">How to make wise decisions</h2>
+  <p class="p-sub"><em>Questions 27–40 · Psychology &amp; decision-making</em></p>
+
+  <p class="para">
+    Across cultures, wisdom has been considered one of the most revered human qualities. <span class="hl" id="h27">Although the truly wise may seem few and far between, empirical research examining wisdom suggests that it isn't an exceptional trait possessed by a small handful of bearded philosophers after all – in fact, the latest studies suggest that most of us have the ability to make wise decisions, given the right context.</span>
+  </p>
+
+  <p class="para">
+    <span class="hl" id="h28">'It appears that experiential, situational, and cultural factors are even more powerful in shaping wisdom than previously imagined,'</span> says Associate Professor Igor Grossmann of the University of Waterloo in Ontario, Canada. 'Recent empirical findings from cognitive, developmental, social, and personality psychology cumulatively suggest that people's ability to reason wisely varies dramatically across experiential and situational contexts. Understanding the role of such contextual factors offers unique insights into understanding wisdom in daily life, as well as how it can be enhanced and taught.'
+  </p>
+
+  <p class="para">
+    It seems that it's not so much that some people simply possess wisdom and others lack it, but that our ability to reason wisely depends on a variety of external factors. 'It is impossible to characterize thought processes attributed to wisdom without considering the role of contextual factors,' explains Grossmann. '<span class="hl" id="h29">In other words, wisdom is not solely an "inner quality" but rather unfolds as a function of situations people happen to be in. Some situations are more likely to promote wisdom than others.</span>'
+  </p>
+
+  <p class="para">
+    Coming up with a definition of wisdom is challenging, but Grossmann and his colleagues have identified four key characteristics as part of a framework of wise reasoning. <span class="hl" id="h31">One is intellectual humility or recognition of the limits of our own knowledge,</span> and another is <span class="hl" id="h32">appreciation of perspectives wider than the issue at hand.</span> <span class="hl" id="h33">Sensitivity to the possibility of change in social relations is also key,</span> along with compromise or integration of different attitudes and beliefs.
+  </p>
+
+  <p class="para">
+    <span class="hl" id="h30">Grossmann and his colleagues have also found that one of the most reliable ways to support wisdom in our own day-to-day decisions is to look at scenarios from a third-party perspective, as though giving advice to a friend.</span> <span class="hl" id="h34">Research suggests that when adopting a first-person viewpoint we focus on 'the focal features of the environment' and when we adopt a third-person, 'observer' viewpoint we reason more broadly</span> and focus more on <span class="hl" id="h35">interpersonal and moral ideals such as justice and impartiality.</span> Looking at problems from this more expansive viewpoint appears to foster cognitive processes related to wise decisions.
+  </p>
+
+  <p class="para">
+    What are we to do, then, when confronted with situations like a disagreement with a spouse or negotiating a contract at work, that require us to take a personal stake? Grossmann argues that even when we aren't able to change the situation, we can still evaluate these experiences from different perspectives.
+  </p>
+
+  <p class="para">
+    For example, in one experiment that took place during the peak of a recent economic recession, graduating college seniors were asked to reflect on their job prospects. <span class="hl" id="h36">The students were instructed to imagine their career either 'as if you were a distant observer' or 'before your own eyes as if you were right there'.</span> Participants in the group assigned to the 'distant observer' role displayed more wisdom-related reasoning (intellectual humility and recognition of change) than did participants in the control group.
+  </p>
+
+  <p class="para">
+    In another study, <span class="hl" id="h38">couples in long-term romantic relationships</span> were instructed to visualize an unresolved relationship conflict either through the eyes of an outsider or from their own perspective. <span class="hl" id="h39a">Participants then discussed the incident with their partner for 10 minutes, after which they wrote down their thoughts about it. Couples in the 'other's eyes' condition were significantly more likely to rely on wise reasoning</span> – recognizing others' perspectives and searching for a compromise – compared to the couples in the egocentric condition.
+  </p>
+
+  <p class="para">
+    'Ego-decentering promotes greater focus on others and enables a bigger picture, conceptual view of the experience, affording recognition of intellectual humility and change,' says Grossmann.
+  </p>
+
+  <p class="para">
+    We might associate wisdom with intelligence or particular personality traits, but <span class="hl" id="h40">research shows only a small positive relationship between wise thinking and crystallized intelligence and the personality traits of openness and agreeableness.</span> 'It is remarkable how much people can vary in their wisdom from one situation to the next, and how much stronger such contextual effects are for understanding the relationship between wise judgment and its social and affective outcomes as compared to the generalized "traits",' Grossmann explains. 'That is, knowing how wisely a person behaves in a given situation is more informative for understanding their emotions or likelihood to forgive [or] retaliate as compared to knowing whether the person may be wise "in general".'
+  </p>
+
+</div><!-- /p-panel -->
+</div><!-- /body -->
+</div><!-- /app -->
+
+<script>
+const ANSWERS = {
+  q27: { correct:'B', hl:['h27'],
+    exp:'<strong>Answer: B</strong> — The paragraph says wisdom "isn\'t an exceptional trait possessed by a small handful" — this contradicts the common assumption that only a few can be wise.' },
+  q28: { correct:'C', hl:['h28'],
+    exp:'<strong>Answer: C</strong> — "experiential, situational, and cultural factors are <em>even more powerful</em> than previously imagined" = the importance of those influences was underestimated.' },
+  q29: { correct:'B', hl:['h29'],
+    exp:'<strong>Answer: B</strong> — "wisdom … unfolds as a function of situations people happen to be in. Some situations are more likely to promote wisdom than others." = different in different circumstances.' },
+  q30: { correct:'D', hl:['h30'],
+    exp:'<strong>Answer: D</strong> — The paragraph describes "one of the most reliable ways to support wisdom … to look at scenarios from a third-party perspective" — a recommended strategy.' },
+  q36: { correct:'FALSE', hl:['h36'],
+    exp:'<strong>Answer: FALSE</strong> — Students were <em>instructed</em> (assigned) to one of the two perspectives; they could not choose. "The students were instructed to imagine their career either … or …"' },
+  q37: { correct:'NOT GIVEN', hl:[],
+    exp:'<strong>Answer: NOT GIVEN</strong> — The passage describes what couples did but never states whether they knew the study was about wise reasoning.' },
+  q38: { correct:'NOT GIVEN', hl:['h38'],
+    exp:'<strong>Answer: NOT GIVEN</strong> — The passage mentions couples were in "long-term romantic relationships" but says nothing about relationship length affecting the results.' },
+  q39: { correct:'TRUE', hl:['h36','h39a'],
+    exp:'<strong>Answer: TRUE</strong> — In the job experiment, the "distant observer" group showed more wisdom-related reasoning; in the couples experiment, the "other\'s eyes" condition led to significantly more wise reasoning — both confirm the pattern.' },
+  q40: { correct:'TRUE', hl:['h40'],
+    exp:'<strong>Answer: TRUE</strong> — "research shows only a <em>small</em> positive relationship between wise thinking and crystallized intelligence" = intelligence determines wisdom to only a very limited extent.' }
+};
+
+const revealed = new Set();
+
+/* ── Drag-and-drop state for Q31-35 ── */
+const CHIP_LABELS = {
+  A:'opinions', B:'confidence', C:'view', D:'modesty', E:'problems',
+  F:'objectivity', G:'fairness', H:'experiences', I:'range', J:'reasons'
+};
+const DND_CORRECT = { 31:'D', 32:'A', 33:'C', 34:'F', 35:'G' };
+const dndState = { 31:null, 32:null, 33:null, 34:null, 35:null };
+let draggingKey = null;
+let pickedKey = null;   // for click/tap mode
+let dndDone = false;
+
+function getBlankForKey(key) {
+  for (const [b, k] of Object.entries(dndState)) {
+    if (k === key) return parseInt(b);
+  }
+  return null;
+}
+
+function chipDragStart(e, key) {
+  if (dndDone) return;
+  draggingKey = key;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => document.getElementById('chip-' + key).classList.add('dragging'), 0);
+}
+
+function chipDragEnd(e, key) {
+  document.getElementById('chip-' + key).classList.remove('dragging');
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+  draggingKey = null;
+}
+
+function dzOver(e) {
+  if (dndDone || !draggingKey) return;
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function dzLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function dzDrop(e, blank) {
+  if (dndDone) return;
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!draggingKey) return;
+  const fromBlank = getBlankForKey(draggingKey);
+  if (fromBlank !== null) dndState[fromBlank] = null;
+  dndState[blank] = draggingKey;
+  draggingKey = null;
+  refreshDnD();
+}
+
+function bankOver(e) {
+  if (dndDone || !draggingKey) return;
+  e.preventDefault();
+}
+
+function bankDrop(e) {
+  if (dndDone || !draggingKey) return;
+  e.preventDefault();
+  const fromBlank = getBlankForKey(draggingKey);
+  if (fromBlank !== null) dndState[fromBlank] = null;
+  draggingKey = null;
+  refreshDnD();
+}
+
+function chipClick(key) {
+  if (dndDone) return;
+  if (pickedKey === key) {
+    pickedKey = null;
+  } else {
+    pickedKey = key;
+  }
+  refreshDnD();
+}
+
+function zoneClick(blank) {
+  if (dndDone) return;
+  if (pickedKey !== null) {
+    const fromBlank = getBlankForKey(pickedKey);
+    if (fromBlank !== null) dndState[fromBlank] = null;
+    dndState[blank] = pickedKey;
+    pickedKey = null;
+  } else if (dndState[blank]) {
+    pickedKey = dndState[blank];
+    dndState[blank] = null;
+  }
+  refreshDnD();
+}
+
+function refreshDnD() {
+  for (const blank of [31, 32, 33, 34, 35]) {
+    const zone = document.getElementById('dz' + blank);
+    const key = dndState[blank];
+    zone.classList.remove('drag-over', 'pick-target');
+    if (key) {
+      zone.classList.add('filled');
+      zone.innerHTML = '<span class="dz-key">' + key + '</span>' + CHIP_LABELS[key];
+    } else {
+      zone.classList.remove('filled');
+      if (pickedKey !== null) zone.classList.add('pick-target');
+      zone.innerHTML = '<span class="dz-num">' + blank + '</span>';
+    }
+  }
+  for (const key of Object.keys(CHIP_LABELS)) {
+    const chip = document.getElementById('chip-' + key);
+    chip.classList.toggle('placed', getBlankForKey(key) !== null);
+    chip.classList.toggle('picked', pickedKey === key);
+  }
+}
+
+function revealDnD() {
+  if (dndDone) return;
+  dndDone = true;
+  pickedKey = null;
+  const hlIds = ['h31','h32','h33','h34','h35'];
+  let rows = '';
+  for (const blank of [31, 32, 33, 34, 35]) {
+    const zone = document.getElementById('dz' + blank);
+    const exp = DND_CORRECT[blank];
+    const given = dndState[blank];
+    const ok = given === exp;
+    zone.classList.remove('filled','pick-target','drag-over');
+    zone.classList.add(ok ? 'correct' : 'wrong');
+    zone.innerHTML = '<span class="dz-key">' + exp + '</span>' + CHIP_LABELS[exp];
+    revealed.add('q' + blank);
+    rows += '<li><strong>Q' + blank + ':</strong> ' + (ok ? '✓' : '✗') +
+            ' <strong>' + exp + ' — ' + CHIP_LABELS[exp] + '</strong>';
+    if (!ok && given) rows += ' <span style="color:var(--muted)">(your answer: ' + given + ' — ' + CHIP_LABELS[given] + ')</span>';
+    rows += '</li>';
+  }
+  const expMap = {
+    31: '"intellectual humility or recognition of the limits of our own knowledge" = modesty',
+    32: '"appreciation of perspectives wider than the issue at hand" = opinions (viewpoints) of others',
+    33: 'broad view of any situation — summary paraphrases "perspectives wider" as "broad view"',
+    34: 'third-party "observer" perspective = objectivity',
+    35: '"interpersonal and moral ideals such as justice and impartiality" = fairness'
+  };
+  let expRows = '';
+  for (const blank of [31,32,33,34,35]) {
+    expRows += '<li><strong>Q' + blank + ' (' + DND_CORRECT[blank] + ' — ' + CHIP_LABELS[DND_CORRECT[blank]] + '):</strong> ' + expMap[blank] + '</li>';
+  }
+  const ansDiv = document.getElementById('ans-dnd');
+  ansDiv.innerHTML = '<strong>Results:</strong><ul style="margin:.4em 0 .8em 1.2em">' + rows + '</ul>' +
+                     '<strong>Explanations:</strong><ul style="margin:.4em 0 0 1.2em">' + expRows + '</ul>';
+  ansDiv.classList.add('shown');
+  document.getElementById('btnRevealDnd').disabled = true;
+  hlIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('active'); });
+  const first = document.getElementById('h31');
+  if (first) scrollToEl(first);
+  updateProg();
+}
+
+function resetDnD() {
+  if (dndDone) return;
+  for (const b of [31,32,33,34,35]) dndState[b] = null;
+  pickedKey = null;
+  draggingKey = null;
+  refreshDnD();
+}
+
+function sel(el, qid, val) {
+  if (revealed.has(qid)) return;
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+  block.querySelectorAll('[data-value]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function reveal(qid) {
+  if (revealed.has(qid)) return;
+  revealed.add(qid);
+
+  const data = ANSWERS[qid];
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+
+  block.querySelectorAll('[data-value]').forEach(el => {
+    if (el.dataset.value === data.correct) {
+      el.classList.remove('selected');
+      el.classList.add('correct');
+    } else if (el.classList.contains('selected')) {
+      el.classList.add('wrong');
+      el.classList.remove('selected');
+    }
+  });
+
+  const ansDiv = document.getElementById(`ans-${qid}`);
+  ansDiv.innerHTML = data.exp;
+  ansDiv.classList.add('shown');
+  block.querySelector('.btn-reveal').disabled = true;
+
+  data.hl.forEach(id => {
+    const span = document.getElementById(id);
+    if (span) span.classList.add('active');
+  });
+
+  if (data.hl.length > 0) {
+    const first = document.getElementById(data.hl[0]);
+    if (first) scrollToEl(first);
+  }
+
+  updateProg();
+}
+
+function resetQ(qid) {
+  if (revealed.has(qid)) return;
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+  block.querySelectorAll('[data-value]').forEach(e => e.classList.remove('selected'));
+}
+
+function scrollToEl(el) {
+  const panel = document.getElementById('passagePanel');
+  const pr = panel.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  panel.scrollTo({ top: panel.scrollTop + (er.top - pr.top) - 160, behavior: 'smooth' });
+}
+
+function updateProg() {
+  const n = revealed.size, total = 14;
+  document.getElementById('progFill').style.width = (n / total * 100) + '%';
+  document.getElementById('scoreDisp').textContent = `${n} / ${total}`;
+}
+</script>
+</body>
+</html>
