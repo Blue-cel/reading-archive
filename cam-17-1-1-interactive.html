@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAM 17 · Test 1 · Passage 1 — The development of the London underground railway</title>
+<style>
+:root {
+  --bg: #f0efea;
+  --q-bg: #ffffff;
+  --p-bg: #fffdf6;
+  --header: #1c3557;
+  --accent: #2a7d6f;
+  --hl-active: rgba(255,160,0,0.55);
+  --correct-bg: #d4edda;
+  --correct-bd: #28a745;
+  --wrong-bg: #fcd5d5;
+  --wrong-bd: #dc3545;
+  --text: #222;
+  --muted: #777;
+  --border: #e0ddd5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Georgia','Times New Roman',serif;color:var(--text);background:var(--bg);overflow:hidden}
+
+.app{display:flex;flex-direction:column;height:100%}
+
+header{flex-shrink:0;background:var(--header);color:#fff;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:.95rem;font-weight:600;letter-spacing:.3px}
+.badge{font-size:.75rem;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:12px;white-space:nowrap}
+
+.prog-bar{flex-shrink:0;height:3px;background:rgba(255,255,255,.1)}
+.prog-fill{height:100%;background:#4ecba3;width:0;transition:width .4s ease}
+
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Questions panel */
+.q-panel{width:44%;min-width:300px;background:var(--q-bg);border-right:1px solid var(--border);overflow-y:auto;padding:18px 16px 32px}
+.q-panel::-webkit-scrollbar{width:4px}
+.q-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+
+/* Passage panel */
+.p-panel{flex:1;background:var(--p-bg);overflow-y:auto;padding:26px 34px 40px}
+.p-panel::-webkit-scrollbar{width:5px}
+.p-panel::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+
+/* Score */
+.score-chip{display:flex;align-items:center;justify-content:space-between;background:#f0f9f7;border:1px solid #b2dfdb;border-radius:8px;padding:9px 13px;margin-bottom:18px;font-size:.81rem}
+.score-chip .lbl{color:var(--muted)}
+.score-chip .cnt{font-weight:700;color:var(--accent);font-size:.98rem}
+
+/* Section */
+.q-section{margin-bottom:26px}
+.sec-header{margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--header)}
+.sec-title{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--header);margin-bottom:2px}
+.sec-inst{font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.45}
+
+/* Notes group label */
+.note-grp{font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin:14px 0 8px}
+.notes-heading{text-align:center;font-weight:700;font-size:.9rem;color:var(--header);margin:4px 0 6px}
+
+/* Question block */
+.q-block{border:1px solid var(--border);border-radius:8px;background:#fcfcfa;margin-bottom:12px;overflow:hidden}
+.q-head{display:flex;align-items:flex-start;gap:9px;padding:11px 13px 7px}
+.q-num{flex-shrink:0;width:22px;height:22px;background:var(--header);color:#fff;border-radius:50%;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.q-text{font-size:.85rem;line-height:1.5}
+.q-text .gap{display:inline-block;min-width:60px;border-bottom:1.5px dashed var(--accent);text-align:center;font-weight:700;color:var(--accent)}
+
+/* Fill-in input */
+.fill-wrap{padding:2px 13px 9px 44px}
+.fill-input{width:100%;max-width:240px;padding:7px 11px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:.85rem;color:var(--text);background:#fff;transition:border-color .15s,background .15s}
+.fill-input:focus{outline:none;border-color:var(--accent);background:#f0f9f7}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+
+/* YES/NO/NG */
+.yng{display:flex;gap:5px;padding:2px 11px 9px}
+.yng-btn{flex:1;padding:6px 5px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;letter-spacing:.4px;text-align:center;background:#fff;color:var(--text);font-family:inherit;transition:border-color .15s,background .15s;user-select:none}
+.yng-btn:hover{background:#f5f5f3}
+.yng-btn.selected{border-color:#4a80b0;background:#eaf2fc;color:#1b4a80}
+.yng-btn.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:#155724}
+.yng-btn.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:#721c24}
+
+/* Footer */
+.q-footer{display:flex;align-items:center;gap:7px;padding:0 11px 10px 44px}
+.btn-reveal{padding:5px 13px;background:var(--accent);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.77rem;font-family:inherit;transition:opacity .2s}
+.btn-reveal:hover{opacity:.85}
+.btn-reveal:disabled{opacity:.4;cursor:default}
+.btn-reset{padding:5px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:.73rem;font-family:inherit}
+.btn-reset:hover{color:#333;border-color:#aaa}
+
+/* Answer display */
+.ans-display{display:none;padding:9px 13px;background:#f0f9f7;border-top:1px solid #b2dfdb;font-size:.79rem;line-height:1.55}
+.ans-display.shown{display:block}
+
+/* Legend */
+.legend{background:#f7f6f0;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:13px;font-size:.76rem;line-height:1.7}
+.legend b{color:var(--accent);display:inline-block;min-width:92px}
+
+/* Passage */
+.p-title{font-size:1.45rem;line-height:1.3;margin-bottom:4px;color:var(--header)}
+.p-sub{font-size:.87rem;color:var(--muted);font-style:italic;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border)}
+.para{font-size:.9rem;line-height:1.9;margin-bottom:16px;text-align:justify}
+
+/* Highlights */
+.hl{border-radius:3px;transition:background .5s,box-shadow .5s;padding:1px 0}
+.hl.active{background:var(--hl-active);box-shadow:0 1px 0 2px rgba(255,140,0,.25)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>Cambridge IELTS 17 &nbsp;·&nbsp; Test 1 &nbsp;·&nbsp; Reading Passage 1</h1>
+  <span class="badge">Questions 1–13 · ~20 min</span>
+</header>
+<div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+
+<div class="body">
+
+<!-- ═══ QUESTIONS PANEL ═══ -->
+<div class="q-panel">
+
+  <div class="score-chip">
+    <span class="lbl">Revealed</span>
+    <span class="cnt" id="scoreDisp">0 / 13</span>
+  </div>
+
+  <!-- Q1–6 -->
+  <div class="q-section">
+    <div class="sec-header">
+      <div class="sec-title">Questions 1–6</div>
+      <div class="sec-inst">Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Type your answer, then press Check / Reveal.</div>
+    </div>
+
+    <div class="notes-heading">The London underground railway</div>
+
+    <div class="note-grp">The problem</div>
+
+    <div class="q-block" data-qid="q1" data-type="text">
+      <div class="q-head"><div class="q-num">1</div><div class="q-text">The <span class="gap">1</span> of London increased rapidly between 1800 and 1850.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q1" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q1')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q1')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q1"></div>
+    </div>
+
+    <div class="note-grp">The proposed solution</div>
+
+    <div class="q-block" data-qid="q2" data-type="text">
+      <div class="q-head"><div class="q-num">2</div><div class="q-text">Building the railway would make it possible to move people to better housing in the <span class="gap">2</span>.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q2" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q2')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q2')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q2"></div>
+    </div>
+
+    <div class="q-block" data-qid="q3" data-type="text">
+      <div class="q-head"><div class="q-num">3</div><div class="q-text">A number of <span class="gap">3</span> agreed with Pearson's idea.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q3" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q3')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q3')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q3"></div>
+    </div>
+
+    <div class="q-block" data-qid="q4" data-type="text">
+      <div class="q-head"><div class="q-num">4</div><div class="q-text">The company initially had problems getting the <span class="gap">4</span> needed for the project.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q4" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q4')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q4')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q4"></div>
+    </div>
+
+    <div class="q-block" data-qid="q5" data-type="text">
+      <div class="q-head"><div class="q-num">5</div><div class="q-text">Negative articles about the project appeared in the <span class="gap">5</span>.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q5" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q5')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q5')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q5"></div>
+    </div>
+
+    <div class="note-grp">The construction</div>
+
+    <div class="q-block" data-qid="q6" data-type="text">
+      <div class="q-head"><div class="q-num">6</div><div class="q-text">With the completion of the brick arch, the tunnel was covered with <span class="gap">6</span>.</div></div>
+      <div class="fill-wrap"><input class="fill-input" type="text" id="in-q6" placeholder="one word only" autocomplete="off" spellcheck="false"></div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q6')">Check / Reveal</button>
+        <button class="btn-reset" onclick="resetQ('q6')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q6"></div>
+    </div>
+  </div>
+
+  <!-- Q7–13 -->
+  <div class="q-section">
+    <div class="sec-header">
+      <div class="sec-title">Questions 7–13</div>
+      <div class="sec-inst">Do the following statements agree with the information given in the passage?</div>
+    </div>
+
+    <div class="legend">
+      <div><b>TRUE</b> if the statement agrees with the information</div>
+      <div><b>FALSE</b> if the statement contradicts the information</div>
+      <div><b>NOT GIVEN</b> if there is no information on this</div>
+    </div>
+
+    <div class="q-block" data-qid="q7">
+      <div class="q-head"><div class="q-num">7</div><div class="q-text">Other countries had built underground railways before the Metropolitan line opened.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q7','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q7','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q7','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q7')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q7')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q7"></div>
+    </div>
+
+    <div class="q-block" data-qid="q8">
+      <div class="q-head"><div class="q-num">8</div><div class="q-text">More people than predicted travelled on the Metropolitan line on the first day.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q8','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q8','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q8','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q8')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q8')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q8"></div>
+    </div>
+
+    <div class="q-block" data-qid="q9">
+      <div class="q-head"><div class="q-num">9</div><div class="q-text">The use of ventilation shafts failed to prevent pollution in the tunnels.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q9','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q9','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q9','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q9')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q9')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q9"></div>
+    </div>
+
+    <div class="q-block" data-qid="q10">
+      <div class="q-head"><div class="q-num">10</div><div class="q-text">A different approach from the 'cut and cover' technique was required in London's central area.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q10','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q10','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q10','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q10')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q10')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q10"></div>
+    </div>
+
+    <div class="q-block" data-qid="q11">
+      <div class="q-head"><div class="q-num">11</div><div class="q-text">The windows on City &amp; South London trains were at eye level.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q11','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q11','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q11','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q11')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q11')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q11"></div>
+    </div>
+
+    <div class="q-block" data-qid="q12">
+      <div class="q-head"><div class="q-num">12</div><div class="q-text">The City &amp; South London Railway was a financial success.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q12','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q12','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q12','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q12')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q12')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q12"></div>
+    </div>
+
+    <div class="q-block" data-qid="q13">
+      <div class="q-head"><div class="q-num">13</div><div class="q-text">Trains on the 'Tuppenny Tube' nearly always ran on time.</div></div>
+      <div class="yng">
+        <button class="yng-btn" data-value="TRUE" onclick="sel(this,'q13','TRUE')">TRUE</button>
+        <button class="yng-btn" data-value="FALSE" onclick="sel(this,'q13','FALSE')">FALSE</button>
+        <button class="yng-btn" data-value="NOT GIVEN" onclick="sel(this,'q13','NOT GIVEN')">NOT GIVEN</button>
+      </div>
+      <div class="q-footer">
+        <button class="btn-reveal" onclick="reveal('q13')">Reveal Answer</button>
+        <button class="btn-reset" onclick="resetQ('q13')">Reset</button>
+      </div>
+      <div class="ans-display" id="ans-q13"></div>
+    </div>
+  </div>
+
+</div><!-- /q-panel -->
+
+<!-- ═══ PASSAGE PANEL ═══ -->
+<div class="p-panel" id="passagePanel">
+
+  <h2 class="p-title">The development of the London underground railway</h2>
+  <p class="p-sub"><em>How the world's first underground railway was conceived, funded and built</em></p>
+
+  <p class="para">
+    In the first half of the 1800s, <span class="hl" id="h1">London's population grew at an astonishing rate</span>, and the central area became increasingly congested. In addition, the expansion of the overground railway network resulted in more and more passengers arriving in the capital. However, in 1846, a Royal Commission decided that the railways should not be allowed to enter the City, the capital's historic and business centre. The result was that the overground railway stations formed a ring around the City. The area within consisted of poorly built, overcrowded slums and the streets were full of horse-drawn traffic. Crossing the City became a nightmare. It could take an hour and a half to travel 8 km by horse-drawn carriage or bus. Numerous schemes were proposed to resolve these problems, but few succeeded.
+  </p>
+
+  <p class="para">
+    Amongst the most vocal advocates for a solution to London's traffic problems was Charles Pearson, who worked as a solicitor for the City of London. He saw both social and economic advantages in building an underground railway that would link the overground railway stations together and clear London slums at the same time. His idea was to relocate the poor workers who lived in the inner-city slums to <span class="hl" id="h2">newly constructed suburbs</span>, and to provide cheap rail travel for them to get to work. <span class="hl" id="h3">Pearson's ideas gained support amongst some businessmen</span> and in 1851 he submitted a plan to Parliament. It was rejected, but coincided with a proposal from another group for an underground connecting line, which Parliament passed.
+  </p>
+
+  <p class="para">
+    The two groups merged and established the Metropolitan Railway Company in August 1854. The company's plan was to construct an underground railway line from the Great Western Railway's (GWR) station at Paddington to the edge of the City at Farringdon Street – a distance of almost 5 km. <span class="hl" id="h4">The organisation had difficulty in raising the funding for such a radical and expensive scheme</span>, not least because of the <span class="hl" id="h5">critical articles printed by the press</span>. Objectors argued that the tunnels would collapse under the weight of traffic overhead, buildings would be shaken and passengers would be poisoned by the emissions from the train engines. However, Pearson and his partners persisted.
+  </p>
+
+  <p class="para">
+    The GWR, aware that the new line would finally enable them to run trains into the heart of the City, invested almost £250,000 in the scheme. Eventually, over a five-year period, £1m was raised. The chosen route ran beneath existing main roads to minimise the expense of demolishing buildings. Originally scheduled to be completed in 21 months, the construction of the underground line took three years. It was built just below street level using a technique known as 'cut and cover'. A trench about ten metres wide and six metres deep was dug, and the sides temporarily held up with timber beams. Brick walls were then constructed, and finally a brick arch was added to create a tunnel. <span class="hl" id="h6">A two-metre-deep layer of soil was laid on top of the tunnel</span> and the road above rebuilt.
+  </p>
+
+  <p class="para">
+    The Metropolitan line, which opened on 10 January 1863, was <span class="hl" id="h7">the world's first underground railway</span>. On its first day, <span class="hl" id="h8">almost 40,000 passengers were carried between Paddington and Farringdon</span>, the journey taking about 18 minutes. By the end of the Metropolitan's first year of operation, 9.5 million journeys had been made.
+  </p>
+
+  <p class="para">
+    Even as the Metropolitan began operation, the first extensions to the line were being authorised; these were built over the next five years, reaching Moorgate in the east of London and Hammersmith in the west. The original plan was to pull the trains with steam locomotives, using firebricks in the boilers to provide steam, but these engines were never introduced. Instead, the line used specially designed locomotives that were fitted with water tanks in which steam could be condensed. However, <span class="hl" id="h9">smoke and fumes remained a problem, even though ventilation shafts were added to the tunnels</span>.
+  </p>
+
+  <p class="para">
+    Despite the extension of the underground railway, by the 1880s, congestion on London's streets had become worse. The problem was partly that the existing underground lines formed a circuit around the centre of London and extended to the suburbs, but did not cross the capital's centre. <span class="hl" id="h10">The 'cut and cover' method of construction was not an option in this part of the capital. The only alternative was to tunnel deep underground.</span>
+  </p>
+
+  <p class="para">
+    Although the technology to create these tunnels existed, steam locomotives could not be used in such a confined space. It wasn't until the development of a reliable electric motor, and a means of transferring power from the generator to a moving train, that the world's first deep-level electric railway, the City &amp; South London, became possible. The line opened in 1890, and ran from the City to Stockwell, south of the River Thames. The trains were made up of three carriages and driven by electric engines. The carriages were narrow and had <span class="hl" id="h11">tiny windows just below the roof because it was thought that passengers would not want to look out at the tunnel walls</span>. The line was not without its problems, mainly caused by an unreliable power supply. Although the City &amp; South London Railway was a great technical achievement, <span class="hl" id="h12">it did not make a profit</span>. Then, in 1900, <span class="hl" id="h13">the Central London Railway, known as the 'Tuppenny Tube', began operation using new electric locomotives</span>. It was very popular and soon afterwards new railways and extensions were added to the growing tube network. By 1907, the heart of today's Underground system was in place.
+  </p>
+
+</div><!-- /p-panel -->
+</div><!-- /body -->
+</div><!-- /app -->
+
+<script>
+const ANSWERS = {
+  q1: { type:'text', accept:['population'], hl:['h1'],
+    exp:'<strong>Answer: population</strong> — "London\'s population grew at an astonishing rate" in the first half of the 1800s.' },
+  q2: { type:'text', accept:['suburbs'], hl:['h2'],
+    exp:'<strong>Answer: suburbs</strong> — Pearson wanted to relocate poor workers to "newly constructed suburbs".' },
+  q3: { type:'text', accept:['businessmen'], hl:['h3'],
+    exp:'<strong>Answer: businessmen</strong> — "Pearson\'s ideas gained support amongst some businessmen".' },
+  q4: { type:'text', accept:['funding'], hl:['h4'],
+    exp:'<strong>Answer: funding</strong> — "The organisation had difficulty in raising the funding for such a radical and expensive scheme".' },
+  q5: { type:'text', accept:['press'], hl:['h5'],
+    exp:'<strong>Answer: press</strong> — Funding was hard "because of the critical articles printed by the press".' },
+  q6: { type:'text', accept:['soil'], hl:['h6'],
+    exp:'<strong>Answer: soil</strong> — "A two-metre-deep layer of soil was laid on top of the tunnel".' },
+  q7: { correct:'FALSE', hl:['h7'],
+    exp:'<strong>Answer: FALSE</strong> — The Metropolitan line "was the world\'s first underground railway", so no other country had built one before.' },
+  q8: { correct:'NOT GIVEN', hl:['h8'],
+    exp:'<strong>Answer: NOT GIVEN</strong> — We learn almost 40,000 passengers travelled on the first day, but the passage never mentions a prediction to compare it with.' },
+  q9: { correct:'TRUE', hl:['h9'],
+    exp:'<strong>Answer: TRUE</strong> — "smoke and fumes remained a problem, even though ventilation shafts were added to the tunnels".' },
+  q10: { correct:'TRUE', hl:['h10'],
+    exp:'<strong>Answer: TRUE</strong> — "\'Cut and cover\' was not an option... The only alternative was to tunnel deep underground" — a different approach was needed.' },
+  q11: { correct:'FALSE', hl:['h11'],
+    exp:'<strong>Answer: FALSE</strong> — The carriages had "tiny windows just below the roof", not at eye level.' },
+  q12: { correct:'FALSE', hl:['h12'],
+    exp:'<strong>Answer: FALSE</strong> — Although a technical achievement, the City &amp; South London Railway "did not make a profit".' },
+  q13: { correct:'NOT GIVEN', hl:['h13'],
+    exp:'<strong>Answer: NOT GIVEN</strong> — The Tuppenny Tube is described as "very popular", but the passage says nothing about its punctuality.' }
+};
+
+const TOTAL = 13;
+const revealed = new Set();
+
+function sel(el, qid, val) {
+  if (revealed.has(qid)) return;
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+  block.querySelectorAll('[data-value]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function reveal(qid) {
+  if (revealed.has(qid)) return;
+  revealed.add(qid);
+
+  const data = ANSWERS[qid];
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+
+  if (data.type === 'text') {
+    const input = document.getElementById('in-' + qid);
+    const val = input.value.trim().toLowerCase();
+    const ok = data.accept.includes(val);
+    input.classList.add(ok ? 'correct' : 'wrong');
+    input.disabled = true;
+  } else {
+    block.querySelectorAll('[data-value]').forEach(el => {
+      if (el.dataset.value === data.correct) {
+        el.classList.remove('selected');
+        el.classList.add('correct');
+      } else if (el.classList.contains('selected')) {
+        el.classList.add('wrong');
+        el.classList.remove('selected');
+      }
+    });
+  }
+
+  const ansDiv = document.getElementById(`ans-${qid}`);
+  ansDiv.innerHTML = data.exp;
+  ansDiv.classList.add('shown');
+  block.querySelector('.btn-reveal').disabled = true;
+
+  data.hl.forEach(id => {
+    const span = document.getElementById(id);
+    if (span) span.classList.add('active');
+  });
+
+  if (data.hl.length > 0) {
+    const first = document.getElementById(data.hl[0]);
+    if (first) scrollToEl(first);
+  }
+
+  updateProg();
+}
+
+function resetQ(qid) {
+  if (revealed.has(qid)) return;
+  const block = document.querySelector(`[data-qid="${qid}"]`);
+  const data = ANSWERS[qid];
+  if (data.type === 'text') {
+    const input = document.getElementById('in-' + qid);
+    input.value = '';
+    input.classList.remove('correct', 'wrong');
+  } else {
+    block.querySelectorAll('[data-value]').forEach(e => e.classList.remove('selected'));
+  }
+}
+
+function scrollToEl(el) {
+  const panel = document.getElementById('passagePanel');
+  const pr = panel.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  panel.scrollTo({ top: panel.scrollTop + (er.top - pr.top) - 160, behavior: 'smooth' });
+}
+
+function updateProg() {
+  const n = revealed.size;
+  document.getElementById('progFill').style.width = (n / TOTAL * 100) + '%';
+  document.getElementById('scoreDisp').textContent = `${n} / ${TOTAL}`;
+}
+
+/* Allow Enter key to check fill-in answers */
+document.querySelectorAll('.fill-input').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const qid = inp.id.replace('in-', '');
+      reveal(qid);
+    }
+  });
+});
+</script>
+</body>
+</html>
