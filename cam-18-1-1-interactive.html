@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab · Cambridge 18 · Test 1 · Passage 1 — Urban farming</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* IELTS Lab palette */
+  --navy:#1E3A8A;
+  --navy-deep:#14306E;
+  --gold:#F5B82E;
+  --gold-hover:#E0A21C;
+  --action-blue:#2563EB;
+  --blue-badge:#1D4ED8;
+  --heading:#1E3A5F;
+  --body:#374151;
+  --muted:#6B7280;
+  --border:#E5E7EB;
+  --surface:#FFFFFF;
+  --surface-subtle:#F8FAFC;
+  --callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --font-head:'Poppins',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.logo{font-family:var(--font-head);font-weight:700;font-size:1.15rem;letter-spacing:.3px;display:flex;align-items:center;gap:7px}
+.logo .ielts{color:#fff}
+.logo .lab{background:var(--gold);color:var(--navy-deep);padding:1px 8px;border-radius:7px;font-size:.95rem}
+.top-center{display:flex;align-items:center;gap:10px}
+.timer{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.14);padding:7px 15px;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:600;font-size:.92rem;letter-spacing:.5px}
+.timer svg{width:16px;height:16px}
+.top-right{display:flex;align-items:center;gap:16px}
+.user{font-size:.85rem;color:rgba(255,255,255,.75)}
+.btn-submit{background:var(--gold);color:var(--navy-deep);border:none;font-family:var(--font-body);font-weight:700;font-size:.88rem;padding:9px 18px;border-radius:9px;cursor:pointer;transition:background .15s}
+.btn-submit:hover{background:var(--gold-hover)}
+
+/* ── TAB BAR ── */
+.tabbar{flex-shrink:0;height:52px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:stretch;padding:0 24px;gap:6px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 16px;font-size:.9rem;font-weight:600;color:var(--muted);position:relative;cursor:default}
+.tab .pill{font-size:.7rem;font-weight:700;background:var(--border);color:var(--muted);padding:2px 8px;border-radius:999px}
+.tab.active{color:var(--action-blue)}
+.tab.active::after{content:"";position:absolute;left:8px;right:8px;bottom:0;height:3px;background:var(--action-blue);border-radius:3px 3px 0 0}
+.tab.active .pill{background:var(--blue-badge);color:#fff}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Passage (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.7rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.95rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.para{font-size:1rem;line-height:1.75;color:var(--body);margin-bottom:18px;text-align:justify}
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+
+/* Questions (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:30px 36px 56px}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.scorebar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.score-chip{font-size:.82rem;color:var(--muted)}
+.score-chip b{color:var(--action-blue);font-weight:700;font-size:1rem}
+.prog{flex:1;max-width:220px;height:7px;background:var(--border);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--action-blue);transition:width .4s ease;border-radius:999px}
+.btn-resetall{background:#fff;color:var(--navy);border:1px solid var(--border);font-family:var(--font-body);font-size:.78rem;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer}
+.btn-resetall:hover{border-color:#9ca3af}
+
+/* Section */
+.q-section{margin-bottom:30px}
+.sec-title{font-family:var(--font-head);font-size:1.05rem;font-weight:600;color:var(--heading);margin-bottom:6px}
+.callout{background:var(--callout);border-left:4px solid var(--action-blue);border-radius:0 8px 8px 0;padding:11px 15px;font-size:.86rem;line-height:1.5;color:var(--body);margin-bottom:18px}
+.callout em{font-style:normal;font-weight:700;color:var(--navy-deep)}
+.notes-title{text-align:center;font-family:var(--font-head);font-weight:600;font-size:1rem;color:var(--heading);margin:6px 0 14px}
+
+/* Question block */
+.q-block{border:1px solid var(--border);border-radius:12px;background:#fff;margin-bottom:14px;overflow:hidden}
+.q-head{display:flex;align-items:flex-start;gap:11px;padding:14px 16px 10px}
+.q-num{flex-shrink:0;width:26px;height:26px;background:var(--navy-deep);color:#fff;border-radius:7px;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--font-body)}
+.q-text{font-size:.95rem;line-height:1.55;color:var(--body);padding-top:2px}
+.q-text .gap{display:inline-block;min-width:54px;border-bottom:2px dashed var(--action-blue);text-align:center;font-weight:700;color:var(--action-blue);line-height:1}
+
+/* Fill-in */
+.fill-wrap{padding:0 16px 12px 53px}
+.fill-input{width:100%;max-width:260px;padding:9px 12px;border:1px solid var(--border);border-radius:9px;font-family:var(--font-body);font-size:.92rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+
+/* TRUE/FALSE/NG */
+.tfn{display:flex;gap:8px;padding:0 16px 12px 53px}
+.tfn-btn{flex:1;padding:9px 6px;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:.78rem;font-weight:700;letter-spacing:.4px;text-align:center;background:#fff;color:var(--body);font-family:var(--font-body);transition:border-color .15s,background .15s,color .15s;user-select:none}
+.tfn-btn:hover{background:var(--surface-subtle);border-color:#cbd5e1}
+.tfn-btn.selected{border-color:var(--action-blue);background:#EFF4FB;color:var(--action-blue)}
+.tfn-btn.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx)}
+.tfn-btn.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx)}
+
+/* Footer of a question */
+.q-footer{display:flex;align-items:center;gap:9px;padding:0 16px 13px 53px}
+.btn-reveal{background:var(--navy);color:#fff;border:none;font-family:var(--font-body);font-size:.8rem;font-weight:600;padding:8px 15px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-reveal:hover{background:var(--navy-deep)}
+.btn-reveal:disabled{opacity:.4;cursor:default}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);font-family:var(--font-body);font-size:.78rem;padding:7px 12px;border-radius:8px;cursor:pointer}
+.btn-reset:hover{color:var(--body);border-color:#9ca3af}
+
+.ans-display{display:none;padding:11px 16px;background:var(--callout);border-top:1px solid #d4e0f5;font-size:.86rem;line-height:1.6;color:var(--body)}
+.ans-display.shown{display:block}
+.ans-display strong{color:var(--navy-deep)}
+
+/* Table (Q4-7) */
+.tbl-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+table.qtable{width:100%;border-collapse:collapse;font-size:.88rem}
+table.qtable caption{font-family:var(--font-head);font-weight:600;color:var(--heading);padding:12px;background:var(--surface-subtle);border-bottom:1px solid var(--border);font-size:.95rem}
+table.qtable th,table.qtable td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;text-align:left;line-height:1.5}
+table.qtable thead th{background:var(--callout);color:var(--navy-deep);font-weight:700;text-align:center}
+table.qtable tbody th{background:var(--surface-subtle);font-weight:600;color:var(--heading);width:30%}
+table.qtable td ul{margin:0;padding-left:16px}
+table.qtable td li{margin-bottom:6px}
+.cell-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--navy-deep);color:#fff;border-radius:5px;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:middle}
+.tbl-input{width:120px;max-width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:7px;font-family:var(--font-body);font-size:.85rem;color:var(--body);margin-left:2px}
+.tbl-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 2px rgba(37,99,235,.15)}
+.tbl-input.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.tbl-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.tbl-actions{display:flex;gap:9px;padding:12px;background:var(--surface-subtle);border-top:1px solid var(--border)}
+.tbl-ans{display:none;padding:11px 14px;background:var(--callout);border-top:1px solid #d4e0f5;font-size:.84rem;line-height:1.65}
+.tbl-ans.shown{display:block}
+.tbl-ans b{color:var(--navy-deep)}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:42vh}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="logo"><span class="ielts">IELTS</span><span class="lab">Lab</span></div>
+    <div class="top-center">
+      <div class="timer" aria-label="Time remaining" id="timer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 3h6"/></svg>
+        <span id="timeval">20:00</span>
+      </div>
+    </div>
+    <div class="top-right">
+      <span class="user">Reading Passage 1</span>
+      <button class="btn-submit" onclick="revealAll()">Nộp bài</button>
+    </div>
+  </div>
+
+  <!-- ── TAB BAR ── -->
+  <div class="tabbar">
+    <div class="tab active">Reading <span class="pill" id="tabcount">0/13</span></div>
+    <div class="tab">Listening <span class="pill">0/0</span></div>
+    <div class="tab">Writing <span class="pill">0/0</span></div>
+  </div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- PASSAGE (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Reading Passage 1 · Questions 1–13</div>
+      <h1 class="p-title">Urban farming</h1>
+      <p class="p-sub">In Paris, urban farmers are trying a soil-free approach to agriculture that uses less space and fewer resources. Could it help cities face the threats to our food supplies?</p>
+
+      <p class="para">On top of a striking new exhibition hall in southern Paris, the world's largest urban rooftop farm has started to bear fruit. Strawberries that are small, intensely flavoured and resplendently red sprout abundantly from large plastic tubes. Peer inside and you see the tubes are completely hollow, the roots of dozens of strawberry plants dangling down inside them. From identical vertical tubes nearby <span class="hl" id="h1">burst row upon row of lettuces</span>; near those are aromatic herbs, such as basil, sage and peppermint. Opposite, in narrow, horizontal trays packed not with soil but with coconut fibre, grow cherry tomatoes, shiny aubergines and brightly coloured chards.</p>
+
+      <p class="para">Pascal Hardy, an engineer and sustainable development consultant, began experimenting with vertical farming and aeroponic growing towers – as the soil-free plastic tubes are known – on his Paris apartment block roof five years ago. The urban rooftop space above the exhibition hall is somewhat bigger: 14,000 square metres and almost exactly the size of a couple of football pitches. Already, the team of young urban farmers who tend it have picked, in one day, 3,000 lettuces and 150 punnets of strawberries. When the remaining two thirds of the vast open area are in production, <span class="hl" id="h2">20 staff will harvest up to 1,000 kg</span> of perhaps 35 different varieties of fruit and vegetables, every day. 'We're not ever, obviously, going to feed the whole city this way,' cautions Hardy. 'In the urban environment you're working with very significant practical constraints, clearly, on what you can do and where. But if enough unused space can be developed like this, there's no reason why you shouldn't eventually target maybe <span class="hl" id="h3">between 5% and 10% of consumption</span>.'</p>
+
+      <p class="para">Perhaps most significantly, however, this is a real-life showcase for the work of Hardy's flourishing urban agriculture consultancy, Agripolis, which is currently fielding enquiries from around the world to design, build and equip a new breed of soil-free inner-city farm. 'The method's advantages are many,' he says. 'First, I don't much like the fact that most of the fruit and vegetables we eat have been <span class="hl" id="h4">treated with something like 17 different pesticides</span>, or that the intensive farming techniques that produced them are such huge generators of greenhouse gases. I don't much like the fact, either, that they've travelled an average of 2,000 refrigerated kilometres to my plate, that their quality is so poor, because the <span class="hl" id="h5">varieties are selected for their capacity to withstand such substantial journeys</span>, or that 80% of the price I pay goes to wholesalers and transport companies, <span class="hl" id="h6">not the producers</span>.'</p>
+
+      <p class="para">Produce grown using this soil-free method, on the other hand – which relies solely on a small quantity of water, enriched with organic nutrients, pumped around a closed circuit of pipes, towers and trays – is 'produced up here, and sold locally, just down there. It barely travels at all,' Hardy says. 'You can <span class="hl" id="h7">select crop varieties for their flavour</span>, not their resistance to the transport and storage chain, and you can pick them when they're really at their best, and not before.' No soil is exhausted, and the water that gently showers the plants' roots every 12 minutes is recycled, so the method uses 90% less water than a classic intensive farm for the same yield.</p>
+
+      <p class="para">Urban farming is not, of course, a new phenomenon. Inner-city agriculture is booming from Shanghai to Detroit and Tokyo to Bangkok. <span class="hl" id="h8">Strawberries are being grown in disused shipping containers, mushrooms in underground carparks.</span> Aeroponic farming, he says, is 'virtuous'. <span class="hl" id="h9">The equipment weighs little, can be installed on almost any flat surface and is cheap to buy: roughly 100 to 150 per square metre.</span> It is cheap to run, too, <span class="hl" id="h10">consuming a tiny fraction of the electricity used by some techniques</span>.</p>
+
+      <p class="para">Produce grown this way typically sells at prices that, while generally higher than those of classic intensive agriculture, are <span class="hl" id="h11">lower than soil-based organic growers</span>. There are limits to what farmers can grow this way, of course, and <span class="hl" id="h12">much of the produce is suited to the summer months</span>. 'Root vegetables we cannot do, at least not yet,' he says. 'Radishes are OK, but carrots, potatoes, that kind of thing – the roots are simply too long. Fruit trees are obviously not an option. And <span class="hl" id="h13">beans tend to take up a lot of space for not much return</span>.' Nevertheless, urban farming of the kind being practised in Paris is one part of a bigger and fast-changing picture that is bringing food production closer to our lives.</p>
+    </div>
+
+    <!-- QUESTIONS (right) -->
+    <div class="q-pane">
+
+      <div class="scorebar">
+        <span class="score-chip">Revealed <b id="scoreDisp">0</b> / 13</span>
+        <div class="prog"><div class="prog-fill" id="progFill"></div></div>
+        <button class="btn-resetall" onclick="resetAll()">Reset all</button>
+      </div>
+
+      <!-- ── Q1–3 ── -->
+      <div class="q-section">
+        <div class="sec-title">Questions 1–3</div>
+        <div class="callout">Complete the sentences below. Choose <em>NO MORE THAN TWO WORDS AND/OR A NUMBER</em> from the passage for each answer.</div>
+        <div class="notes-title">Urban farming in Paris</div>
+
+        <div class="q-block" data-qid="q1" data-type="text">
+          <div class="q-head"><div class="q-num">1</div><div class="q-text">Vertical tubes are used to grow strawberries, <span class="gap">1</span> and herbs.</div></div>
+          <div class="fill-wrap"><input class="fill-input" type="text" id="in-q1" placeholder="type your answer" autocomplete="off" spellcheck="false"></div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q1')">Check / Reveal</button><button class="btn-reset" onclick="resetQ('q1')">Reset</button></div>
+          <div class="ans-display" id="ans-q1"></div>
+        </div>
+
+        <div class="q-block" data-qid="q2" data-type="text">
+          <div class="q-head"><div class="q-num">2</div><div class="q-text">There will eventually be a daily harvest of as much as <span class="gap">2</span> in weight of fruit and vegetables.</div></div>
+          <div class="fill-wrap"><input class="fill-input" type="text" id="in-q2" placeholder="type your answer" autocomplete="off" spellcheck="false"></div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q2')">Check / Reveal</button><button class="btn-reset" onclick="resetQ('q2')">Reset</button></div>
+          <div class="ans-display" id="ans-q2"></div>
+        </div>
+
+        <div class="q-block" data-qid="q3" data-type="text">
+          <div class="q-head"><div class="q-num">3</div><div class="q-text">It may be possible that the farm's produce will account for as much as 10% of the city's <span class="gap">3</span> overall.</div></div>
+          <div class="fill-wrap"><input class="fill-input" type="text" id="in-q3" placeholder="type your answer" autocomplete="off" spellcheck="false"></div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q3')">Check / Reveal</button><button class="btn-reset" onclick="resetQ('q3')">Reset</button></div>
+          <div class="ans-display" id="ans-q3"></div>
+        </div>
+      </div>
+
+      <!-- ── Q4–7 (table) ── -->
+      <div class="q-section">
+        <div class="sec-title">Questions 4–7</div>
+        <div class="callout">Complete the table below. Choose <em>ONE WORD ONLY</em> from the passage for each answer.</div>
+
+        <div class="tbl-card">
+          <table class="qtable">
+            <caption>Intensive farming versus aeroponic urban farming</caption>
+            <thead>
+              <tr><th></th><th>Growth</th><th>Selection</th><th>Sale</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Intensive farming</th>
+                <td><ul><li>wide range of <span class="cell-num">4</span><input class="tbl-input" type="text" id="in-q4" placeholder="one word" autocomplete="off" spellcheck="false"> used</li><li>techniques pollute air</li></ul></td>
+                <td><ul><li>quality not good</li><li>varieties of fruit and vegetables chosen that can survive long <span class="cell-num">5</span><input class="tbl-input" type="text" id="in-q5" placeholder="one word" autocomplete="off" spellcheck="false"></li></ul></td>
+                <td><ul><li><span class="cell-num">6</span><input class="tbl-input" type="text" id="in-q6" placeholder="one word" autocomplete="off" spellcheck="false"> receive very little of overall income</li></ul></td>
+              </tr>
+              <tr>
+                <th>Aeroponic urban farming</th>
+                <td><ul><li>no soil used</li><li>nutrients added to water, which is recycled</li></ul></td>
+                <td><ul><li>produce chosen because of its <span class="cell-num">7</span><input class="tbl-input" type="text" id="in-q7" placeholder="one word" autocomplete="off" spellcheck="false"></li></ul></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="tbl-actions">
+            <button class="btn-reveal" onclick="revealTable()">Check / Reveal 4–7</button>
+            <button class="btn-reset" onclick="resetTable()">Reset</button>
+          </div>
+          <div class="tbl-ans" id="ans-table"></div>
+        </div>
+      </div>
+
+      <!-- ── Q8–13 ── -->
+      <div class="q-section">
+        <div class="sec-title">Questions 8–13</div>
+        <div class="callout">Do the following statements agree with the information given in Reading Passage 1?<br>
+          <em>TRUE</em> if the statement agrees with the information ·
+          <em>FALSE</em> if the statement contradicts the information ·
+          <em>NOT GIVEN</em> if there is no information on this</div>
+
+        <div class="q-block" data-qid="q8">
+          <div class="q-head"><div class="q-num">8</div><div class="q-text">Urban farming can take place above or below ground.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q8')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q8')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q8')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q8')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q8')">Reset</button></div>
+          <div class="ans-display" id="ans-q8"></div>
+        </div>
+
+        <div class="q-block" data-qid="q9">
+          <div class="q-head"><div class="q-num">9</div><div class="q-text">Some of the equipment used in aeroponic farming can be made by hand.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q9')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q9')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q9')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q9')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q9')">Reset</button></div>
+          <div class="ans-display" id="ans-q9"></div>
+        </div>
+
+        <div class="q-block" data-qid="q10">
+          <div class="q-head"><div class="q-num">10</div><div class="q-text">Urban farming relies more on electricity than some other types of farming.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q10')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q10')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q10')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q10')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q10')">Reset</button></div>
+          <div class="ans-display" id="ans-q10"></div>
+        </div>
+
+        <div class="q-block" data-qid="q11">
+          <div class="q-head"><div class="q-num">11</div><div class="q-text">Fruit and vegetables grown on an aeroponic urban farm are cheaper than traditionally grown organic produce.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q11')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q11')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q11')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q11')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q11')">Reset</button></div>
+          <div class="ans-display" id="ans-q11"></div>
+        </div>
+
+        <div class="q-block" data-qid="q12">
+          <div class="q-head"><div class="q-num">12</div><div class="q-text">Most produce can be grown on an aeroponic urban farm at any time of the year.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q12')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q12')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q12')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q12')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q12')">Reset</button></div>
+          <div class="ans-display" id="ans-q12"></div>
+        </div>
+
+        <div class="q-block" data-qid="q13">
+          <div class="q-head"><div class="q-num">13</div><div class="q-text">Beans take longer to grow on an urban farm than other vegetables.</div></div>
+          <div class="tfn">
+            <button class="tfn-btn" data-value="TRUE" onclick="sel(this,'q13')">TRUE</button>
+            <button class="tfn-btn" data-value="FALSE" onclick="sel(this,'q13')">FALSE</button>
+            <button class="tfn-btn" data-value="NOT GIVEN" onclick="sel(this,'q13')">NOT GIVEN</button>
+          </div>
+          <div class="q-footer"><button class="btn-reveal" onclick="reveal('q13')">Reveal Answer</button><button class="btn-reset" onclick="resetQ('q13')">Reset</button></div>
+          <div class="ans-display" id="ans-q13"></div>
+        </div>
+      </div>
+
+    </div><!-- /q-pane -->
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<script>
+const ANSWERS = {
+  q1:{type:'text',accept:['lettuces','lettuce'],hl:['h1'],exp:'<strong>lettuces</strong> — "From identical vertical tubes nearby burst row upon row of lettuces", alongside strawberries and herbs.'},
+  q2:{type:'text',accept:['1,000 kg','1000 kg','1,000kg','1000kg','1,000','1000'],hl:['h2'],exp:'<strong>1,000 kg</strong> — "20 staff will harvest up to 1,000 kg of perhaps 35 different varieties... every day".'},
+  q3:{type:'text',accept:['consumption'],hl:['h3'],exp:'<strong>consumption</strong> — Hardy hopes to "target maybe between 5% and 10% of consumption".'},
+  q4:{type:'text',accept:['pesticides','pesticide'],hl:['h4'],exp:'<b>4 = pesticides</b> — produce is "treated with something like 17 different pesticides".'},
+  q5:{type:'text',accept:['journeys','journey'],hl:['h5'],exp:'<b>5 = journeys</b> — varieties "are selected for their capacity to withstand such substantial journeys".'},
+  q6:{type:'text',accept:['producers','producer'],hl:['h6'],exp:'<b>6 = producers</b> — "80% of the price... goes to wholesalers and transport companies, not the producers".'},
+  q7:{type:'text',accept:['flavour','flavor'],hl:['h7'],exp:'<b>7 = flavour</b> — "You can select crop varieties for their flavour, not their resistance to the transport... chain".'},
+  q8:{correct:'TRUE',hl:['h8'],exp:'<strong>TRUE</strong> — "Strawberries are being grown in disused shipping containers, mushrooms in underground carparks" — both above and below ground.'},
+  q9:{correct:'NOT GIVEN',hl:['h9'],exp:'<strong>NOT GIVEN</strong> — The equipment is described as light and "cheap to buy", but the passage never says any of it can be made by hand.'},
+  q10:{correct:'FALSE',hl:['h10'],exp:'<strong>FALSE</strong> — Aeroponic farming is "cheap to run... consuming a tiny fraction of the electricity used by some techniques" — it uses less, not more.'},
+  q11:{correct:'TRUE',hl:['h11'],exp:'<strong>TRUE</strong> — Prices, though higher than intensive agriculture, are "lower than soil-based organic growers".'},
+  q12:{correct:'FALSE',hl:['h12'],exp:'<strong>FALSE</strong> — "much of the produce is suited to the summer months", so it cannot be grown at any time of year.'},
+  q13:{correct:'NOT GIVEN',hl:['h13'],exp:'<strong>NOT GIVEN</strong> — Beans "take up a lot of space for not much return", but nothing is said about how long they take to grow.'}
+};
+
+const TABLE_IDS = ['q4','q5','q6','q7'];
+const TOTAL = 13;
+const revealed = new Set();
+
+function sel(el,qid){
+  if(revealed.has(qid))return;
+  const block=document.querySelector(`[data-qid="${qid}"]`);
+  block.querySelectorAll('[data-value]').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function markText(qid){
+  const data=ANSWERS[qid];
+  const input=document.getElementById('in-'+qid);
+  const val=input.value.trim().toLowerCase().replace(/\s+/g,' ');
+  const ok=data.accept.some(a=>a.toLowerCase()===val);
+  input.classList.remove('correct','wrong');
+  input.classList.add(ok?'correct':'wrong');
+  input.disabled=true;
+}
+
+function lightHl(data){
+  data.hl.forEach(id=>{const s=document.getElementById(id);if(s)s.classList.add('active');});
+  if(data.hl.length){const f=document.getElementById(data.hl[0]);if(f)scrollToEl(f);}
+}
+
+function reveal(qid){
+  if(revealed.has(qid))return;
+  revealed.add(qid);
+  const data=ANSWERS[qid];
+  const block=document.querySelector(`[data-qid="${qid}"]`);
+  if(data.type==='text'){
+    markText(qid);
+  }else{
+    block.querySelectorAll('[data-value]').forEach(el=>{
+      if(el.dataset.value===data.correct){el.classList.remove('selected');el.classList.add('correct');}
+      else if(el.classList.contains('selected')){el.classList.add('wrong');el.classList.remove('selected');}
+    });
+  }
+  const ad=document.getElementById('ans-'+qid);
+  ad.innerHTML=data.exp;ad.classList.add('shown');
+  block.querySelector('.btn-reveal').disabled=true;
+  lightHl(data);
+  updateProg();
+}
+
+function revealTable(){
+  let parts=[];
+  TABLE_IDS.forEach(qid=>{
+    if(!revealed.has(qid)){revealed.add(qid);markText(qid);lightHl(ANSWERS[qid]);}
+    parts.push(ANSWERS[qid].exp);
+  });
+  const ad=document.getElementById('ans-table');
+  ad.innerHTML=parts.join('<br>');ad.classList.add('shown');
+  updateProg();
+  const f=document.getElementById(ANSWERS.q4.hl[0]);if(f)scrollToEl(f);
+}
+
+function resetQ(qid){
+  if(revealed.has(qid))return;
+  const block=document.querySelector(`[data-qid="${qid}"]`);
+  if(ANSWERS[qid].type==='text'){
+    const i=document.getElementById('in-'+qid);i.value='';i.classList.remove('correct','wrong');
+  }else{
+    block.querySelectorAll('[data-value]').forEach(e=>e.classList.remove('selected'));
+  }
+}
+
+function resetTable(){
+  TABLE_IDS.forEach(qid=>{
+    if(revealed.has(qid))return;
+    const i=document.getElementById('in-'+qid);i.value='';i.classList.remove('correct','wrong');
+  });
+}
+
+function resetAll(){
+  location.reload();
+}
+
+function revealAll(){
+  Object.keys(ANSWERS).forEach(qid=>{
+    if(TABLE_IDS.includes(qid))return;
+    if(!revealed.has(qid))reveal(qid);
+  });
+  if(!TABLE_IDS.every(q=>revealed.has(q)))revealTable();
+}
+
+function scrollToEl(el){
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect();
+  const er=el.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-150,behavior:'smooth'});
+}
+
+function updateProg(){
+  const n=revealed.size;
+  document.getElementById('progFill').style.width=(n/TOTAL*100)+'%';
+  document.getElementById('scoreDisp').textContent=n;
+  document.getElementById('tabcount').textContent=n+'/13';
+}
+
+/* Enter to check fill-ins */
+document.querySelectorAll('.fill-input').forEach(inp=>{
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')reveal(inp.id.replace('in-',''));});
+});
+
+/* Countdown timer (display only) */
+let secs=20*60;
+const tv=document.getElementById('timeval');
+setInterval(()=>{
+  if(secs<=0)return;
+  secs--;
+  const m=String(Math.floor(secs/60)).padStart(2,'0');
+  const s=String(secs%60).padStart(2,'0');
+  tv.textContent=m+':'+s;
+},1000);
+</script>
+</body>
+</html>

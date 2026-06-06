@@ -1,0 +1,6 @@
+# Ignore everything in this vault by default...
+/*
+
+# ...except the files we want to publish
+!/cam-17-1-1-interactive.html
+!/cam-18-1-1-interactive.html
