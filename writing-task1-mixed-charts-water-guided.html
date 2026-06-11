@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab · Guided Practice · Writing Task 1 · Mixed Charts (World Water)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --c-salt:#1f4e79;--c-fresh:#e0922f;--c-ice:#2a9d8f;--c-ground:#7e5aa2;--c-surface:#e06a5c;
+  --c-agri:#1f4e79;--c-dom:#e0922f;--c-ind:#2a9d8f;
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.logo{font-family:var(--font-head);font-weight:700;font-size:1.15rem;letter-spacing:.3px;display:flex;align-items:center;gap:7px}
+.logo .lab{background:var(--gold);color:var(--navy-deep);padding:1px 8px;border-radius:7px;font-size:.95rem}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Chart (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+
+/* task instruction callout */
+.task-box{background:var(--callout);border-left:4px solid var(--action-blue);border-radius:8px;padding:13px 16px;font-size:.9rem;line-height:1.55;color:var(--heading);margin-bottom:22px}
+.task-box b{color:var(--navy-deep)}
+
+/* charts */
+.sub-head{font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--heading);text-align:center;letter-spacing:.3px;margin:6px 0 2px;text-decoration:underline;text-underline-offset:3px}
+.chart-wrap{position:relative;width:100%;max-width:560px;margin:4px auto 6px}
+.chart-wrap svg{width:100%;height:auto;display:block}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:4px auto 8px;font-size:.82rem;font-weight:600;color:var(--body)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+.block-divider{border:0;border-top:1px solid var(--border);margin:18px 0 14px}
+
+/* on-chart evidence callout chips */
+.chartnote{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
+  background:var(--gold);color:var(--navy-deep);font-size:.71rem;font-weight:700;
+  padding:4px 9px;border-radius:8px;text-align:center;line-height:1.25;max-width:175px;
+  box-shadow:0 3px 10px rgba(15,23,42,.22);opacity:0;transition:opacity .35s;z-index:5}
+.chartnote::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--gold)}
+.chartnote.active{opacity:1}
+.chartnote.flash{animation:noteflash 1s ease}
+@keyframes noteflash{0%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* legacy text-highlight (kept for engine compatibility) */
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:520px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.08rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:14px 16px;font-family:var(--font-body);font-size:.97rem;color:var(--body);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not(.locked){background:var(--surface-subtle);border-color:#cbd5e1}
+.opt.selected{border-color:var(--action-blue);background:var(--callout);box-shadow:inset 0 0 0 1px var(--action-blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);box-shadow:inset 0 0 0 1px var(--correct-bd)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);box-shadow:inset 0 0 0 1px var(--wrong-bd)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.5}
+.opt .lt{width:28px;height:28px;border-radius:7px;background:var(--surface-subtle);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy-deep);font-size:.9rem;flex-shrink:0}
+.opt.correct .lt{background:#fff;border-color:var(--correct-bd);color:var(--correct-tx)}
+.opt.wrong .lt{background:#fff;border-color:var(--wrong-bd);color:var(--wrong-tx)}
+.opt .ot{line-height:1.45}
+.opt .mk{margin-left:auto;font-weight:800;font-size:1.05rem;padding-left:8px}
+
+/* fill input */
+.fill-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:1rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);font-weight:600}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);font-weight:600}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.check-btn.review{background:#fff;color:var(--action-blue);border:1px solid var(--action-blue)}
+.check-btn.review:hover{background:var(--callout)}
+
+/* ── FEEDBACK OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.overlay.show{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:20px;max-width:470px;width:100%;max-height:92vh;overflow-y:auto;padding:26px 28px 24px;text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.35);animation:pop .26s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{transform:scale(.92) translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+.ov-card::-webkit-scrollbar{width:7px}
+.ov-card::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 4px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin:6px 0 4px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.ov-answer{font-size:.96rem;color:var(--body);margin:8px 0 14px}
+.ov-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary */
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+.fin-model{text-align:left;background:var(--callout);border:1px solid #d8e4f5;border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.7;color:var(--body);margin-bottom:16px}
+.fin-model .lbl{font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.fin-model p{margin-bottom:8px}
+.fin-model p:last-child{margin-bottom:0}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:46vh}
+  .q-card{padding:26px 20px 44px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="logo"><span>IELTS</span><span class="lab">Lab</span></div>
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- CHARTS (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Writing Task 1 · Mixed charts · Guided practice</div>
+      <h1 class="p-title">The world’s water and how water is used</h1>
+      <p class="p-sub">Học cách <em>đọc</em> và <em>mô tả</em> bài có <strong>nhiều biểu đồ</strong> cho Writing Task 1 — viết overview bao quát tất cả biểu đồ, liên kết hai biểu đồ tròn với nhau, và so sánh cách dùng nước giữa các quốc gia.</p>
+
+      <div class="task-box">
+        <b>The task:</b> The charts below show the distribution of the world’s water (all water and fresh water) and the use of water in three countries. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. <i>Write at least 150 words.</i>
+      </div>
+
+      <!-- BLOCK A: two pie charts -->
+      <div class="sub-head">Distribution of the World’s Water</div>
+      <div class="chart-wrap" id="pieWrap">
+        <svg id="pieSvg" viewBox="0 0 560 250" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+          <g id="pieG"><!-- slices injected by script --></g>
+          <text x="150" y="26" font-family="Poppins, sans-serif" font-size="14" font-weight="700" fill="#1E3A5F" text-anchor="middle">ALL WATER</text>
+          <text x="410" y="26" font-family="Poppins, sans-serif" font-size="14" font-weight="700" fill="#1E3A5F" text-anchor="middle">FRESH WATER</text>
+        </svg>
+
+        <div class="chartnote" id="ev-q1" style="left:50%;top:7%">Three charts: world water (all & fresh) + water use in three countries</div>
+        <div class="chartnote" id="ev-q2" style="left:50%;top:15%">Most water is salt &amp; most fresh water is frozen; use is farming-led except in Canada</div>
+        <div class="chartnote" id="ev-q3" style="left:24%;top:62%">All water: salt water dominates at 97%</div>
+        <div class="chartnote" id="ev-q4" style="left:23%;top:26%">Only 3% of all water is fresh</div>
+        <div class="chartnote" id="ev-q5" style="left:50%;top:30%">The 2nd pie breaks down that small 3% of fresh water</div>
+        <div class="chartnote" id="ev-q6" style="left:71%;top:64%">Fresh water: ice &amp; glaciers hold 79%</div>
+        <div class="chartnote" id="ev-q7" style="left:71%;top:55%">Ice &amp; glaciers ≈ 79% of fresh water</div>
+        <div class="chartnote" id="ev-q8" style="left:82%;top:30%">Surface water is just 1% — very little is easy to reach</div>
+        <div class="chartnote" id="ev-q12" style="left:50%;top:7%">Cover every chart; group related information</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--c-salt)"></i>salt water</span>
+        <span><i style="background:var(--c-fresh)"></i>fresh water</span>
+        <span><i style="background:var(--c-ice)"></i>ice &amp; glaciers</span>
+        <span><i style="background:var(--c-ground)"></i>ground water</span>
+        <span><i style="background:var(--c-surface)"></i>surface water</span>
+      </div>
+
+      <hr class="block-divider">
+
+      <!-- BLOCK B: bar chart -->
+      <div class="sub-head">The Use of Water (%)</div>
+      <div class="chart-wrap" id="barWrap">
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+          <!-- gridlines -->
+          <g stroke="#E5E7EB" stroke-width="1">
+            <line x1="50" y1="30" x2="540" y2="30"/>
+            <line x1="50" y1="54.4" x2="540" y2="54.4"/>
+            <line x1="50" y1="78.9" x2="540" y2="78.9"/>
+            <line x1="50" y1="103.3" x2="540" y2="103.3"/>
+            <line x1="50" y1="127.8" x2="540" y2="127.8"/>
+            <line x1="50" y1="152.2" x2="540" y2="152.2"/>
+            <line x1="50" y1="176.7" x2="540" y2="176.7"/>
+            <line x1="50" y1="201.1" x2="540" y2="201.1"/>
+            <line x1="50" y1="225.6" x2="540" y2="225.6"/>
+          </g>
+          <!-- y labels -->
+          <g font-size="11.5" fill="#23425f" text-anchor="end">
+            <text x="42" y="34">90</text><text x="42" y="58.4">80</text><text x="42" y="82.9">70</text>
+            <text x="42" y="107.3">60</text><text x="42" y="131.8">50</text><text x="42" y="156.2">40</text>
+            <text x="42" y="180.7">30</text><text x="42" y="205.1">20</text><text x="42" y="229.6">10</text>
+            <text x="42" y="254">0</text>
+          </g>
+          <!-- axes -->
+          <line x1="50" y1="30" x2="50" y2="250" stroke="#23425f" stroke-width="2"/>
+          <line x1="50" y1="250" x2="540" y2="250" stroke="#23425f" stroke-width="2"/>
+          <!-- axis title -->
+          <text x="15" y="140" font-size="12" fill="#173a63" font-weight="600" text-anchor="middle" transform="rotate(-90 15 140)">% of water used</text>
+          <!-- x labels -->
+          <g font-size="12.5" fill="#173a63" font-weight="600" text-anchor="middle">
+            <text x="131.7" y="267">Egypt</text><text x="295" y="267">Saudi Arabia</text><text x="458.3" y="267">Canada</text>
+          </g>
+          <!-- AGRICULTURE (navy) -->
+          <g fill="#1f4e79" stroke="#173a63" stroke-width="1">
+            <rect x="87.7"  y="54.4"  width="26" height="195.6"/>
+            <rect x="251"   y="66.7"  width="26" height="183.3"/>
+            <rect x="414.3" y="230.4" width="26" height="19.6"/>
+          </g>
+          <!-- DOMESTIC (amber) -->
+          <g fill="#e0922f" stroke="#b8761f" stroke-width="1">
+            <rect x="118.7" y="213.3" width="26" height="36.7"/>
+            <rect x="282"   y="213.3" width="26" height="36.7"/>
+            <rect x="445.3" y="220.7" width="26" height="29.3"/>
+          </g>
+          <!-- INDUSTRY (teal) -->
+          <g fill="#2a9d8f" stroke="#1f7268" stroke-width="1">
+            <rect x="149.7" y="237.8" width="26" height="12.2"/>
+            <rect x="313"   y="225.6" width="26" height="24.4"/>
+            <rect x="476.3" y="54.4"  width="26" height="195.6"/>
+          </g>
+        </svg>
+
+        <div class="chartnote" id="ev-q9"  style="left:33%;top:23%">Egypt &amp; Saudi Arabia: agriculture takes ~75–80%</div>
+        <div class="chartnote" id="ev-q10" style="left:80%;top:23%">Canada: industry uses ≈ 80% of water</div>
+        <div class="chartnote" id="ev-q11" style="left:78%;top:46%">Canada is industry-led — the opposite of Egypt &amp; Saudi Arabia</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--c-agri)"></i>Agriculture</span>
+        <span><i style="background:var(--c-dom)"></i>Domestic</span>
+        <span><i style="background:var(--c-ind)"></i>Industry</span>
+      </div>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEEDBACK / PROGRESS OVERLAY ── -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<!-- ── Build the two pie charts ── -->
+<script>
+(function(){
+  const O1=['salt water','fresh water'];
+  const D1={'salt water':97,'fresh water':3};
+  const C1={'salt water':'#1f4e79','fresh water':'#e0922f'};
+  const O2=['ice & glaciers','ground water','surface water'];
+  const D2={'ice & glaciers':79,'ground water':20,'surface water':1};
+  const C2={'ice & glaciers':'#2a9d8f','ground water':'#7e5aa2','surface water':'#e06a5c'};
+  function pie(cx,cy,r,order,data,colors){
+    let ang=-90,out='';
+    order.forEach(cat=>{
+      const v=data[cat]; if(v==null)return;
+      const sweep=v/100*360, a0=ang*Math.PI/180, a1=(ang+sweep)*Math.PI/180, mid=(ang+sweep/2)*Math.PI/180;
+      const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      const large=sweep>180?1:0;
+      out+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${colors[cat]}" stroke="#fff" stroke-width="1.6"/>`;
+      if(v>=7){
+        const lx=cx+r*0.6*Math.cos(mid), ly=cy+r*0.6*Math.sin(mid);
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#fff" font-size="12.5" font-weight="700" text-anchor="middle">${v}%</text>`;
+      }else{
+        const ex=cx+r*1.02*Math.cos(mid), ey=cy+r*1.02*Math.sin(mid), lx=cx+r*1.18*Math.cos(mid), ly=cy+r*1.18*Math.sin(mid);
+        out+=`<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="#9aa6b5" stroke-width="1"/>`;
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#23425f" font-size="11" font-weight="600" text-anchor="${Math.cos(mid)>=0?'start':'end'}">${v}%</text>`;
+      }
+      ang+=sweep;
+    });
+    return out;
+  }
+  document.getElementById('pieG').innerHTML = pie(150,135,80,O1,D1,C1)+pie(410,135,80,O2,D2,C2);
+})();
+</script>
+
+<script>
+const MARKS = 12;   // one mark per step
+
+const STEPS = [
+  {type:'choice',label:1,task:'Đọc đề · Tổng quan',
+   prompt:'What do the charts show altogether?',
+   options:[
+     {l:'A',t:'Only how much salt water and fresh water there is in the world.'},
+     {l:'B',t:'The distribution of the world’s water (all water and fresh water) and how water is used in three countries.'},
+     {l:'C',t:'The amount of rainfall each country receives.'},
+     {l:'D',t:'How global water use has changed over time.'}],
+   answer:'B',ev:'ev-q1',
+   expl:"Có <b>ba biểu đồ</b>: hai biểu đồ tròn về phân bố nước trên thế giới (toàn bộ nước & nước ngọt) và một biểu đồ cột về cách dùng nước ở ba quốc gia. Với bài nhiều biểu đồ, hãy nắm rõ từng biểu đồ thể hiện gì trước khi viết."},
+
+  {type:'choice',label:2,task:'Overview · Bao quát mọi biểu đồ',
+   prompt:'Which statement is the best OVERVIEW for all three charts?',
+   options:[
+     {l:'A',t:'Most of the world’s water is salt water and most fresh water is frozen, while water use is dominated by agriculture in Egypt and Saudi Arabia but by industry in Canada.'},
+     {l:'B',t:'Fresh water makes up the majority of the world’s water.'},
+     {l:'C',t:'All three countries use most of their water for industry.'},
+     {l:'D',t:'Surface water is the largest single source of fresh water.'}],
+   answer:'A',ev:'ev-q2',
+   expl:"Với bài nhiều biểu đồ, overview phải <b>bao quát tất cả</b>: nước mặn chiếm đa số, phần lớn nước ngọt bị đóng băng, và cách dùng nước thiên về nông nghiệp ở Egypt/Saudi Arabia nhưng thiên về công nghiệp ở Canada. (B, C, D đều sai dữ liệu.)"},
+
+  {type:'choice',label:3,task:'Biểu đồ tròn 1 · Tỉ lệ',
+   prompt:'In the “All Water” chart, what proportion of the world’s water is salt water?',
+   options:[
+     {l:'A',t:'97%'},{l:'B',t:'79%'},{l:'C',t:'20%'},{l:'D',t:'3%'}],
+   answer:'A',ev:'ev-q3',
+   expl:"Nước mặn chiếm <b>97%</b> tổng lượng nước của thế giới — gần như toàn bộ. Đây là điểm nổi bật đầu tiên cần nêu."},
+
+  {type:'fill',label:4,task:'Biểu đồ tròn 1 · Điền số',
+   prompt:'Complete the sentence: <br>“Only about ____ % of the world’s water is fresh water.”',
+   answer:['3'],ev:'ev-q4',
+   expl:"Chỉ <b>3%</b> lượng nước toàn cầu là nước ngọt — một tỉ lệ rất nhỏ. Con số này dẫn thẳng sang biểu đồ tròn thứ hai."},
+
+  {type:'choice',label:5,task:'Liên kết · Hai biểu đồ tròn',
+   prompt:'How are the two pie charts connected?',
+   options:[
+     {l:'A',t:'They show two completely unrelated sets of data.'},
+     {l:'B',t:'The second chart breaks down that small 3% of fresh water into its sources.'},
+     {l:'C',t:'The second chart shows where the salt water is found.'},
+     {l:'D',t:'The second chart shows water use by each country.'}],
+   answer:'B',ev:'ev-q5',
+   expl:"Hai biểu đồ tròn <b>liên kết với nhau</b>: biểu đồ thứ hai “phóng to” đúng 3% nước ngọt và chia nó thành ice & glaciers, ground water, surface water. Nêu được mối liên kết này giúp bài mạch lạc và ghi điểm Coherence."},
+
+  {type:'choice',label:6,task:'Biểu đồ tròn 2 · Lớn nhất',
+   prompt:'According to the “Fresh Water” chart, where is most fresh water found?',
+   options:[
+     {l:'A',t:'Surface water — 1%'},
+     {l:'B',t:'Ground water — 20%'},
+     {l:'C',t:'Ice and glaciers — 79%'},
+     {l:'D',t:'Spread evenly across all three sources'}],
+   answer:'C',ev:'ev-q6',
+   expl:"Phần lớn nước ngọt nằm ở <b>ice & glaciers (79%)</b>, tiếp đến ground water (20%). Tức gần 4/5 nước ngọt đang bị đóng băng."},
+
+  {type:'fill',label:7,task:'Biểu đồ tròn 2 · Điền số',
+   prompt:'Complete the sentence: <br>“Ice and glaciers hold about ____ % of the world’s fresh water.”',
+   answer:['79'],ev:'ev-q7',
+   expl:"Ice & glaciers chiếm <b>79%</b> lượng nước ngọt — giá trị lớn nhất trong biểu đồ tròn thứ hai."},
+
+  {type:'choice',label:8,task:'Phân tích · Nước dễ tiếp cận',
+   prompt:'What does the data reveal about easily accessible surface water (rivers, lakes)?',
+   options:[
+     {l:'A',t:'It makes up the majority of fresh water.'},
+     {l:'B',t:'It is a tiny fraction — just 1% — of all fresh water.'},
+     {l:'C',t:'It is larger than the ground-water share.'},
+     {l:'D',t:'It accounts for 20% of fresh water.'}],
+   answer:'B',ev:'ev-q8',
+   expl:"Nước bề mặt (sông, hồ) — phần dễ tiếp cận nhất — chỉ chiếm <b>1%</b> nước ngọt, tức một phần cực nhỏ của 3% nước ngọt vốn đã ít. Nhận xét “rất ít nước dễ dùng” là một insight đáng nêu."},
+
+  {type:'choice',label:9,task:'Biểu đồ cột · Nông nghiệp',
+   prompt:'In the bar chart, how is most water used in Egypt and Saudi Arabia?',
+   options:[
+     {l:'A',t:'Mainly for industry.'},
+     {l:'B',t:'Mainly for domestic purposes.'},
+     {l:'C',t:'Mainly for agriculture (around 75–80%).'},
+     {l:'D',t:'Split evenly across the three uses.'}],
+   answer:'C',ev:'ev-q9',
+   expl:"Ở cả Egypt và Saudi Arabia, <b>nông nghiệp chiếm phần lớn</b> lượng nước (khoảng 80% và 75%), bỏ xa domestic và industry. Có thể nhóm hai nước này lại với nhau khi mô tả."},
+
+  {type:'fill',label:10,task:'Biểu đồ cột · Điền số',
+   prompt:'Complete the sentence: <br>“In Canada, industry accounted for about ____ % of water use.”',
+   answer:['80'],ev:'ev-q10',
+   expl:"Ở Canada, <b>industry chiếm khoảng 80%</b> lượng nước — gần như đảo ngược so với Egypt và Saudi Arabia."},
+
+  {type:'choice',label:11,task:'So sánh · Canada khác biệt',
+   prompt:'How did Canada differ from Egypt and Saudi Arabia?',
+   options:[
+     {l:'A',t:'Canada used most of its water for industry (≈80%), whereas the other two used most for agriculture.'},
+     {l:'B',t:'Canada used most of its water for agriculture, like the others.'},
+     {l:'C',t:'Canada used most of its water for domestic purposes.'},
+     {l:'D',t:'Canada’s pattern was almost identical to Egypt’s.'}],
+   answer:'A',ev:'ev-q11',
+   expl:"Canada gần như <b>đảo ngược</b> mẫu hình: industry chiếm ~80% còn agriculture chỉ ~8%, trái ngược với Egypt/Saudi Arabia (nông nghiệp chủ đạo). Câu so sánh dùng “whereas / in contrast” thể hiện rõ sự đối lập."},
+
+  {type:'choice',label:12,task:'Cấu trúc bài · Nhiều biểu đồ',
+   prompt:'When the task shows several different charts like this, your answer should…',
+   options:[
+     {l:'A',t:'describe only the one chart you find easiest to read.'},
+     {l:'B',t:'cover all the charts — give an overview of the main point of each, then describe them in turn, grouping related information.'},
+     {l:'C',t:'explain why most of the world’s water is salt water.'},
+     {l:'D',t:'recommend how each country should use its water in future.'}],
+   answer:'B',ev:'ev-q12',
+   expl:"Bài nhiều biểu đồ đòi hỏi <b>bao quát tất cả</b>: overview nêu ý chính của từng biểu đồ, rồi mô tả lần lượt và nhóm thông tin liên quan (hai pie về phân bố nước; bar về cách dùng nước). Task 1 không giải thích nguyên nhân hay đưa khuyến nghị."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+let idx=0, correctCount=0, wrongCount=0, selected=null, locked=false;
+
+const host=document.getElementById('qHost');
+const overlay=document.getElementById('overlay');
+const ovCard=document.getElementById('ovCard');
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${q.label}" onclick="jumpNode(${i})">${q.label}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){
+  if(i===idx)return;
+  overlay.classList.remove('show');
+  idx=i;
+  showQuestion();
+}
+function closeRecap(){overlay.classList.remove('show');}
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;locked=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  let answerHTML='';
+  if(q.type==='choice'){
+    answerHTML='<div class="opts">'+q.options.map(o=>
+      `<button class="opt" data-val="${o.l}" onclick="pickOne(this,'${o.l}')"><span class="lt">${o.l}</span><span class="ot">${o.t}</span></button>`).join('')+'</div>';
+  }else{ // fill
+    answerHTML=`<input class="fill-input" id="fillIn" type="text" placeholder="Nhập câu trả lời…" autocomplete="off" spellcheck="false">`;
+  }
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${q.label}</div><div class="q-prompt">${q.prompt}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    inp.addEventListener('input',()=>{selected=inp.value.trim();document.getElementById('checkBtn').disabled=!selected;});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked&&selected)checkNow();});
+    inp.focus();
+  }
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    const cb=document.getElementById('checkBtn');
+    if(cb)cb.outerHTML=`<button class="check-btn review" onclick="openFeedback(STEPS[${idx}],results[${idx}],true)">Xem lại giải thích</button>`;
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickOne(el,val){
+  if(locked)return;
+  selected=val;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('checkBtn').disabled=false;
+}
+
+/* ── Grade, highlight, then show overlay ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+  const state=ok?'ok':'no';
+
+  locked=true;
+  results[idx]=state;
+  answers[idx]=selected;
+  revealAnswer(q);
+  updatePath();
+  setTimeout(()=>openFeedback(q,state),720);
+}
+
+/* Apply the locked correct/wrong highlight using the stored answer */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    if(inp){inp.value=selected;inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add(isCorrect(q,selected)?'correct':'wrong');}
+  }else{
+    document.querySelectorAll('.opt').forEach(o=>{
+      o.classList.add('locked');
+      const v=o.dataset.val;
+      if(v===q.answer){o.classList.add('correct');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✓</span>');}
+      else if(v===selected){o.classList.add('wrong');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✕</span>');}
+      else o.classList.add('dim');
+    });
+  }
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){
+  if(q.type==='fill'){
+    const norm=s=>String(s).toLowerCase().replace(/[,%\s]/g,'');
+    const v=norm(val);
+    return q.answer.some(a=>norm(a)===v);
+  }
+  return val===q.answer;
+}
+
+/* ── Donut ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Feedback overlay ── */
+function openFeedback(q,state,recap){
+  const done=correctCount+wrongCount;
+  const last=!recap && results.every(r=>r!=null);
+
+  let ansText;
+  if(q.type==='choice'){
+    const o=q.options.find(x=>x.l===q.answer);
+    ansText=`${q.answer}. ${o?o.t:''}`;
+  }else{
+    ansText=Array.isArray(q.answer)?q.answer[0]:q.answer;
+  }
+  const el=document.getElementById(q.ev);
+  const quoteHTML=el?`<span class="ov-quote">“${el.textContent.trim()}”</span>`:'';
+
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${done}<small>/${MARKS}</small>`,`${correctCount} đúng · ${wrongCount} sai`)}
+    ${badges[state]}
+    <div class="ov-answer">Đáp án đúng: <b>${ansText}</b></div>
+    <div class="ov-expl">
+      <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+      ${q.expl}
+      ${quoteHTML}
+    </div>
+    ${recap
+      ? `<button class="next-btn" onclick="closeRecap()">Quay lại câu hiện tại →</button>`
+      : `<button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>`}`;
+  overlay.classList.add('show');
+}
+
+function nextStep(){
+  overlay.classList.remove('show');
+  if(results.every(r=>r!=null)){showFinal();return;}
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Final summary (with a model overview to take away) ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn đã đọc và liên kết các biểu đồ rất chắc.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần xem lại.';
+  else if(pct>=45)msg='Khá ổn. Đọc lại phần giải thích để củng cố kỹ năng bao quát nhiều biểu đồ nhé.';
+  else msg='Đừng nản — luyện lại và xem kỹ phần giải thích, bạn sẽ tiến bộ nhanh.';
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+    <div class="fin-title">Hoàn thành bài luyện tập!</div>
+    <div class="fin-msg">${msg}</div>
+    <div class="fin-stats">
+      <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+      <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+      <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+    </div>
+    <div class="fin-model">
+      <div class="lbl">Overview mẫu để tham khảo</div>
+      <p><i>Overall, the vast majority of the world’s water is salt water, and of the small proportion that is fresh, most is frozen in ice and glaciers rather than being easily accessible. In terms of usage, agriculture consumes the most water in Egypt and Saudi Arabia, whereas in Canada industry is by far the largest user.</i></p>
+      <p>Dùng overview này làm khung: viết một đoạn thân bài cho hai biểu đồ tròn (phân bố nước → liên kết 3% nước ngọt), và một đoạn cho biểu đồ cột (so sánh ba quốc gia), kèm các con số nổi bật.</p>
+    </div>
+    <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>`;
+  overlay.classList.add('show');
+}
+
+/* ── On-chart evidence highlight ── */
+function clearHighlight(){document.querySelectorAll('.chartnote.active,.chartnote.flash,.hl.active,.hl.flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(evId){
+  const ev=document.getElementById(evId);
+  if(!ev)return;
+  clearHighlight();
+  ev.classList.add('active','flash');
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect(), er=ev.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-110,behavior:'smooth'});
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>

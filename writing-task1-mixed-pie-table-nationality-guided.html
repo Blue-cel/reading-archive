@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab · Guided Practice · Writing Task 1 · Mixed (Pie + Table, Nationality)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --c-aus:#1f4e79;--c-brit:#e0922f;--c-nz:#2a9d8f;--c-chi:#e06a5c;--c-dutch:#7e5aa2;--c-other:#9aa6b5;
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.logo{font-family:var(--font-head);font-weight:700;font-size:1.15rem;letter-spacing:.3px;display:flex;align-items:center;gap:7px}
+.logo .lab{background:var(--gold);color:var(--navy-deep);padding:1px 8px;border-radius:7px;font-size:.95rem}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Chart (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+
+/* task instruction callout */
+.task-box{background:var(--callout);border-left:4px solid var(--action-blue);border-radius:8px;padding:13px 16px;font-size:.9rem;line-height:1.55;color:var(--heading);margin-bottom:22px}
+.task-box b{color:var(--navy-deep)}
+
+/* charts */
+.sub-head{font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--heading);text-align:center;letter-spacing:.3px;margin:6px 0 2px;text-decoration:underline;text-underline-offset:3px}
+.chart-wrap{position:relative;width:100%;max-width:560px;margin:4px auto 6px}
+.chart-wrap svg{width:100%;height:auto;display:block}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin:4px auto 8px;font-size:.82rem;font-weight:600;color:var(--body)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+.block-divider{border:0;border-top:1px solid var(--border);margin:18px 0 14px}
+
+/* pie evidence callout chips */
+.chartnote{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
+  background:var(--gold);color:var(--navy-deep);font-size:.71rem;font-weight:700;
+  padding:4px 9px;border-radius:8px;text-align:center;line-height:1.25;max-width:175px;
+  box-shadow:0 3px 10px rgba(15,23,42,.22);opacity:0;transition:opacity .35s;z-index:5}
+.chartnote::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--gold)}
+.chartnote.active{opacity:1}
+.chartnote.flash{animation:noteflash 1s ease}
+@keyframes noteflash{0%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* data table */
+.tbl-cap{font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--heading);text-align:center;line-height:1.3;margin-bottom:10px}
+.dtable-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+.dtable{border-collapse:collapse;width:100%;min-width:380px;font-size:.9rem}
+.dtable th,.dtable td{border:1px solid var(--border);padding:11px 12px;text-align:center;transition:background .25s}
+.dtable thead th{background:var(--navy-deep);color:#fff;font-weight:600;font-size:.84rem;line-height:1.3}
+.dtable tbody th{background:var(--callout);color:var(--heading);font-weight:700;text-align:left;white-space:nowrap}
+.dtable tbody tr:hover td{background:var(--surface-subtle)}
+.dtable .active{background:var(--hl)!important;box-shadow:inset 0 0 0 2px var(--gold)}
+.dtable th.active{color:var(--navy-deep)}
+.dtable .flash{animation:cellflash 1s ease}
+@keyframes cellflash{0%{background:rgba(245,184,46,.92)}100%{background:var(--hl)}}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:520px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.08rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:14px 16px;font-family:var(--font-body);font-size:.97rem;color:var(--body);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not(.locked){background:var(--surface-subtle);border-color:#cbd5e1}
+.opt.selected{border-color:var(--action-blue);background:var(--callout);box-shadow:inset 0 0 0 1px var(--action-blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);box-shadow:inset 0 0 0 1px var(--correct-bd)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);box-shadow:inset 0 0 0 1px var(--wrong-bd)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.5}
+.opt .lt{width:28px;height:28px;border-radius:7px;background:var(--surface-subtle);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy-deep);font-size:.9rem;flex-shrink:0}
+.opt.correct .lt{background:#fff;border-color:var(--correct-bd);color:var(--correct-tx)}
+.opt.wrong .lt{background:#fff;border-color:var(--wrong-bd);color:var(--wrong-tx)}
+.opt .ot{line-height:1.45}
+.opt .mk{margin-left:auto;font-weight:800;font-size:1.05rem;padding-left:8px}
+
+/* fill input */
+.fill-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:1rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);font-weight:600}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);font-weight:600}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.check-btn.review{background:#fff;color:var(--action-blue);border:1px solid var(--action-blue)}
+.check-btn.review:hover{background:var(--callout)}
+
+/* ── FEEDBACK OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.overlay.show{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:20px;max-width:470px;width:100%;max-height:92vh;overflow-y:auto;padding:26px 28px 24px;text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.35);animation:pop .26s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{transform:scale(.92) translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+.ov-card::-webkit-scrollbar{width:7px}
+.ov-card::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 4px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin:6px 0 4px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.ov-answer{font-size:.96rem;color:var(--body);margin:8px 0 14px}
+.ov-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary */
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+.fin-model{text-align:left;background:var(--callout);border:1px solid #d8e4f5;border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.7;color:var(--body);margin-bottom:16px}
+.fin-model .lbl{font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.fin-model p{margin-bottom:8px}
+.fin-model p:last-child{margin-bottom:0}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:46vh}
+  .q-card{padding:26px 20px 44px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="logo"><span>IELTS</span><span class="lab">Lab</span></div>
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- CHARTS (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Writing Task 1 · Mixed (pie + table) · Guided practice</div>
+      <h1 class="p-title">Population by nationality, and where people live</h1>
+      <p class="p-sub">Học cách <em>đọc</em> và <em>mô tả</em> bài kết hợp <strong>biểu đồ tròn + bảng số liệu</strong> cho Writing Task 1 — viết overview bao quát cả hai, đọc tỉ lệ và số liệu, rồi liên kết hai nguồn dữ liệu với nhau.</p>
+
+      <div class="task-box">
+        <b>The task:</b> The pie chart shows the breakdown of an area’s population by nationality, and the table shows the percentage of each nationality living in the city and in the countryside. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. <i>Write at least 150 words.</i>
+      </div>
+
+      <!-- BLOCK A: pie chart -->
+      <div class="sub-head">Population by nationality</div>
+      <div class="chart-wrap" id="pieWrap">
+        <svg id="pieSvg" viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+          <g id="pieG"><!-- slices injected by script --></g>
+        </svg>
+
+        <div class="chartnote" id="ev-q1"  style="left:50%;top:6%">A pie (population by nationality) + a table (where each group lives)</div>
+        <div class="chartnote" id="ev-q2"  style="left:50%;top:14%">Australians dominate; and across every group, most people live in the city</div>
+        <div class="chartnote" id="ev-q3"  style="left:60%;top:62%">Australians are by far the largest group, at 73%</div>
+        <div class="chartnote" id="ev-q4"  style="left:60%;top:70%">Australian ≈ 73% of the population</div>
+        <div class="chartnote" id="ev-q5"  style="left:40%;top:22%">“Other” is the 2nd largest slice, at 14%</div>
+        <div class="chartnote" id="ev-q6"  style="left:20%;top:30%">Dutch make up the smallest named share — just 1%</div>
+        <div class="chartnote" id="ev-q12" style="left:50%;top:6%">Cover both the pie and the table; group &amp; compare</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--c-aus)"></i>Australian</span>
+        <span><i style="background:var(--c-brit)"></i>British</span>
+        <span><i style="background:var(--c-nz)"></i>New Zealander</span>
+        <span><i style="background:var(--c-chi)"></i>Chinese</span>
+        <span><i style="background:var(--c-dutch)"></i>Dutch</span>
+        <span><i style="background:var(--c-other)"></i>Other</span>
+      </div>
+
+      <hr class="block-divider">
+
+      <!-- BLOCK B: table -->
+      <div class="tbl-cap">Where each nationality lived (% in city vs countryside)</div>
+      <div class="dtable-wrap">
+        <table class="dtable">
+          <thead>
+            <tr>
+              <th id="h-nat">Nationality</th>
+              <th id="h-city">City (%)</th>
+              <th id="h-country">Countryside (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Australian</th>   <td id="c-aus-city">80</td>  <td id="c-aus-country">20</td></tr>
+            <tr><th>British</th>      <td id="c-brit-city">89</td> <td id="c-brit-country">11</td></tr>
+            <tr><th>New Zealander</th><td id="c-nz-city">90</td>   <td id="c-nz-country">10</td></tr>
+            <tr><th>Chinese</th>      <td id="c-chi-city">99</td>  <td id="c-chi-country">1</td></tr>
+            <tr><th>Dutch</th>        <td id="c-dutch-city">83</td><td id="c-dutch-country">17</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEEDBACK / PROGRESS OVERLAY ── -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<!-- ── Build the pie chart ── -->
+<script>
+(function(){
+  const ORDER=['Australian','British','New Zealander','Chinese','Dutch','Other'];
+  const DATA={Australian:73,British:7,'New Zealander':3,Chinese:2,Dutch:1,Other:14};
+  const COLORS={Australian:'#1f4e79',British:'#e0922f','New Zealander':'#2a9d8f',Chinese:'#e06a5c',Dutch:'#7e5aa2',Other:'#9aa6b5'};
+  function pie(cx,cy,r,order,data,colors){
+    let ang=-90,out='';
+    order.forEach(cat=>{
+      const v=data[cat]; if(v==null)return;
+      const sweep=v/100*360, a0=ang*Math.PI/180, a1=(ang+sweep)*Math.PI/180, mid=(ang+sweep/2)*Math.PI/180;
+      const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      const large=sweep>180?1:0;
+      out+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${colors[cat]}" stroke="#fff" stroke-width="1.6"/>`;
+      if(v>=7){
+        const lx=cx+r*0.62*Math.cos(mid), ly=cy+r*0.62*Math.sin(mid);
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">${v}%</text>`;
+      }else{
+        const ex=cx+r*1.02*Math.cos(mid), ey=cy+r*1.02*Math.sin(mid), lx=cx+r*1.2*Math.cos(mid), ly=cy+r*1.2*Math.sin(mid);
+        out+=`<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="#9aa6b5" stroke-width="1"/>`;
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#23425f" font-size="11" font-weight="600" text-anchor="${Math.cos(mid)>=0?'start':'end'}">${v}%</text>`;
+      }
+      ang+=sweep;
+    });
+    return out;
+  }
+  document.getElementById('pieG').innerHTML = pie(220,125,92,ORDER,DATA,COLORS);
+})();
+</script>
+
+<script>
+const MARKS = 12;   // one mark per step
+
+const STEPS = [
+  {type:'choice',label:1,task:'Đọc đề · Tổng quan',
+   prompt:'What do the pie chart and the table show together?',
+   options:[
+     {l:'A',t:'Only the nationalities of the people in the area.'},
+     {l:'B',t:'The breakdown of the population by nationality, and the percentage of each nationality living in the city versus the countryside.'},
+     {l:'C',t:'The number of people moving from one country to another.'},
+     {l:'D',t:'How the population has changed over several years.'}],
+   answer:'B',ev:'ev-q1',
+   expl:"Bài có <b>hai nguồn dữ liệu</b>: biểu đồ tròn cho thấy cơ cấu dân số theo quốc tịch, còn bảng cho thấy mỗi nhóm sống ở thành thị hay nông thôn (%). Với bài kết hợp, hãy nắm rõ từng phần thể hiện gì trước khi viết."},
+
+  {type:'choice',label:2,task:'Overview · Bao quát cả hai',
+   prompt:'Which statement is the best OVERVIEW for both the pie chart and the table?',
+   options:[
+     {l:'A',t:'Australians made up by far the largest national group, and across every nationality the great majority lived in the city rather than the countryside.'},
+     {l:'B',t:'Most people in the area lived in the countryside.'},
+     {l:'C',t:'British people formed the largest group, and most lived in rural areas.'},
+     {l:'D',t:'The Chinese were evenly split between the city and the countryside.'}],
+   answer:'A',ev:'ev-q2',
+   expl:"Overview phải <b>gộp cả hai biểu đồ</b>: (1) người Úc chiếm đa số áp đảo về quốc tịch, và (2) ở mọi nhóm, phần lớn dân cư sống ở thành thị. Đây là hai ý chính lớn nhất của bài."},
+
+  {type:'choice',label:3,task:'Biểu đồ tròn · Lớn nhất',
+   prompt:'Which nationality made up the largest share of the population?',
+   options:[
+     {l:'A',t:'Australian — 73%'},{l:'B',t:'British — 7%'},{l:'C',t:'Other — 14%'},{l:'D',t:'New Zealander — 3%'}],
+   answer:'A',ev:'ev-q3',
+   expl:"Người Úc chiếm <b>73%</b> dân số — áp đảo so với mọi nhóm khác. Đây là đặc điểm nổi bật nhất của biểu đồ tròn."},
+
+  {type:'fill',label:4,task:'Biểu đồ tròn · Điền số',
+   prompt:'Complete the sentence: <br>“Australians accounted for ____ % of the population, by far the largest group.”',
+   answer:['73'],ev:'ev-q4',
+   expl:"Lát cắt người Úc chiếm <b>73%</b> — gần ba phần tư dân số. Diễn đạt phân số: “almost three-quarters”."},
+
+  {type:'choice',label:5,task:'Biểu đồ tròn · Thứ hai',
+   prompt:'After Australians, which was the next largest category in the pie chart?',
+   options:[
+     {l:'A',t:'British — 7%'},{l:'B',t:'“Other” — 14%'},{l:'C',t:'New Zealander — 3%'},{l:'D',t:'Chinese — 2%'}],
+   answer:'B',ev:'ev-q5',
+   expl:"Nhóm lớn thứ hai là <b>“Other” (14%)</b> — lưu ý đây là nhóm gộp nhiều quốc tịch nhỏ. Trong số các quốc tịch <em>được nêu tên</em>, British (7%) mới là lớn nhất sau người Úc."},
+
+  {type:'choice',label:6,task:'Biểu đồ tròn · Nhỏ nhất',
+   prompt:'Which named nationality made up the smallest share of the population?',
+   options:[
+     {l:'A',t:'Dutch — 1%'},{l:'B',t:'Chinese — 2%'},{l:'C',t:'New Zealander — 3%'},{l:'D',t:'British — 7%'}],
+   answer:'A',ev:'ev-q6',
+   expl:"Người Hà Lan (Dutch) chiếm <b>chỉ 1%</b> — nhóm quốc tịch được nêu tên nhỏ nhất, theo sau là Chinese (2%) và New Zealander (3%). Các nhóm nhỏ này có thể gộp lại trong một câu."},
+
+  {type:'choice',label:7,task:'Bảng · Thành thị',
+   prompt:'What does the table show about where people lived?',
+   options:[
+     {l:'A',t:'Most people of every nationality lived in the countryside.'},
+     {l:'B',t:'Across all five nationalities, the large majority lived in the city.'},
+     {l:'C',t:'City and countryside populations were roughly equal.'},
+     {l:'D',t:'Only Australians lived mainly in the city.'}],
+   answer:'B',ev:['c-aus-city','c-brit-city','c-nz-city','c-chi-city','c-dutch-city'],
+   evtext:'In every nationality the large majority lived in the city — from 80% of Australians up to 99% of Chinese.',
+   expl:"Toàn bộ cột “City” đều ở mức cao (80–99%): <b>ở mọi quốc tịch, phần lớn dân cư sống ở thành thị</b>. Đây là mẫu hình chung quan trọng cần nêu trong overview của phần bảng."},
+
+  {type:'choice',label:8,task:'Bảng · Đô thị nhất',
+   prompt:'Which nationality was the most urban (the highest percentage living in the city)?',
+   options:[
+     {l:'A',t:'Australian — 80%'},{l:'B',t:'Chinese — 99%'},{l:'C',t:'Dutch — 83%'},{l:'D',t:'New Zealander — 90%'}],
+   answer:'B',ev:['c-chi-city'],
+   evtext:'The Chinese were the most urban group, with 99% living in the city.',
+   expl:"Người Trung Quốc đô thị hóa cao nhất: <b>99% sống ở thành thị</b>, gần như tuyệt đối. New Zealander (90%) và British (89%) cũng rất cao."},
+
+  {type:'fill',label:9,task:'Bảng · Điền số',
+   prompt:'Complete the sentence: <br>“99% of Chinese people lived in the city, leaving only ____ % in the countryside.”',
+   answer:['1'],ev:['c-chi-country'],
+   evtext:'Just 1% of Chinese people lived in the countryside.',
+   expl:"Chỉ <b>1%</b> người Trung Quốc sống ở nông thôn — tỉ lệ nông thôn thấp nhất bảng, tương phản rõ với người Úc (20%)."},
+
+  {type:'choice',label:10,task:'Bảng · Nông thôn nhất',
+   prompt:'Which nationality had the largest share living in the countryside?',
+   options:[
+     {l:'A',t:'Australian — 20%'},{l:'B',t:'Dutch — 17%'},{l:'C',t:'British — 11%'},{l:'D',t:'Chinese — 1%'}],
+   answer:'A',ev:['c-aus-country'],
+   evtext:'Australians had the highest rural share, with 20% living in the countryside.',
+   expl:"Người Úc có tỉ lệ sống ở nông thôn cao nhất (<b>20%</b>), tiếp theo là Hà Lan (17%). Dù vậy, đa số người Úc (80%) vẫn sống ở thành thị."},
+
+  {type:'choice',label:11,task:'Liên kết · Pie + Bảng',
+   prompt:'Combining the pie chart and the table, which statement is accurate?',
+   options:[
+     {l:'A',t:'Although Australians were by far the largest group, they were also the most rural, with 20% living in the countryside.'},
+     {l:'B',t:'The Chinese were both the largest group and the most rural.'},
+     {l:'C',t:'The Dutch, the smallest named group, were also the most urban.'},
+     {l:'D',t:'British people lived mainly in the countryside.'}],
+   answer:'A',ev:['ev-q3','c-aus-country'],
+   evtext:'Australians were the biggest group (73%) yet had the largest rural share of all (20%).',
+   expl:"Kết hợp hai nguồn: người Úc vừa là nhóm <b>đông nhất (73%)</b> vừa <b>nông thôn nhất (20%)</b>. Biết nối dữ liệu giữa biểu đồ tròn và bảng là điểm mấu chốt của dạng bài kết hợp."},
+
+  {type:'choice',label:12,task:'Cấu trúc bài · Pie + Bảng',
+   prompt:'When the task combines a pie chart and a table, your answer should…',
+   options:[
+     {l:'A',t:'describe only the pie chart, since it is easier to read.'},
+     {l:'B',t:'give an overview covering both, then describe the pie (the make-up of the population) and the table (where each group lives), grouping and comparing.'},
+     {l:'C',t:'explain why so many Australians choose to live in cities.'},
+     {l:'D',t:'recommend where each nationality should live.'}],
+   answer:'B',ev:'ev-q12',
+   expl:"Bài kết hợp cần <b>bao quát cả hai biểu đồ</b>: overview nêu ý chính của mỗi phần, rồi mô tả lần lượt biểu đồ tròn (cơ cấu quốc tịch) và bảng (nơi sinh sống), có nhóm và so sánh. Task 1 không giải thích nguyên nhân hay đưa khuyến nghị."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+let idx=0, correctCount=0, wrongCount=0, selected=null, locked=false;
+
+const host=document.getElementById('qHost');
+const overlay=document.getElementById('overlay');
+const ovCard=document.getElementById('ovCard');
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${q.label}" onclick="jumpNode(${i})">${q.label}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){
+  if(i===idx)return;
+  overlay.classList.remove('show');
+  idx=i;
+  showQuestion();
+}
+function closeRecap(){overlay.classList.remove('show');}
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;locked=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  let answerHTML='';
+  if(q.type==='choice'){
+    answerHTML='<div class="opts">'+q.options.map(o=>
+      `<button class="opt" data-val="${o.l}" onclick="pickOne(this,'${o.l}')"><span class="lt">${o.l}</span><span class="ot">${o.t}</span></button>`).join('')+'</div>';
+  }else{ // fill
+    answerHTML=`<input class="fill-input" id="fillIn" type="text" placeholder="Nhập câu trả lời…" autocomplete="off" spellcheck="false">`;
+  }
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${q.label}</div><div class="q-prompt">${q.prompt}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    inp.addEventListener('input',()=>{selected=inp.value.trim();document.getElementById('checkBtn').disabled=!selected;});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked&&selected)checkNow();});
+    inp.focus();
+  }
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    const cb=document.getElementById('checkBtn');
+    if(cb)cb.outerHTML=`<button class="check-btn review" onclick="openFeedback(STEPS[${idx}],results[${idx}],true)">Xem lại giải thích</button>`;
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickOne(el,val){
+  if(locked)return;
+  selected=val;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('checkBtn').disabled=false;
+}
+
+/* ── Grade, highlight, then show overlay ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+  const state=ok?'ok':'no';
+
+  locked=true;
+  results[idx]=state;
+  answers[idx]=selected;
+  revealAnswer(q);
+  updatePath();
+  setTimeout(()=>openFeedback(q,state),720);
+}
+
+/* Apply the locked correct/wrong highlight using the stored answer */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    if(inp){inp.value=selected;inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add(isCorrect(q,selected)?'correct':'wrong');}
+  }else{
+    document.querySelectorAll('.opt').forEach(o=>{
+      o.classList.add('locked');
+      const v=o.dataset.val;
+      if(v===q.answer){o.classList.add('correct');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✓</span>');}
+      else if(v===selected){o.classList.add('wrong');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✕</span>');}
+      else o.classList.add('dim');
+    });
+  }
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){
+  if(q.type==='fill'){
+    const norm=s=>String(s).toLowerCase().replace(/[,%\s]/g,'');
+    const v=norm(val);
+    return q.answer.some(a=>norm(a)===v);
+  }
+  return val===q.answer;
+}
+
+/* ── Donut ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Feedback overlay ── */
+function openFeedback(q,state,recap){
+  const done=correctCount+wrongCount;
+  const last=!recap && results.every(r=>r!=null);
+
+  let ansText;
+  if(q.type==='choice'){
+    const o=q.options.find(x=>x.l===q.answer);
+    ansText=`${q.answer}. ${o?o.t:''}`;
+  }else{
+    ansText=Array.isArray(q.answer)?q.answer[0]:q.answer;
+  }
+  let quoteHTML='';
+  if(q.evtext){
+    quoteHTML=`<span class="ov-quote">“${q.evtext}”</span>`;
+  }else{
+    const id=Array.isArray(q.ev)?q.ev[0]:q.ev;
+    const el=document.getElementById(id);
+    if(el)quoteHTML=`<span class="ov-quote">“${el.textContent.trim()}”</span>`;
+  }
+
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${done}<small>/${MARKS}</small>`,`${correctCount} đúng · ${wrongCount} sai`)}
+    ${badges[state]}
+    <div class="ov-answer">Đáp án đúng: <b>${ansText}</b></div>
+    <div class="ov-expl">
+      <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+      ${q.expl}
+      ${quoteHTML}
+    </div>
+    ${recap
+      ? `<button class="next-btn" onclick="closeRecap()">Quay lại câu hiện tại →</button>`
+      : `<button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>`}`;
+  overlay.classList.add('show');
+}
+
+function nextStep(){
+  overlay.classList.remove('show');
+  if(results.every(r=>r!=null)){showFinal();return;}
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Final summary (with a model overview to take away) ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn đã đọc và liên kết hai biểu đồ rất chắc.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần xem lại.';
+  else if(pct>=45)msg='Khá ổn. Đọc lại phần giải thích để củng cố kỹ năng kết hợp dữ liệu nhé.';
+  else msg='Đừng nản — luyện lại và xem kỹ phần giải thích, bạn sẽ tiến bộ nhanh.';
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+    <div class="fin-title">Hoàn thành bài luyện tập!</div>
+    <div class="fin-msg">${msg}</div>
+    <div class="fin-stats">
+      <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+      <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+      <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+    </div>
+    <div class="fin-model">
+      <div class="lbl">Overview mẫu để tham khảo</div>
+      <p><i>Overall, Australians made up by far the largest national group, accounting for almost three-quarters of the population, while every other nationality formed only a small minority. In addition, the great majority of people of all nationalities lived in the city rather than the countryside, with the Chinese being the most urban and Australians the most rural.</i></p>
+      <p>Dùng overview này làm khung: viết một đoạn thân bài cho biểu đồ tròn (cơ cấu quốc tịch) và một đoạn cho bảng (thành thị vs nông thôn), kèm các con số cao nhất – thấp nhất và một liên kết giữa hai phần.</p>
+    </div>
+    <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>`;
+  overlay.classList.add('show');
+}
+
+/* ── Evidence highlight — works for pie chips AND table cells, single id or array ── */
+function clearHighlight(){document.querySelectorAll('.chartnote.active,.chartnote.flash,.dtable .active,.dtable .flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(ev){
+  clearHighlight();
+  const ids=Array.isArray(ev)?ev:[ev];
+  let first=null;
+  ids.forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('active','flash');if(!first)first=el;}});
+  if(first){
+    const panel=document.getElementById('passagePanel');
+    const pr=panel.getBoundingClientRect(), er=first.getBoundingClientRect();
+    panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-110,behavior:'smooth'});
+  }
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>
