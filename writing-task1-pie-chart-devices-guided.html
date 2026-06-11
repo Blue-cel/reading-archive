@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab · Guided Practice · Writing Task 1 · Pie Charts (Smartphones vs Tablets)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --c-games:#e0922f;--c-social:#2a9d8f;--c-utilities:#7e5aa2;--c-music:#6a994e;--c-news:#e06a5c;--c-other:#1f4e79;
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.logo{font-family:var(--font-head);font-weight:700;font-size:1.15rem;letter-spacing:.3px;display:flex;align-items:center;gap:7px}
+.logo .lab{background:var(--gold);color:var(--navy-deep);padding:1px 8px;border-radius:7px;font-size:.95rem}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Chart (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+
+/* task instruction callout */
+.task-box{background:var(--callout);border-left:4px solid var(--action-blue);border-radius:8px;padding:13px 16px;font-size:.9rem;line-height:1.55;color:var(--heading);margin-bottom:22px}
+.task-box b{color:var(--navy-deep)}
+
+/* chart */
+.chart-title{font-family:var(--font-head);font-weight:600;font-size:1rem;color:var(--heading);text-align:center;line-height:1.3;margin-bottom:4px}
+.chart-wrap{position:relative;width:100%;max-width:560px;margin:4px auto 8px}
+.chart-wrap svg{width:100%;height:auto;display:block}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:13px;margin:6px auto 6px;font-size:.84rem;font-weight:600;color:var(--body)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:15px;height:15px;border-radius:3px;display:inline-block}
+
+/* on-chart evidence callout chips */
+.chartnote{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
+  background:var(--gold);color:var(--navy-deep);font-size:.72rem;font-weight:700;
+  padding:4px 9px;border-radius:8px;text-align:center;line-height:1.25;max-width:175px;
+  box-shadow:0 3px 10px rgba(15,23,42,.22);opacity:0;transition:opacity .35s;z-index:5}
+.chartnote::after{content:'';position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--gold)}
+.chartnote.active{opacity:1}
+.chartnote.flash{animation:noteflash 1s ease}
+@keyframes noteflash{0%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* legacy text-highlight (kept for engine compatibility) */
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:520px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.08rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:14px 16px;font-family:var(--font-body);font-size:.97rem;color:var(--body);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not(.locked){background:var(--surface-subtle);border-color:#cbd5e1}
+.opt.selected{border-color:var(--action-blue);background:var(--callout);box-shadow:inset 0 0 0 1px var(--action-blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);box-shadow:inset 0 0 0 1px var(--correct-bd)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);box-shadow:inset 0 0 0 1px var(--wrong-bd)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.5}
+.opt .lt{width:28px;height:28px;border-radius:7px;background:var(--surface-subtle);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy-deep);font-size:.9rem;flex-shrink:0}
+.opt.correct .lt{background:#fff;border-color:var(--correct-bd);color:var(--correct-tx)}
+.opt.wrong .lt{background:#fff;border-color:var(--wrong-bd);color:var(--wrong-tx)}
+.opt .ot{line-height:1.45}
+.opt .mk{margin-left:auto;font-weight:800;font-size:1.05rem;padding-left:8px}
+
+/* fill input */
+.fill-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:1rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);font-weight:600}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);font-weight:600}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.check-btn.review{background:#fff;color:var(--action-blue);border:1px solid var(--action-blue)}
+.check-btn.review:hover{background:var(--callout)}
+
+/* ── FEEDBACK OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.overlay.show{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:20px;max-width:470px;width:100%;max-height:92vh;overflow-y:auto;padding:26px 28px 24px;text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.35);animation:pop .26s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{transform:scale(.92) translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+.ov-card::-webkit-scrollbar{width:7px}
+.ov-card::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 4px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin:6px 0 4px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.ov-answer{font-size:.96rem;color:var(--body);margin:8px 0 14px}
+.ov-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary */
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+.fin-model{text-align:left;background:var(--callout);border:1px solid #d8e4f5;border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.7;color:var(--body);margin-bottom:16px}
+.fin-model .lbl{font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.fin-model p{margin-bottom:8px}
+.fin-model p:last-child{margin-bottom:0}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:46vh}
+  .q-card{padding:26px 20px 44px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="logo"><span>IELTS</span><span class="lab">Lab</span></div>
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- CHART (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Writing Task 1 · Pie charts · Guided practice</div>
+      <h1 class="p-title">Time spent on smartphones and tablets, by category</h1>
+      <p class="p-sub">Học cách <em>đọc</em> và <em>mô tả</em> biểu đồ tròn cho Writing Task 1 — từng bước một: hiểu tỉ lệ %, viết overview, dùng từ vựng phân số, và <strong>so sánh hai biểu đồ</strong> với nhau.</p>
+
+      <div class="task-box">
+        <b>The task:</b> The two pie charts below show the percentage of time people spent on different categories of activity on their smartphones and tablets. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. <i>Write at least 150 words.</i>
+      </div>
+
+      <div class="chart-title">Time spent on smartphones and tablets, by category</div>
+      <div class="chart-wrap" id="chartWrap">
+        <svg id="pieSvg" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+          <g id="pieG"><!-- slices injected by script --></g>
+          <text x="150" y="34" font-family="Poppins, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">Smartphones</text>
+          <text x="410" y="34" font-family="Poppins, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">Tablets</text>
+        </svg>
+
+        <!-- on-chart evidence callout chips (hidden until their question is checked) -->
+        <div class="chartnote" id="ev-q1"  style="left:50%;top:9%">Each pie = share of time (%) per activity; both total 100%</div>
+        <div class="chartnote" id="ev-q2"  style="left:50%;top:18%">Games leads on both — huge on tablets; social networking bigger on phones</div>
+        <div class="chartnote" id="ev-q3"  style="left:30%;top:33%">Smartphones: games is the largest at 35%</div>
+        <div class="chartnote" id="ev-q4"  style="left:70%;top:33%">Tablets: games ≈ 57% — the biggest share</div>
+        <div class="chartnote" id="ev-q5"  style="left:80%;top:45%">57% = well over half of tablet time</div>
+        <div class="chartnote" id="ev-q6"  style="left:50%;top:30%">Games: 57% on tablets vs 35% on phones</div>
+        <div class="chartnote" id="ev-q7"  style="left:50%;top:82%">Social networking: 29% on phones vs 15% on tablets</div>
+        <div class="chartnote" id="ev-q8"  style="left:40%;top:58%">Smartphones: utilities = 20%</div>
+        <div class="chartnote" id="ev-q9"  style="left:50%;top:66%">Utilities: 20% on phones but only 3% on tablets</div>
+        <div class="chartnote" id="ev-q10" style="left:22%;top:22%">Smartphones: news 3% &amp; other 5% — the smallest shares</div>
+        <div class="chartnote" id="ev-q11" style="left:23%;top:48%">Games 35% + social 29% ≈ two-thirds of phone time</div>
+        <div class="chartnote" id="ev-q12" style="left:50%;top:9%">Title + categories frame the comparison</div>
+      </div>
+
+      <div class="legend">
+        <span><i style="background:var(--c-games)"></i>games</span>
+        <span><i style="background:var(--c-social)"></i>social networking</span>
+        <span><i style="background:var(--c-utilities)"></i>utilities</span>
+        <span><i style="background:var(--c-music)"></i>music and videos</span>
+        <span><i style="background:var(--c-news)"></i>news</span>
+        <span><i style="background:var(--c-other)"></i>other</span>
+      </div>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEEDBACK / PROGRESS OVERLAY ── -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<!-- ── Build the two pie charts ── -->
+<script>
+(function(){
+  const COLORS={games:'#e0922f','social networking':'#2a9d8f',utilities:'#7e5aa2','music and videos':'#6a994e',news:'#e06a5c',other:'#1f4e79'};
+  const ORDER=['games','social networking','utilities','music and videos','news','other'];
+  const SMART={games:35,'social networking':29,utilities:20,'music and videos':8,other:5,news:3};
+  const TAB={games:57,'social networking':15,'music and videos':13,other:8,news:4,utilities:3};
+  function pie(cx,cy,r,data){
+    let ang=-90,out='';
+    ORDER.forEach(cat=>{
+      const v=data[cat]; if(v==null)return;
+      const sweep=v/100*360, a0=ang*Math.PI/180, a1=(ang+sweep)*Math.PI/180, mid=(ang+sweep/2)*Math.PI/180;
+      const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      const large=sweep>180?1:0;
+      out+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${COLORS[cat]}" stroke="#fff" stroke-width="1.6"/>`;
+      if(v>=7){
+        const lx=cx+r*0.6*Math.cos(mid), ly=cy+r*0.6*Math.sin(mid);
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">${v}%</text>`;
+      }else{
+        const ex=cx+r*1.02*Math.cos(mid), ey=cy+r*1.02*Math.sin(mid), lx=cx+r*1.17*Math.cos(mid), ly=cy+r*1.17*Math.sin(mid);
+        out+=`<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="#9aa6b5" stroke-width="1"/>`;
+        out+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" fill="#23425f" font-size="11.5" font-weight="600" text-anchor="${Math.cos(mid)>=0?'start':'end'}">${v}%</text>`;
+      }
+      ang+=sweep;
+    });
+    return out;
+  }
+  document.getElementById('pieG').innerHTML = pie(150,168,95,SMART)+pie(410,168,95,TAB);
+})();
+</script>
+
+<script>
+const MARKS = 12;   // one mark per step
+
+const STEPS = [
+  {type:'choice',label:1,task:'Đọc biểu đồ · Đơn vị',
+   prompt:'What do the two pie charts show?',
+   options:[
+     {l:'A',t:'The number of people who own smartphones and tablets.'},
+     {l:'B',t:'The proportion of time spent on each category of activity, on smartphones and on tablets.'},
+     {l:'C',t:'The amount of money spent on different apps.'},
+     {l:'D',t:'How app usage has changed over several years.'}],
+   answer:'B',ev:'ev-q1',
+   expl:"Hai biểu đồ tròn thể hiện <b>tỉ lệ % thời gian</b> dành cho mỗi loại hoạt động trên hai thiết bị; mỗi hình tròn cộng lại bằng 100%. Không có yếu tố thời gian → đây KHÔNG phải biểu đồ xu hướng."},
+
+  {type:'choice',label:2,task:'Overview · Bức tranh chung',
+   prompt:'Which statement is the best OVERVIEW (general summary) of the two charts?',
+   options:[
+     {l:'A',t:'Games took up the largest share of time on both devices, and was especially dominant on tablets, while social networking and utilities mattered more on smartphones.'},
+     {l:'B',t:'People spent more time on utilities than on games on both devices.'},
+     {l:'C',t:'News was the largest category on both devices.'},
+     {l:'D',t:'Smartphones and tablets were used in exactly the same way.'}],
+   answer:'A',ev:'ev-q2',
+   expl:"Overview tốt nêu <b>điểm chung + khác biệt nổi bật</b>: games dẫn đầu ở cả hai (đặc biệt áp đảo trên tablet), còn social networking và utilities chiếm tỉ trọng lớn hơn trên smartphone. (B, C sai số liệu; D sai vì tỉ lệ khác nhau rõ rệt.)"},
+
+  {type:'choice',label:3,task:'Đọc số liệu · Lớn nhất',
+   prompt:'On smartphones, which activity took up the largest share of time?',
+   options:[
+     {l:'A',t:'Games — 35%'},
+     {l:'B',t:'Social networking — 29%'},
+     {l:'C',t:'Utilities — 20%'},
+     {l:'D',t:'Music and videos — 8%'}],
+   answer:'A',ev:'ev-q3',
+   expl:"Trên smartphone, <b>games chiếm tỉ trọng lớn nhất ở 35%</b>, nhỉnh hơn social networking (29%). Đây là điểm cần nêu trong overview/thân bài về điện thoại."},
+
+  {type:'fill',label:4,task:'Đọc số liệu · Điền số',
+   prompt:'Complete the sentence with a figure from the chart: <br>“On tablets, games accounted for the largest share, at ____ % of the time.”',
+   answer:['57','57%'],ev:'ev-q4',
+   expl:"Lát cắt games trên tablet chiếm <b>57%</b> — phần lớn nhất và lớn hơn nhiều so với 35% trên smartphone."},
+
+  {type:'choice',label:5,task:'Từ vựng · Phân số',
+   prompt:'On tablets, games made up 57% of the time. Which is the most accurate way to describe this?',
+   options:[
+     {l:'A',t:'just under a third'},
+     {l:'B',t:'well over half'},
+     {l:'C',t:'exactly half'},
+     {l:'D',t:'a small fraction'}],
+   answer:'B',ev:'ev-q5',
+   expl:"57% là <b>hơn một nửa</b> → “well over half / more than half”. Biết quy số liệu thành phân số (a third, half, two-thirds, three-quarters) là kỹ năng quan trọng để diễn đạt linh hoạt trong Task 1."},
+
+  {type:'choice',label:6,task:'So sánh · Games',
+   prompt:'How did the time spent on games compare between the two devices?',
+   options:[
+     {l:'A',t:'It was far higher on tablets (57%) than on smartphones (35%).'},
+     {l:'B',t:'It was roughly the same on both devices.'},
+     {l:'C',t:'It was higher on smartphones than on tablets.'},
+     {l:'D',t:'It was a negligible share on both devices.'}],
+   answer:'A',ev:'ev-q6',
+   expl:"Games cao hơn hẳn trên tablet (<b>57%</b>) so với smartphone (35%) — chênh 22 điểm phần trăm. So sánh trực tiếp giữa hai biểu đồ chính là yêu cầu cốt lõi của dạng bài này."},
+
+  {type:'choice',label:7,task:'So sánh · Social networking',
+   prompt:'What was a key difference in social networking use between the devices?',
+   options:[
+     {l:'A',t:'It took up a much larger share on smartphones (29%) than on tablets (15%).'},
+     {l:'B',t:'It took up a larger share on tablets than on smartphones.'},
+     {l:'C',t:'It was equal on both devices.'},
+     {l:'D',t:'It was the single largest category on tablets.'}],
+   answer:'A',ev:'ev-q7',
+   expl:"Social networking chiếm <b>29% trên smartphone</b> nhưng chỉ <b>15% trên tablet</b> — gần gấp đôi. Đây là một khác biệt nổi bật, đối lập với xu hướng của games."},
+
+  {type:'fill',label:8,task:'Đọc số liệu · Điền số',
+   prompt:'Complete the sentence: <br>“On smartphones, utilities accounted for ____ % of the time, compared with just 3% on tablets.”',
+   answer:['20','20%'],ev:'ev-q8',
+   expl:"Utilities chiếm <b>20%</b> thời gian trên smartphone, cao hơn nhiều so với 3% trên tablet."},
+
+  {type:'choice',label:9,task:'So sánh · Tương phản lớn',
+   prompt:'Which category showed one of the biggest contrasts between the two devices?',
+   options:[
+     {l:'A',t:'Utilities — 20% on smartphones but only 3% on tablets.'},
+     {l:'B',t:'News — equally tiny on both devices.'},
+     {l:'C',t:'Other — far larger on smartphones than tablets.'},
+     {l:'D',t:'Music and videos — identical on both devices.'}],
+   answer:'A',ev:'ev-q9',
+   expl:"Utilities là một trong những tương phản rõ nhất: <b>20% trên smartphone so với chỉ 3% trên tablet</b>. Nhóm các tương phản lớn lại với nhau giúp bài viết mạch lạc."},
+
+  {type:'choice',label:10,task:'Từ vựng · Tỉ trọng nhỏ',
+   prompt:'On smartphones, news (3%) and other (5%) were the smallest categories. How are these best described?',
+   options:[
+     {l:'A',t:'They accounted for the majority of the time.'},
+     {l:'B',t:'They each made up only a small proportion — a tiny fraction — of the time.'},
+     {l:'C',t:'They were the most popular activities.'},
+     {l:'D',t:'They were larger than games.'}],
+   answer:'B',ev:'ev-q10',
+   expl:"News (3%) và other (5%) chỉ chiếm <b>một tỉ trọng rất nhỏ</b>. Cụm hữu ích: “a small proportion / a tiny fraction / accounted for the smallest shares”. Các mục nhỏ thường được gộp lại trong một câu."},
+
+  {type:'choice',label:11,task:'Đọc số liệu · Cộng gộp',
+   prompt:'On smartphones, which TWO categories together made up almost two-thirds of the time?',
+   options:[
+     {l:'A',t:'Games (35%) and social networking (29%).'},
+     {l:'B',t:'Utilities (20%) and music and videos (8%).'},
+     {l:'C',t:'News (3%) and other (5%).'},
+     {l:'D',t:'Music and videos (8%) and other (5%).'}],
+   answer:'A',ev:'ev-q11',
+   expl:"Games (35%) + social networking (29%) = <b>64%, tức gần hai phần ba (two-thirds)</b> thời gian dùng smartphone. Gộp số liệu để tạo nhận định tổng quát là một kỹ năng nâng band."},
+
+  {type:'choice',label:12,task:'Cấu trúc bài · Hai biểu đồ',
+   prompt:'When describing two pie charts like these, the best approach is to…',
+   options:[
+     {l:'A',t:'describe every single percentage in the order it appears on each chart.'},
+     {l:'B',t:'give an overview of the dominant categories, then compare the two charts category by category, highlighting the biggest differences.'},
+     {l:'C',t:'explain why people prefer playing games on tablets.'},
+     {l:'D',t:'recommend whether people should use a smartphone or a tablet.'}],
+   answer:'B',ev:'ev-q12',
+   expl:"Với hai biểu đồ tròn, hãy nêu overview các mục chủ đạo rồi <b>so sánh từng nhóm hoạt động giữa hai thiết bị</b>, làm nổi bật khác biệt lớn nhất. Task 1 <b>không giải thích nguyên nhân hay đưa khuyến nghị</b>."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+let idx=0, correctCount=0, wrongCount=0, selected=null, locked=false;
+
+const host=document.getElementById('qHost');
+const overlay=document.getElementById('overlay');
+const ovCard=document.getElementById('ovCard');
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${q.label}" onclick="jumpNode(${i})">${q.label}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){
+  if(i===idx)return;
+  overlay.classList.remove('show');
+  idx=i;
+  showQuestion();
+}
+function closeRecap(){overlay.classList.remove('show');}
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;locked=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  let answerHTML='';
+  if(q.type==='choice'){
+    answerHTML='<div class="opts">'+q.options.map(o=>
+      `<button class="opt" data-val="${o.l}" onclick="pickOne(this,'${o.l}')"><span class="lt">${o.l}</span><span class="ot">${o.t}</span></button>`).join('')+'</div>';
+  }else{ // fill
+    answerHTML=`<input class="fill-input" id="fillIn" type="text" placeholder="Nhập câu trả lời…" autocomplete="off" spellcheck="false">`;
+  }
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${q.label}</div><div class="q-prompt">${q.prompt}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    inp.addEventListener('input',()=>{selected=inp.value.trim();document.getElementById('checkBtn').disabled=!selected;});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked&&selected)checkNow();});
+    inp.focus();
+  }
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    const cb=document.getElementById('checkBtn');
+    if(cb)cb.outerHTML=`<button class="check-btn review" onclick="openFeedback(STEPS[${idx}],results[${idx}],true)">Xem lại giải thích</button>`;
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickOne(el,val){
+  if(locked)return;
+  selected=val;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('checkBtn').disabled=false;
+}
+
+/* ── Grade, highlight, then show overlay ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+  const state=ok?'ok':'no';
+
+  locked=true;
+  results[idx]=state;
+  answers[idx]=selected;
+  revealAnswer(q);
+  updatePath();
+  setTimeout(()=>openFeedback(q,state),720);
+}
+
+/* Apply the locked correct/wrong highlight using the stored answer */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  if(q.type==='fill'){
+    const inp=document.getElementById('fillIn');
+    if(inp){inp.value=selected;inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add(isCorrect(q,selected)?'correct':'wrong');}
+  }else{
+    document.querySelectorAll('.opt').forEach(o=>{
+      o.classList.add('locked');
+      const v=o.dataset.val;
+      if(v===q.answer){o.classList.add('correct');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✓</span>');}
+      else if(v===selected){o.classList.add('wrong');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✕</span>');}
+      else o.classList.add('dim');
+    });
+  }
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){
+  if(q.type==='fill'){
+    const v=String(val).toLowerCase().replace(/[%, ]+/g,' ').replace(/\s+/g,' ').trim();
+    return q.answer.some(a=>a.toLowerCase().replace(/[%, ]+/g,' ').replace(/\s+/g,' ').trim()===v);
+  }
+  return val===q.answer;
+}
+
+/* ── Donut ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Feedback overlay ── */
+function openFeedback(q,state,recap){
+  const done=correctCount+wrongCount;
+  const last=!recap && results.every(r=>r!=null);
+
+  let ansText;
+  if(q.type==='choice'){
+    const o=q.options.find(x=>x.l===q.answer);
+    ansText=`${q.answer}. ${o?o.t:''}`;
+  }else{
+    ansText=Array.isArray(q.answer)?q.answer[0]:q.answer;
+  }
+  const el=document.getElementById(q.ev);
+  const quoteHTML=el?`<span class="ov-quote">“${el.textContent.trim()}”</span>`:'';
+
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${done}<small>/${MARKS}</small>`,`${correctCount} đúng · ${wrongCount} sai`)}
+    ${badges[state]}
+    <div class="ov-answer">Đáp án đúng: <b>${ansText}</b></div>
+    <div class="ov-expl">
+      <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+      ${q.expl}
+      ${quoteHTML}
+    </div>
+    ${recap
+      ? `<button class="next-btn" onclick="closeRecap()">Quay lại câu hiện tại →</button>`
+      : `<button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>`}`;
+  overlay.classList.add('show');
+}
+
+function nextStep(){
+  overlay.classList.remove('show');
+  if(results.every(r=>r!=null)){showFinal();return;}
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Final summary (with a model overview to take away) ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn đã đọc và so sánh hai biểu đồ tròn rất chắc.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần xem lại.';
+  else if(pct>=45)msg='Khá ổn. Đọc lại phần giải thích để củng cố kỹ năng so sánh nhé.';
+  else msg='Đừng nản — luyện lại và xem kỹ phần giải thích, bạn sẽ tiến bộ nhanh.';
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+    <div class="fin-title">Hoàn thành bài luyện tập!</div>
+    <div class="fin-msg">${msg}</div>
+    <div class="fin-stats">
+      <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+      <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+      <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+    </div>
+    <div class="fin-model">
+      <div class="lbl">Overview mẫu để tham khảo</div>
+      <p><i>Overall, games was the most popular activity on both devices, but it was far more dominant on tablets, where it took up well over half of all time, than on smartphones. By contrast, social networking and utilities occupied a noticeably larger share of time on smartphones than on tablets.</i></p>
+      <p>Dùng overview này làm khung, rồi viết hai đoạn thân bài: một đoạn cho smartphone (games, social networking, utilities) và một đoạn cho tablet (games áp đảo, các mục còn lại nhỏ), so sánh trực tiếp các con số.</p>
+    </div>
+    <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>`;
+  overlay.classList.add('show');
+}
+
+/* ── On-chart evidence highlight ── */
+function clearHighlight(){document.querySelectorAll('.chartnote.active,.chartnote.flash,.hl.active,.hl.flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(evId){
+  const ev=document.getElementById(evId);
+  if(!ev)return;
+  clearHighlight();
+  ev.classList.add('active','flash');
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect(), er=ev.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-110,behavior:'smooth'});
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>
