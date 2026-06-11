@@ -67,15 +67,6 @@ body{font-family:var(--font-body);color:var(--body);background:var(--surface-sub
 .chartnote.flash{animation:noteflash 1s ease}
 @keyframes noteflash{0%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 
-/* reference data table */
-.ref-cap{font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:6px 0 8px}
-.ref-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
-.ref-table{border-collapse:collapse;min-width:520px;width:100%;font-size:.82rem}
-.ref-table th,.ref-table td{border:1px solid var(--border);padding:6px 8px;text-align:center;white-space:nowrap}
-.ref-table thead th{background:var(--c-copper);color:#fff;font-weight:600}
-.ref-table tbody th{background:var(--callout);color:var(--heading);text-align:left}
-.ref-table .neg{color:var(--wrong-tx)}
-
 /* legacy text-highlight (kept for engine compatibility) */
 .hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
 .hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
@@ -311,17 +302,6 @@ body{font-family:var(--font-body);color:var(--body);background:var(--surface-sub
         <span><i style="border-color:var(--c-zinc)"></i>Zinc</span>
       </div>
 
-      <div class="ref-cap">Reference data (% change vs previous month)</div>
-      <div class="ref-scroll">
-        <table class="ref-table">
-          <thead><tr><th>Metal</th><th>J</th><th>F</th><th>M</th><th>A</th><th>M</th><th>J</th><th>J</th><th>A</th><th>S</th><th>O</th><th>N</th><th>D</th></tr></thead>
-          <tbody>
-            <tr><th>Copper</th><td>2</td><td>1</td><td>0.5</td><td>0.5</td><td>0</td><td class="neg">-0.5</td><td>1</td><td>1</td><td>1</td><td>0.5</td><td>1.5</td><td>1</td></tr>
-            <tr><th>Nickel</th><td>6</td><td>4</td><td>1</td><td>1</td><td>0.5</td><td class="neg">-3</td><td class="neg">-1</td><td class="neg">-1</td><td class="neg">-1</td><td class="neg">-2</td><td>1</td><td>1</td></tr>
-            <tr><th>Zinc</th><td>2</td><td>3</td><td>2</td><td>1.5</td><td>1</td><td class="neg">-1</td><td class="neg">-0.5</td><td class="neg">-0.5</td><td class="neg">-0.5</td><td class="neg">-1</td><td>2</td><td>2</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
     <!-- QUESTION (right) -->

@@ -67,14 +67,6 @@ body{font-family:var(--font-body);color:var(--body);background:var(--surface-sub
 .chartnote.flash{animation:noteflash 1s ease}
 @keyframes noteflash{0%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 
-/* reference data table */
-.ref-cap{font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:6px 0 8px}
-.ref-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
-.ref-table{border-collapse:collapse;min-width:420px;width:100%;font-size:.84rem}
-.ref-table th,.ref-table td{border:1px solid var(--border);padding:7px 10px;text-align:center;white-space:nowrap}
-.ref-table thead th{background:var(--c-landfill);color:#fff;font-weight:600}
-.ref-table tbody th{background:var(--callout);color:var(--heading);text-align:left}
-
 /* legacy text-highlight (kept for engine compatibility) */
 .hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
 .hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
@@ -296,17 +288,6 @@ body{font-family:var(--font-body);color:var(--body);background:var(--surface-sub
         <span><i style="background:var(--c-dumping)"></i>Dumping at sea</span>
       </div>
 
-      <div class="ref-cap">Reference data (million tonnes)</div>
-      <div class="ref-scroll">
-        <table class="ref-table">
-          <thead><tr><th>Method</th><th>2005</th><th>2006</th><th>2007</th><th>2008</th></tr></thead>
-          <tbody>
-            <tr><th>Landfill</th><td>1,800</td><td>1,200</td><td>900</td><td>600</td></tr>
-            <tr><th>Burning</th><td>500</td><td>600</td><td>700</td><td>900</td></tr>
-            <tr><th>Dumping at sea</th><td>600</td><td>600</td><td>600</td><td>560</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
     <!-- QUESTION (right) -->
