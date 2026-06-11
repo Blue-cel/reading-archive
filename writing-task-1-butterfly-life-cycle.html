@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab — Writing Task 1: Butterfly Life Cycle (Guided Lesson)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A; --navy-deep:#14306E; --gold:#F5B82E; --gold-hover:#E0A21C;
+  --blue:#2563EB; --blue-badge:#1D4ED8; --head:#1E3A5F; --body:#374151;
+  --muted:#6B7280; --border:#E5E7EB; --surface:#FFFFFF; --subtle:#F8FAFC;
+  --callout:#EFF4FB;
+  --correct-bg:#ECFDF5; --correct-bd:#10B981; --correct-tx:#065F46;
+  --wrong-bg:#FEF2F2; --wrong-bd:#EF4444; --wrong-tx:#991B1B;
+  --hl:#FDF0D5;
+  /* diagram palette (vault design.md) */
+  --d-navy:#1f4e79; --d-amber:#e0922f; --d-teal:#2a9d8f; --d-ink:#23425f;
+  --d-bd:#7d9dc0; --d-fill1:#dce8f5; --d-fill2:#cfe1f2; --d-fill3:#eef4fb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--body);background:var(--subtle);overflow:hidden}
+h1,h2,h3,.font-head{font-family:'Poppins','Inter',sans-serif}
+button{font-family:inherit;cursor:pointer}
+
+/* ================= TOP BAR ================= */
+.topbar{height:64px;background:var(--navy);display:flex;align-items:center;gap:20px;padding:0 20px;position:relative;z-index:30}
+.logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:21px;color:#fff;white-space:nowrap}
+.logo .lab{background:var(--gold);color:var(--navy-deep);border-radius:6px;padding:1px 7px;margin-left:5px;font-weight:700}
+.restart{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+.restart:hover{background:rgba(255,255,255,.12)}
+/* node path */
+.path-wrap{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;justify-content:center}
+.path-wrap::-webkit-scrollbar{display:none}
+.path{display:flex;align-items:center;padding:4px 8px}
+.node{width:32px;height:32px;flex:0 0 32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;transition:all .25s}
+.node:hover{transform:scale(1.12)}
+.connector{width:14px;height:3px;flex:0 0 14px;background:rgba(255,255,255,.25);transition:background .3s}
+.connector.fill{background:var(--gold)}
+.node.current{border-color:#fff;background:rgba(255,255,255,.18)}
+.node.current::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.13)}}
+.node.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.node.ok{background:var(--correct-bd);border-color:var(--correct-bd)}
+.node.no{background:var(--wrong-bd);border-color:var(--wrong-bd)}
+.node.half{background:linear-gradient(135deg,var(--correct-bd) 50%,var(--wrong-bd) 50%);border-color:var(--gold)}
+/* progress bar */
+.progress{height:5px;background:var(--border)}
+.progress>div{height:100%;width:0;background:var(--gold);transition:width .4s ease}
+
+/* ================= BODY ================= */
+.main{display:flex;height:calc(100vh - 69px)}
+.pane{flex:1 1 50%;overflow-y:auto;padding:32px 36px}
+.pane-left{background:var(--subtle);border-right:1px solid var(--border)}
+.pane-right{background:var(--surface)}
+
+/* left pane */
+.pane-left h2{color:var(--blue);font-size:23px;font-weight:700}
+.pane-left .subtitle{font-size:15px;font-style:italic;color:var(--muted);margin:4px 0 18px}
+.task-callout{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;line-height:1.7;margin-bottom:10px}
+.task-note{font-size:13px;color:var(--muted);margin-bottom:18px}
+.diagram-card{background:#f3f7fc;border:1px solid var(--border);border-radius:12px;padding:14px}
+.diagram-card svg{width:100%;height:auto;display:block}
+.stage .badge-rect{transition:all .3s}
+.stage.glow .badge-rect{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 7px rgba(245,184,46,.9))}
+.stage.glow .stage-label{font-weight:700;fill:var(--navy)}
+
+/* right pane */
+.part-tag{display:inline-block;background:var(--callout);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.06em;border-radius:999px;padding:5px 13px;margin-bottom:14px}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px 28px;max-width:680px}
+.step-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.qbadge{flex:0 0 32px;width:32px;height:32px;background:var(--navy-deep);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.step-title{font-size:17px;font-weight:600;color:var(--head);line-height:1.45;padding-top:4px}
+.teach{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:11px 15px;font-size:14.5px;line-height:1.65;margin:14px 0 18px;color:var(--body)}
+.teach b{color:var(--head)}
+
+/* option cards */
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px;font-size:15px;line-height:1.55;color:var(--body);transition:all .15s}
+.opt:hover:not(:disabled){background:var(--subtle);border-color:#cbd5e1}
+.opt .letter{font-weight:700;color:var(--head)}
+.opt .radio{flex:0 0 18px;width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;margin-top:2px;position:relative;transition:all .15s}
+.opt.sel{border-color:var(--blue);background:#f5f8ff}
+.opt.sel .radio{border-color:var(--blue)}
+.opt.sel .radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.opt.correct .letter{color:var(--correct-tx)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.opt.wrong .letter{color:var(--wrong-tx)}
+.opt.dim{opacity:.5}
+.opt .mark{margin-left:auto;font-weight:800;flex:0 0 auto}
+.opt.correct .mark{color:var(--correct-bd)}
+.opt.wrong .mark{color:var(--wrong-bd)}
+.pick-hint{font-size:13px;font-weight:600;color:var(--muted);margin-top:10px}
+.pick-hint.full{color:var(--correct-tx)}
+
+/* order exercise */
+.order-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.ord{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:13px 16px;font-size:15px;line-height:1.5;transition:all .15s}
+.ord:hover:not(:disabled){background:var(--subtle)}
+.ord .slot{flex:0 0 28px;width:28px;height:28px;border-radius:8px;border:2px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
+.ord.picked{border-color:var(--blue);background:#f5f8ff}
+.ord.picked .slot{border:none;background:var(--navy-deep)}
+.ord.r-ok{border-color:var(--correct-bd);background:var(--correct-bg)}
+.ord.r-ok .slot{border:none;background:var(--correct-bd)}
+.ord.r-no{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.ord.r-no .slot{border:none;background:var(--wrong-bd)}
+.ord .fix{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--wrong-tx);white-space:nowrap}
+
+/* gaps / rows */
+.gap-text{font-size:15.5px;line-height:2.15;margin-top:14px}
+.gapsel{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;border:1px solid var(--border);border-radius:9px;padding:6px 28px 6px 11px;font-size:14.5px;font-family:inherit;color:var(--body);margin:0 2px;max-width:280px}
+.gapsel:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+.gapsel.answered{border-color:var(--blue);background-color:var(--callout);color:var(--blue-badge);font-weight:600}
+.gap-res{display:inline-block;border-radius:8px;padding:3px 10px;font-weight:600;font-size:14.5px;margin:0 2px;white-space:nowrap}
+.gap-res.ok{background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd)}
+.gap-res.no{background:var(--wrong-bg);color:var(--wrong-tx);border:1px solid var(--wrong-bd);text-decoration:line-through}
+.gap-res .fixv{text-decoration:none;color:var(--correct-tx);font-weight:700}
+.rows{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.row-item{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:12px 16px}
+.row-item .rlab{font-size:15px;font-weight:600;color:var(--head);flex:1 1 200px}
+
+/* check bar */
+.checkbar{margin-top:22px;display:flex;gap:10px;align-items:center}
+.btn-check{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700;transition:all .15s}
+.btn-check:hover:not(:disabled){background:var(--blue-badge)}
+.btn-check:disabled{background:#cbd5e1;cursor:not-allowed}
+.btn-review{background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700}
+.btn-review:hover{background:var(--callout)}
+.locked-note{font-size:13px;color:var(--muted)}
+
+/* ================= OVERLAY ================= */
+.overlay{position:fixed;inset:0;background:rgba(20,48,110,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+.overlay.show{display:flex;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px 32px;text-align:center;animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+.ov-badge{display:inline-block;border-radius:999px;padding:8px 22px;font-weight:800;font-size:17px;font-family:'Poppins',sans-serif;margin-bottom:16px}
+.ov-badge.ok{background:var(--correct-bg);color:var(--correct-tx);border:2px solid var(--correct-bd)}
+.ov-badge.no{background:var(--wrong-bg);color:var(--wrong-tx);border:2px solid var(--wrong-bd)}
+.ov-badge.half{background:var(--hl);color:#92400E;border:2px solid var(--gold)}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 16px}
+.donut{position:relative;width:110px;height:110px}
+.donut svg{transform:rotate(-90deg)}
+.donut .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dn-center .big{font-weight:800;font-size:19px;color:var(--head);font-family:'Poppins',sans-serif}
+.dn-center .sm{font-size:11px;color:var(--muted);font-weight:600}
+.ov-key{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:13px 16px;text-align:left;font-size:14.5px;line-height:1.65;margin-bottom:12px}
+.ov-key .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:5px}
+.ov-expl{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:14px 17px;text-align:left;font-size:14.5px;line-height:1.7;margin-bottom:14px}
+.ov-expl .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:6px}
+.ov-quote{border-left:4px solid var(--gold);background:var(--hl);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-style:italic;color:var(--head);font-size:14px;line-height:1.6}
+.btn-next{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:700;width:100%}
+.btn-next:hover{background:var(--blue-badge)}
+.btn-next.final{background:var(--gold);color:var(--navy-deep)}
+.btn-next.final:hover{background:var(--gold-hover)}
+
+/* ================= SUMMARY ================= */
+.summary{max-width:680px}
+.sum-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px 32px;text-align:center;margin-bottom:20px}
+.sum-card h2{color:var(--head);font-size:24px;margin-bottom:6px}
+.sum-card .enc{color:var(--muted);font-size:15px;margin-bottom:18px}
+.donut-big{position:relative;width:170px;height:170px;margin:0 auto 16px}
+.donut-big svg{transform:rotate(-90deg)}
+.donut-big .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-big .big{font-weight:800;font-size:30px;color:var(--head);font-family:'Poppins',sans-serif}
+.donut-big .sm{font-size:12.5px;color:var(--muted);font-weight:600}
+.sum-stats{display:flex;justify-content:center;gap:22px;font-size:14px;font-weight:600}
+.sum-stats .ok{color:var(--correct-tx)} .sum-stats .half{color:#92400E} .sum-stats .no{color:var(--wrong-tx)}
+.model-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;margin-bottom:20px}
+.model-card h3{color:var(--blue);font-size:19px;margin-bottom:4px}
+.model-card .wc{display:inline-block;background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd);border-radius:999px;font-size:12.5px;font-weight:700;padding:4px 12px;margin:6px 0 14px}
+.model-card p{font-size:15px;line-height:1.85;text-align:justify;margin-bottom:13px}
+.m-seq{background:var(--hl);border-radius:4px;padding:0 3px;font-weight:600}
+.m-verb{border-bottom:2px solid var(--blue);font-weight:600;color:var(--head)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px;padding-top:12px;border-top:1px solid var(--border)}
+.legend .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.btn-redo{background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:800;width:100%}
+.btn-redo:hover{background:var(--gold-hover)}
+
+@media (max-width: 900px){
+  body{overflow:auto}
+  .main{flex-direction:column;height:auto}
+  .pane{overflow:visible;padding:22px 18px}
+  .pane-left{border-right:none;border-bottom:1px solid var(--border)}
+  .logo{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="topbar">
+  <div class="logo">IELTS<span class="lab">Lab</span></div>
+  <div class="path-wrap"><div class="path" id="path"></div></div>
+  <button class="restart" id="btnRestart">↺ Bắt đầu lại</button>
+</header>
+<div class="progress"><div id="progFill"></div></div>
+
+<div class="main">
+  <!-- ================= LEFT: TASK + DIAGRAM ================= -->
+  <section class="pane pane-left">
+    <h2>Writing Task 1 — Natural Process</h2>
+    <div class="subtitle">Guided lesson · learn one micro-skill, practise it immediately</div>
+    <div class="task-callout">
+      <b>The diagram below shows the life cycle of the monarch butterfly.</b><br>
+      Summarise the information by selecting and reporting the main features, and make comparisons where relevant.
+    </div>
+    <div class="task-note">You should write at least <b>150 words</b>. · You should spend about 20 minutes on this task.</div>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg" aria-label="Diagram of the monarch butterfly life cycle with six numbered stages">
+        <defs>
+          <marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#7d9dc0"/>
+          </marker>
+        </defs>
+
+        <rect x="0" y="0" width="720" height="560" rx="10" fill="#f3f7fc"/>
+        <text x="360" y="32" text-anchor="middle" font-family="Poppins,Inter,sans-serif" font-size="19" font-weight="700" fill="#173a63">The Life Cycle of the Monarch Butterfly</text>
+
+        <!-- the ring -->
+        <circle cx="360" cy="305" r="185" fill="none" stroke="#dce8f5" stroke-width="62"/>
+
+        <!-- four main-stage corner labels -->
+        <text x="700" y="62" text-anchor="end" font-size="14.5" font-style="italic" font-weight="600" fill="#23425f">Egg stage</text>
+        <text x="700" y="548" text-anchor="end" font-size="14.5" font-style="italic" font-weight="600" fill="#23425f">Larval stage</text>
+        <text x="20" y="548" font-size="14.5" font-style="italic" font-weight="600" fill="#23425f">Pupal stage</text>
+        <text x="20" y="62" font-size="14.5" font-style="italic" font-weight="600" fill="#23425f">Adult stage</text>
+
+        <!-- centre -->
+        <text x="360" y="300" text-anchor="middle" font-family="Poppins,Inter,sans-serif" font-size="14" font-weight="700" fill="#1f4e79">EGG → LARVA → PUPA → ADULT</text>
+        <text x="360" y="322" text-anchor="middle" font-size="12.5" font-style="italic" fill="#6B7280">four main stages · one continuous cycle</text>
+
+        <!-- clockwise flow arrows along the ring -->
+        <g stroke="#7d9dc0" stroke-width="3" fill="none">
+          <path d="M497.5 181.2 A185 185 0 0 1 535.9 247.8" marker-end="url(#arrG)"/>
+          <path d="M535.9 362.2 A185 185 0 0 1 497.5 428.8" marker-end="url(#arrG)"/>
+          <path d="M398.5 485.9 A185 185 0 0 1 321.5 485.9" marker-end="url(#arrG)"/>
+          <path d="M222.5 428.8 A185 185 0 0 1 184.1 362.2" marker-end="url(#arrG)"/>
+          <path d="M184.1 247.8 A185 185 0 0 1 222.5 181.2" marker-end="url(#arrG)"/>
+          <path d="M321.5 124.1 A185 185 0 0 1 398.5 124.1" marker-end="url(#arrG)"/>
+        </g>
+
+        <!-- STAGE 1: eggs on milkweed (top-right) -->
+        <g class="stage" id="st1">
+          <ellipse cx="453" cy="152" rx="22" ry="9" fill="#6a994e" opacity="0.85" transform="rotate(-22 453 152)"/>
+          <circle cx="446" cy="138" r="4" fill="#e0922f"/><circle cx="456" cy="134" r="4" fill="#e0922f"/><circle cx="465" cy="140" r="4" fill="#e0922f"/>
+          <rect class="badge-rect" x="447" y="84" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="460" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+          <text class="stage-label" x="482" y="96" font-size="13.5" font-weight="600" fill="#23425f">Eggs laid on milkweed</text>
+          <text class="stage-label" x="482" y="112" font-size="11.5" font-style="italic" fill="#6B7280">(hatch after 14 days)</text>
+        </g>
+
+        <!-- STAGE 2: newly hatched larva (right) -->
+        <g class="stage" id="st2">
+          <circle cx="552" cy="306" r="4.5" fill="#2a9d8f"/><circle cx="561" cy="303" r="4.5" fill="#2a9d8f"/><circle cx="570" cy="303" r="4.5" fill="#2a9d8f"/><circle cx="579" cy="306" r="5" fill="#1f4e79"/>
+          <rect class="badge-rect" x="592" y="252" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="605" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+          <text class="stage-label" x="624" y="264" font-size="13.5" font-weight="600" fill="#23425f">Newly</text>
+          <text class="stage-label" x="624" y="280" font-size="13.5" font-weight="600" fill="#23425f">hatched larva</text>
+        </g>
+
+        <!-- STAGE 3: caterpillar feeding (bottom-right) -->
+        <g class="stage" id="st3">
+          <ellipse cx="450" cy="478" rx="24" ry="9" fill="#6a994e" opacity="0.8" transform="rotate(-10 450 478)"/>
+          <circle cx="430" cy="458" r="7" fill="#2a9d8f"/><circle cx="442" cy="455" r="7" fill="#2a9d8f"/><circle cx="454" cy="454" r="7" fill="#2a9d8f"/><circle cx="466" cy="455" r="7" fill="#2a9d8f"/><circle cx="478" cy="458" r="7.5" fill="#1f4e79"/>
+          <rect class="badge-rect" x="455" y="506" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="468" y="524" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+          <text class="stage-label" x="488" y="518" font-size="13.5" font-weight="600" fill="#23425f">Caterpillar feeds</text>
+          <text class="stage-label" x="488" y="534" font-size="13.5" font-weight="600" fill="#23425f">&amp; grows</text>
+        </g>
+
+        <!-- STAGE 4: chrysalis (bottom-left) -->
+        <g class="stage" id="st4">
+          <line x1="246" y1="438" x2="290" y2="438" stroke="#6a994e" stroke-width="3"/>
+          <line x1="268" y1="438" x2="268" y2="448" stroke="#b8761f" stroke-width="2"/>
+          <path d="M268 448 C 280 456 282 478 268 488 C 254 478 256 456 268 448 Z" fill="#e0922f" opacity="0.9" stroke="#b8761f" stroke-width="1.5"/>
+          <rect class="badge-rect" x="212" y="506" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="225" y="524" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+          <text class="stage-label" x="245" y="518" font-size="13.5" font-weight="600" fill="#23425f">Chrysalis forms</text>
+          <text class="stage-label" x="245" y="534" font-size="11.5" font-style="italic" fill="#6B7280">(lasts 10 days)</text>
+        </g>
+
+        <!-- STAGE 5: emergence of adult (left) -->
+        <g class="stage" id="st5">
+          <path d="M168 286 C 176 292 177 306 168 312 C 159 306 160 292 168 286 Z" fill="none" stroke="#b8761f" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <g>
+            <ellipse cx="196" cy="300" rx="3" ry="9" fill="#1f4e79"/>
+            <ellipse cx="188" cy="294" rx="8" ry="6" fill="#e0922f" transform="rotate(-25 188 294)"/>
+            <ellipse cx="204" cy="294" rx="8" ry="6" fill="#e0922f" transform="rotate(25 204 294)"/>
+            <ellipse cx="189" cy="306" rx="6" ry="5" fill="#e0922f" transform="rotate(20 189 306)"/>
+            <ellipse cx="203" cy="306" rx="6" ry="5" fill="#e0922f" transform="rotate(-20 203 306)"/>
+          </g>
+          <rect class="badge-rect" x="96" y="252" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="109" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+          <text class="stage-label" x="128" y="264" font-size="13.5" font-weight="600" fill="#23425f">Emergence</text>
+          <text class="stage-label" x="128" y="280" font-size="13.5" font-weight="600" fill="#23425f">of adult</text>
+        </g>
+
+        <!-- STAGE 6: migration & mating (top-left) -->
+        <g class="stage" id="st6">
+          <g>
+            <ellipse cx="268" cy="142" rx="3.5" ry="11" fill="#1f4e79"/>
+            <ellipse cx="258" cy="134" rx="10" ry="7" fill="#e0922f" transform="rotate(-25 258 134)"/>
+            <ellipse cx="278" cy="134" rx="10" ry="7" fill="#e0922f" transform="rotate(25 278 134)"/>
+            <ellipse cx="259" cy="149" rx="7" ry="6" fill="#e0922f" transform="rotate(20 259 149)"/>
+            <ellipse cx="277" cy="149" rx="7" ry="6" fill="#e0922f" transform="rotate(-20 277 149)"/>
+          </g>
+          <rect class="badge-rect" x="160" y="84" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="173" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+          <text class="stage-label" x="195" y="90" font-size="13.5" font-weight="600" fill="#23425f">Migration south (6 months),</text>
+          <text class="stage-label" x="195" y="106" font-size="13.5" font-weight="600" fill="#23425f">then north · mating &amp; egg laying</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= RIGHT: LESSON ================= -->
+  <section class="pane pane-right" id="rightPane"></section>
+</div>
+
+<!-- ================= FEEDBACK OVERLAY ================= -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — 21 micro-steps in 9 parts
+   types: mcq | multi | order | gaps | rows
+   ============================================================ */
+const STEPS = [
+/* ---------- PART 1 · READ THE DIAGRAM ---------- */
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Before writing a single word: what kind of process is this?",
+  teach:"Your very first decision controls your grammar for the whole report. Look at the diagram: is anything done <b>by people or machines</b>?",
+  options:[
+    "A man-made process — people manufacture a product step by step.",
+    "A natural process — it happens by itself, without human action.",
+    "A set of instructions for keeping butterflies."
+  ],
+  answer:1, focus:["st1","st2","st3"],
+  expl:"Đây là quy trình <b>tự nhiên</b> — cụ thể là một <b>vòng đời (life cycle)</b>, dạng natural process phổ biến nhất trong đề thi (bướm, ếch, cá hồi…). Không có con người tác động: trứng tự nở, sâu tự lớn, bướm tự di cư. Phân loại này quyết định <b>thể (voice)</b> bạn dùng ở phần sau.",
+  quote:"The eggs hatch and the larva grows — all by itself."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Is this process linear or cyclical?",
+  teach:"Follow the ring to the adult stage. What does the adult butterfly do at the end?",
+  options:[
+    "Linear — it ends when the butterfly becomes an adult.",
+    "Cyclical — the adult mates and lays eggs, starting a new generation.",
+    "Neither — the stages happen in a random order."
+  ],
+  answer:1, focus:["st6"],
+  expl:"Bướm trưởng thành <b>giao phối và đẻ trứng</b> — thế hệ mới bắt đầu đúng nơi thế hệ cũ đã bắt đầu. Vòng đời là chu trình khép kín <b>qua các thế hệ</b>: con bướm cụ thể thì chết đi, nhưng chu trình không bao giờ dừng. Overview của bạn phải nêu được điều này.",
+  quote:"The adults mate and lay eggs, and the cycle begins again."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"How many MAIN stages does the life cycle have?",
+  teach:"Careful — don't count the little pictures! Look at the <b>four named labels</b> in the corners of the diagram.",
+  options:[
+    "Four — egg, larva, pupa and adult.",
+    "Eight — one for every picture on the ring.",
+    "Ten — including migration north and south separately."
+  ],
+  answer:0, focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Sơ đồ có nhiều hình nhỏ, nhưng chỉ <b>4 giai đoạn chính được đặt tên</b> ở bốn góc: <i>Egg → Larval → Pupal → Adult</i>. Đây là bẫy kinh điển của đề life cycle: hãy tổ chức bài viết quanh các giai đoạn <b>được đặt tên</b>, còn các hình nhỏ chỉ là chi tiết bên trong từng giai đoạn.",
+  quote:"Overall, the life cycle consists of four main stages — egg, larva, pupa and adult."
+},
+
+/* ---------- PART 2 · NAME THE STAGES ---------- */
+{
+  part:"PART 2 · NAME THE STAGES", type:"rows",
+  title:"Match each key term to its plain-English meaning.",
+  teach:"Four words you cannot write this report without. Note the irregular plurals: <b>larva → larvae</b>, <b>pupa → pupae</b>.",
+  rows:[
+    {label:"larva (caterpillar)", opts:["the hard case in which the body changes completely","the worm-like stage that feeds and grows","coming out of the case as an adult","a seasonal journey to a warmer place"], a:1},
+    {label:"chrysalis (pupa)", opts:["the hard case in which the body changes completely","the worm-like stage that feeds and grows","coming out of the case as an adult","a seasonal journey to a warmer place"], a:0},
+    {label:"emergence", opts:["the hard case in which the body changes completely","the worm-like stage that feeds and grows","coming out of the case as an adult","a seasonal journey to a warmer place"], a:2},
+    {label:"migration", opts:["the hard case in which the body changes completely","the worm-like stage that feeds and grows","coming out of the case as an adult","a seasonal journey to a warmer place"], a:3}
+  ],
+  focus:["st2","st4","st5","st6"],
+  expl:"Học theo cặp danh từ – động từ: <b>emergence – emerge</b>, <b>migration – migrate</b>. Và nhớ số nhiều bất quy tắc: one larva → two <b>larvae</b>; one pupa → two <b>pupae</b>. Viết 'larvas' là lỗi giám khảo nhìn thấy ngay.",
+  quote:"A fully formed adult emerges from the chrysalis."
+},
+{
+  part:"PART 2 · NAME THE STAGES", type:"order",
+  title:"Click the events in the correct order, starting with the adult laying eggs.",
+  teach:"With a cycle you may <b>choose your starting point</b> — egg laying is the most natural place to begin. Click items in order; click again to undo.",
+  items:[
+    "The adult butterfly mates and lays eggs on milkweed",
+    "Tiny larvae hatch from the eggs",
+    "The caterpillar feeds on milkweed and grows",
+    "The larva attaches itself and forms a chrysalis",
+    "An adult butterfly emerges from the chrysalis",
+    "The new adult migrates south, then north, and mates"
+  ],
+  present:[3,0,5,2,4,1],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Trình tự đúng: egg laying → hatching → feeding &amp; growth → chrysalis → emergence → migration &amp; mating. Đây chính là 'bộ xương' của bài: Body 1 tả các bước 1–3 (giai đoạn lớn lên), Body 2 tả các bước 4–6 (biến thái và trưởng thành).",
+  quote:"…from the laying of eggs to full adulthood."
+},
+
+/* ---------- PART 3 · TENSE & VOICE ---------- */
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Which tense should the whole report use?",
+  teach:"Ask yourself: does this happen once in the past, right now only, or <b>for every generation, again and again</b>?",
+  options:[
+    "Past simple — the diagram describes something that happened.",
+    "Present simple — the cycle repeats for every generation; it is a general truth.",
+    "Present continuous — the butterfly is growing as we speak."
+  ],
+  answer:1,
+  expl:"Vòng đời lặp lại với <b>mọi thế hệ</b> — một 'chân lý chung' — nên dùng <b>present simple</b>. Lỗi phổ biến: <i>the caterpillar is growing</i> (chỉ tả khoảnh khắc) hoặc past simple (chỉ dùng khi sơ đồ có mốc thời gian trong quá khứ).",
+  quote:"The eggs hatch after 14 days — for every generation, again and again."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Active or passive? In a manufacturing process we write “the bottles are filled”. What about a life cycle?",
+  teach:"Think about <b>who performs the action</b>. In a factory, workers act on objects. In nature…?",
+  options:[
+    "Mostly passive — the same as any other process diagram.",
+    "Mostly active — the creature acts by itself: “the larva hatches”, “the adult migrates”.",
+    "It makes no difference which voice you use."
+  ],
+  answer:1,
+  expl:"Quy trình tự nhiên: chủ thể <b>tự hành động</b> → dùng <b>chủ động</b> (<i>the larva hatches, the caterpillar feeds, the adult migrates</i>). Quy trình sản xuất mới dùng bị động vì hành động do người/máy thực hiện. Nhưng hãy chờ bước sau — có một ngoại lệ thú vị với <i>lay eggs</i>!",
+  quote:"Natural: the larva hatches. Man-made: the leather is tanned."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"gaps",
+  title:"Choose the correct form in each sentence.",
+  teach:"Default to <b>active</b> — but one of these three needs the passive. Ask: can the subject do this action <b>to itself</b>?",
+  text:"The eggs {0} on the leaves of the milkweed plant. After about two weeks, tiny larvae {1} from the eggs. Each young caterpillar then {2} on the leaves, growing bigger every day.",
+  gaps:[
+    {opts:["lay","are laid"], a:1},
+    {opts:["hatch","are hatched"], a:0},
+    {opts:["feeds","is fed"], a:0}
+  ],
+  focus:["st1","st2","st3"],
+  expl:"Trứng không tự 'đẻ' chính nó — <b>bướm mẹ</b> đẻ trứng, nên từ góc nhìn của trứng phải dùng bị động: <b>are laid</b>. Còn <i>hatch</i> (nở) và <i>feed</i> (ăn) là hành động tự thân → chủ động. Đây là cùng một logic với <i>is stored</i> trong bài water cycle: bị động xuất hiện khi chủ ngữ không thể tự làm hành động.",
+  quote:"The eggs are laid on milkweed, and after 14 days the larvae hatch."
+},
+
+/* ---------- PART 4 · PROCESS VERBS ---------- */
+{
+  part:"PART 4 · PROCESS VERBS", type:"gaps",
+  title:"Complete the description with the correct verb.",
+  teach:"Life-cycle verbs to master: <b>hatch</b> (only for eggs!), <b>feed on</b>, <b>shed its skin</b>, <b>attach itself to</b>, <b>transform into</b>.",
+  text:"Tiny larvae {0} from the eggs and immediately begin to {1} on milkweed leaves. As it grows, the caterpillar {2} its skin several times. Next, the fully grown larva {3} itself to a stem, where it {4} into a chrysalis.",
+  gaps:[
+    {opts:["hatch","are born","arrive"], a:0},
+    {opts:["feed","eat","drink"], a:0},
+    {opts:["sheds","drops","peels"], a:0},
+    {opts:["sticks","attaches","glues"], a:1},
+    {opts:["translates","transfers","transforms"], a:2}
+  ],
+  focus:["st2","st3","st4"],
+  expl:"<b>Hatch</b> chỉ dùng cho trứng — không nói <i>are born</i> với côn trùng nở từ trứng. <b>Feed on</b> là collocation chuẩn (eat on là sai). <b>Shed its skin</b> = lột da. <b>Attach itself to</b> = tự bám vào. Và cẩn thận bộ ba tra từ điển dễ nhầm: trans<b>form</b> (biến đổi) ≠ translate (dịch) ≠ transfer (chuyển giao).",
+  quote:"…the caterpillar grows rapidly, shedding its skin several times."
+},
+{
+  part:"PART 4 · PROCESS VERBS", type:"rows",
+  title:"Upgrade the casual phrase to a precise, band-7 expression.",
+  teach:"Band 6 says <i>“comes out”</i>; band 7+ says <b>emerges</b>. One precise verb is worth more than a long sentence.",
+  rows:[
+    {label:"“comes out of the chrysalis” →", opts:["escapes","emerges","exits"], a:1},
+    {label:"“flies to a warmer place for the winter” →", opts:["migrates","commutes","travels around"], a:0},
+    {label:"“changes its body completely” →", opts:["undergoes metamorphosis","gets a makeover","becomes different"], a:0}
+  ],
+  focus:["st4","st5","st6"],
+  expl:"<b>Emerge</b> (xuất hiện từ bên trong), <b>migrate</b> (di cư theo mùa — commute là đi làm hằng ngày!), và đặc biệt <b>undergo metamorphosis</b> (trải qua quá trình biến thái) — cụm từ 'ăn điểm' nhất của mọi đề life cycle. Hãy dùng nó đúng một lần trong bài.",
+  quote:"Inside the chrysalis, the larva undergoes metamorphosis."
+},
+
+/* ---------- PART 5 · INTRODUCTION ---------- */
+{
+  part:"PART 5 · INTRODUCTION", type:"mcq",
+  title:"Which is the best introduction?",
+  teach:"The introduction = the task prompt <b>in your own words</b>. Two deadly sins: copying the rubric, and adding your opinion.",
+  options:[
+    "The diagram below shows the life cycle of the monarch butterfly.",
+    "The diagram illustrates the various stages through which a monarch butterfly passes during its life, from egg to adult.",
+    "The diagram proves that the monarch butterfly has the most fascinating life of all insects."
+  ],
+  answer:1,
+  expl:"Câu A <b>chép nguyên văn đề</b> — giám khảo trừ những từ chép nguyên khỏi word count. Câu C đưa <b>ý kiến</b> (<i>most fascinating</i>) — Task 1 tuyệt đối không có opinion. Câu B paraphrase chuẩn: shows → illustrates, life cycle → <i>the stages through which … passes during its life</i> — mở rộng cụm danh từ là kỹ thuật paraphrase mạnh nhất.",
+  quote:"The diagram illustrates the various stages through which a monarch butterfly passes during its life."
+},
+{
+  part:"PART 5 · INTRODUCTION", type:"gaps",
+  title:"Now build your own introduction.",
+  teach:"Watch the last gap — <b>emergence</b> (việc chui ra) and <b>emergency</b> (tình huống khẩn cấp) are NOT the same word!",
+  text:"The diagram {0} the different {1} in the life of the monarch butterfly, from the laying of eggs to the {2} of a mature adult.",
+  gaps:[
+    {opts:["illustrates","writes","paints"], a:0},
+    {opts:["stages","floors","levels"], a:0},
+    {opts:["emergency","emergence","exit"], a:1}
+  ],
+  expl:"<b>Illustrates / depicts</b> thay cho shows. <b>Stages</b> = giai đoạn (levels/floors là tầng — sai nghĩa). Và đôi từ dễ nhầm chết người: <b>emergence</b> (sự xuất hiện, chui ra) ≠ <b>emergency</b> (tình huống khẩn cấp). Viết nhầm là đổi hẳn nghĩa câu!",
+  quote:"…from the laying of eggs to the emergence of a mature adult."
+},
+
+/* ---------- PART 6 · OVERVIEW ---------- */
+{
+  part:"PART 6 · OVERVIEW", type:"multi", pick:2,
+  title:"Which TWO sentences belong in the overview?",
+  teach:"The overview answers two big-picture questions only: <b>how many main stages?</b> and <b>what shape is the process?</b> No details, no data, no opinions.",
+  options:[
+    "Overall, the life cycle consists of four main stages — egg, larva, pupa and adult.",
+    "The eggs are laid on milkweed leaves and hatch after approximately 14 days.",
+    "The process is continuous, as each new adult mates and lays eggs to start the cycle again.",
+    "In my opinion, the monarch's migration is an amazing achievement."
+  ],
+  answers:[0,2],
+  expl:"Overview chỉ chứa '<b>bức tranh lớn</b>': bốn giai đoạn chính (câu 1) và tính tuần hoàn qua các thế hệ (câu 3). Chi tiết <i>14 days</i> thuộc về body; ý kiến cá nhân thì không bao giờ xuất hiện trong Task 1. Mẹo: câu nào trả lời 'bao nhiêu giai đoạn?' hoặc 'quy trình hình gì?' → overview.",
+  quote:"Overall… four main stages… and the cycle repeats with each new generation."
+},
+{
+  part:"PART 6 · OVERVIEW", type:"gaps",
+  title:"Build the overview sentence.",
+  teach:"The high-band overview pattern for cycles: <b>Overall, … consists of X stages, beginning with … and ending with …, after which the cycle repeats itself.</b>",
+  text:"Overall, the life cycle {0} four main stages, {1} with the laying of eggs and ending with the emergence of an adult, after which the cycle {2} itself with each new generation.",
+  gaps:[
+    {opts:["consists of","is consisted of","makes of"], a:0},
+    {opts:["begins","begun","beginning"], a:2},
+    {opts:["repeats","replays","rewinds"], a:0}
+  ],
+  expl:"<b>Consist of</b> không bao giờ dùng bị động (✗ <i>is consisted of</i>). <b>Beginning with… and ending with…</b> là mệnh đề phân từ — gói gọn cả vòng đời trong một câu và ghi điểm ngữ pháp. <b>Repeats itself with each new generation</b> — cách chốt tính tuần hoàn riêng cho đề life cycle.",
+  quote:"Overall, the life cycle consists of four main stages… after which the cycle repeats itself."
+},
+
+/* ---------- PART 7 · SEQUENCING & DATA ---------- */
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"gaps",
+  title:"Complete the body paragraph with the best connective.",
+  teach:"Vary your sequencers — never <i>then… then… then</i>. A strong chain: <b>To begin → As soon as → Once → Subsequently → Finally</b>.",
+  text:"{0}, the adult butterfly mates and lays its eggs on a milkweed plant. {1} the larvae hatch, they begin feeding on the leaves. {2} the caterpillar is fully grown, it attaches itself to a stem and forms a chrysalis. {3}, a fully formed adult emerges from the case. {4}, the young butterfly migrates south for the winter.",
+  gaps:[
+    {opts:["To begin","In conclusion","However"], a:0},
+    {opts:["As soon as","Despite","Unless"], a:0},
+    {opts:["Although","Once","Whereas"], a:1},
+    {opts:["Surprisingly","Similarly","Subsequently"], a:2},
+    {opts:["Finally","Firstly","Fortunately"], a:0}
+  ],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Chuỗi connectives đa dạng là cách ăn điểm Coherence &amp; Cohesion trực tiếp nhất. Hai kiểu nối: trạng từ đứng đầu câu (<i>Subsequently, Finally</i>) và liên từ + mệnh đề (<i>As soon as the larvae hatch…, Once the caterpillar is fully grown…</i>) — kiểu thứ hai 'mượt' hơn và thể hiện câu phức.",
+  quote:"Once the caterpillar is fully grown, it attaches itself to a stem."
+},
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"mcq",
+  title:"The diagram gives durations — 14 days, 10 days, 6 months. What should you do with them?",
+  teach:"A process diagram with numbers is a gift: data makes your description specific. But there is a right way to use it.",
+  options:[
+    "Ignore them — process descriptions are about stages, not numbers.",
+    "Weave them into the stage descriptions: “the eggs hatch after approximately 14 days”.",
+    "Put all three numbers in the overview so the examiner sees them immediately."
+  ],
+  answer:1, focus:["st1","st4","st6"],
+  expl:"Số liệu là <b>chi tiết hỗ trợ</b> → dệt vào body cùng <b>approximately / around / roughly</b> (số trên sơ đồ thường là ước lượng). Đừng nhồi vào overview, và đừng liệt kê khô khan kiểu '14 days, 10 days, 6 months'. Mỗi con số đi kèm đúng giai đoạn của nó là đẹp nhất.",
+  quote:"…and transforms into a chrysalis, a stage which lasts around ten days."
+},
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"mcq",
+  title:"A life cycle never truly ends — so how should the description finish?",
+  teach:"Your last sentence must close the report <b>and</b> reopen the loop.",
+  options:[
+    "Finally, the butterfly dies and the process is finished.",
+    "Finally, the mature adults mate and lay their own eggs, and the cycle begins again.",
+    "In conclusion, the monarch butterfly lives a very interesting life."
+  ],
+  answer:1, focus:["st6"],
+  expl:"Vòng đời không 'finish' — nó tiếp diễn qua thế hệ mới, nên câu A mâu thuẫn với sơ đồ. <i>In conclusion</i> là ngôn ngữ của essay Task 2, không dùng cho Task 1. Câu B vừa khép lại bài viết vừa nhấn lại tính tuần hoàn — đúng một công đôi việc.",
+  quote:"Finally, the mature adults mate and lay their own eggs, and the cycle begins again."
+},
+
+/* ---------- PART 8 · COMPLEX SENTENCES ---------- */
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “The larva attaches itself to a stem.” + “It transforms into a chrysalis there.”",
+  teach:"Two short sentences about the <b>same place</b> → join them with relative <b>where</b>.",
+  options:[
+    "The larva attaches itself to a stem, where it transforms into a chrysalis.",
+    "The larva attaches itself to a stem where transforms into a chrysalis.",
+    "The larva attaches itself to a stem, and where it transforms into a chrysalis."
+  ],
+  answer:0, focus:["st3","st4"],
+  expl:"Mệnh đề quan hệ với <b>where</b> thay cho 'ở đó' — cấu trúc ghi điểm Grammatical Range kinh điển của bài process. Câu B thiếu chủ ngữ <i>it</i> sau where; câu C thừa <i>and</i> (where tự nó đã là từ nối, không cần thêm liên từ).",
+  quote:"…attaches itself to a stem, where it transforms into a chrysalis."
+},
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “The adult emerges from the chrysalis.” + “Then it migrates south for the winter.”",
+  teach:"To link a stage with what happens <b>after</b> it, use the formal connector <b>, after which</b>.",
+  options:[
+    "The adult emerges from the chrysalis. After which it migrates south for the winter.",
+    "The adult emerges from the chrysalis, after that which it migrates south for the winter.",
+    "The adult emerges from the chrysalis, after which it migrates south for the winter."
+  ],
+  answer:2, focus:["st5","st6"],
+  expl:"<b>', after which'</b> = 'và sau đó' ở văn phong trang trọng — rất hợp Task 1. Nó phải đi sau dấu phẩy trong <b>cùng một câu</b>: đứng đầu câu mới sẽ tạo ra mảnh câu (câu A); và không bao giờ ghép <i>after that which</i> (câu B).",
+  quote:"…emerges from the chrysalis, after which it migrates south for the winter."
+},
+
+/* ---------- PART 9 · ORGANISE & ASSEMBLE ---------- */
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"rows",
+  title:"Divide the six events into two balanced body paragraphs.",
+  teach:"The most logical split for a life cycle: <b>Body 1 = the growing stages</b> (egg → caterpillar) · <b>Body 2 = transformation &amp; adult life</b> (chrysalis → migration).",
+  rows:[
+    {label:"1 · Egg laying on milkweed", opts:["Body 1","Body 2"], a:0},
+    {label:"2 · Hatching of the larvae", opts:["Body 1","Body 2"], a:0},
+    {label:"3 · Caterpillar feeding & growth", opts:["Body 1","Body 2"], a:0},
+    {label:"4 · Formation of the chrysalis", opts:["Body 1","Body 2"], a:1},
+    {label:"5 · Emergence of the adult", opts:["Body 1","Body 2"], a:1},
+    {label:"6 · Migration & mating", opts:["Body 1","Body 2"], a:1}
+  ],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Chia <b>3 + 3</b> theo ranh giới tự nhiên nhất: <b>trước biến thái</b> (trứng → sâu lớn) và <b>từ biến thái trở đi</b> (kén → bướm trưởng thành di cư). Hai đoạn cân đối, mỗi đoạn một 'chương' riêng của câu chuyện — giám khảo nhìn thấy ngay khả năng tổ chức của bạn.",
+  quote:"Body 1: from egg to caterpillar. Body 2: from chrysalis to migration."
+},
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"order",
+  title:"Finally — put the report skeleton in order.",
+  teach:"The Task 1 process skeleton never changes. No conclusion, no opinion — ever.",
+  items:[
+    "Introduction — paraphrase what the diagram shows",
+    "Overview — four main stages, a repeating cycle",
+    "Body 1 — the growing stages: eggs, hatching, caterpillar",
+    "Body 2 — transformation & adulthood: chrysalis, emergence, migration"
+  ],
+  present:[2,0,3,1],
+  expl:"Khung bài Task 1 process luôn cố định: <b>Introduction → Overview → Body 1 → Body 2</b>. Không có kết luận (đó là việc của Task 2), không có ý kiến. Giờ bạn đã có đủ mọi 'viên gạch' — xem bài mẫu hoàn chỉnh ở màn hình tổng kết nhé!",
+  quote:"Introduction → Overview → Body 1 → Body 2. Nothing else."
+}
+];
+
+const TOTAL = STEPS.length;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let cur = 0;
+let answers = Array(TOTAL).fill(null);   // raw response per step
+let results = Array(TOTAL).fill(null);   // 'ok' | 'half' | 'no'
+let pending = [];                        // working selection for current step
+
+const $ = s => document.querySelector(s);
+const rightPane = $('#rightPane');
+const pathEl = $('#path');
+
+/* ============================================================
+   NODE PATH
+   ============================================================ */
+function buildPath(){
+  pathEl.innerHTML = '';
+  STEPS.forEach((st,i)=>{
+    if(i>0){
+      const c = document.createElement('div');
+      c.className = 'connector'; c.id = 'conn'+i;
+      pathEl.appendChild(c);
+    }
+    const n = document.createElement('button');
+    n.className = 'node'; n.id = 'node'+i; n.textContent = i+1;
+    n.title = st.part;
+    n.addEventListener('click', ()=>{ go(i); });
+    pathEl.appendChild(n);
+  });
+}
+function updatePath(){
+  STEPS.forEach((st,i)=>{
+    const n = document.getElementById('node'+i);
+    n.className = 'node';
+    if(results[i]) n.classList.add(results[i]);
+    if(i===cur) n.classList.add(results[i] ? 'viewing' : 'current');
+    if(i>0){
+      document.getElementById('conn'+i).className = 'connector' + (results[i-1] ? ' fill' : '');
+    }
+  });
+  const done = results.filter(Boolean).length;
+  $('#progFill').style.width = (done/TOTAL*100) + '%';
+  const active = document.getElementById('node'+cur);
+  if(active) active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+}
+
+/* ============================================================
+   DIAGRAM HIGHLIGHT
+   ============================================================ */
+function clearGlow(){ document.querySelectorAll('.stage.glow').forEach(g=>g.classList.remove('glow')); }
+function glow(ids){
+  clearGlow();
+  (ids||[]).forEach(id=>{ const g = document.getElementById(id); if(g) g.classList.add('glow'); });
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function score(){
+  let marks = 0;
+  results.forEach(r=>{ if(r==='ok') marks += 1; else if(r==='half') marks += 0.5; });
+  return marks;
+}
+function allDone(){ return results.every(Boolean); }
+function nextUnanswered(from){
+  for(let k=1;k<=TOTAL;k++){ const i=(from+k)%TOTAL; if(!results[i]) return i; }
+  return -1;
+}
+function fmt(n){ return (n%1===0) ? n : n.toFixed(1); }
+
+function donutSVG(size, r, sw){
+  const C = 2*Math.PI*r;
+  let green = 0, red = 0;
+  results.forEach(x=>{
+    if(x==='ok') green += 1;
+    else if(x==='half'){ green += .5; red += .5; }
+    else if(x==='no') red += 1;
+  });
+  const gFrac = green/TOTAL, rFrac = red/TOTAL;
+  const cx = size/2;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${sw}"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--correct-bd)" stroke-width="${sw}"
+      stroke-dasharray="${gFrac*C} ${C}" stroke-linecap="butt"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--wrong-bd)" stroke-width="${sw}"
+      stroke-dasharray="${rFrac*C} ${C}" stroke-dashoffset="${-gFrac*C}" stroke-linecap="butt"/>
+  </svg>`;
+}
+
+/* ============================================================
+   RENDER STEP
+   ============================================================ */
+function go(i){
+  cur = i;
+  pending = [];
+  renderStep();
+  updatePath();
+  rightPane.scrollTop = 0;
+}
+
+function renderStep(){
+  const st = STEPS[cur];
+  const answered = !!results[cur];
+  if(answered) glow(st.focus); else clearGlow();
+
+  let bodyHtml = '';
+  if(st.type==='mcq')   bodyHtml = renderMcq(st, answered);
+  if(st.type==='multi') bodyHtml = renderMulti(st, answered);
+  if(st.type==='order') bodyHtml = renderOrder(st, answered);
+  if(st.type==='gaps')  bodyHtml = renderGaps(st, answered);
+  if(st.type==='rows')  bodyHtml = renderRows(st, answered);
+
+  const checkBar = answered
+    ? `<div class="checkbar"><button class="btn-review" id="btnReview">Xem lại giải thích</button><span class="locked-note">Bước này đã hoàn thành — đáp án được khóa.</span></div>`
+    : `<div class="checkbar"><button class="btn-check" id="btnCheck" disabled>Kiểm tra đáp án</button></div>`;
+
+  rightPane.innerHTML = `
+    <span class="part-tag">${st.part} · BƯỚC ${cur+1}/${TOTAL}</span>
+    <div class="step-card">
+      <div class="step-head">
+        <div class="qbadge">${cur+1}</div>
+        <div class="step-title">${st.title}</div>
+      </div>
+      ${st.teach ? `<div class="teach">${st.teach}</div>` : ''}
+      ${bodyHtml}
+      ${checkBar}
+    </div>`;
+
+  if(answered){
+    $('#btnReview').addEventListener('click', ()=> showOverlay(cur, true));
+  } else {
+    wireStep(st);
+  }
+}
+
+/* ---------- MCQ ---------- */
+function renderMcq(st, answered){
+  const letters = ['A','B','C','D'];
+  return `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur];
+      if(j===st.answer){ cls += ' correct'; mark = '✓'; }
+      else if(j===u){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+}
+
+/* ---------- MULTI (choose N) ---------- */
+function renderMulti(st, answered){
+  const letters = ['A','B','C','D'];
+  let html = `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur] || [];
+      if(st.answers.includes(j)){ cls += ' correct'; mark = '✓'; }
+      else if(u.includes(j)){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+  if(!answered) html += `<div class="pick-hint" id="pickHint">Đã chọn 0/${st.pick}</div>`;
+  return html;
+}
+
+/* ---------- ORDER ---------- */
+function renderOrder(st, answered){
+  const present = st.present;
+  if(!answered){
+    return `<div class="order-list">` + present.map(origIdx=>{
+      return `<button class="ord" data-orig="${origIdx}"><span class="slot"></span><span>${st.items[origIdx]}</span></button>`;
+    }).join('') + `</div>`;
+  }
+  // review: show user's sequence with right/wrong
+  const u = answers[cur]; // array of orig indices in user's chosen order
+  let html = `<div class="order-list">` + u.map((origIdx,pos)=>{
+    const okPos = origIdx === pos;
+    return `<div class="ord ${okPos?'r-ok':'r-no'}">
+      <span class="slot">${pos+1}</span><span>${st.items[origIdx]}</span>
+      ${okPos?'':`<span class="fix">đúng ra: vị trí ${origIdx+1}</span>`}</div>`;
+  }).join('') + `</div>`;
+  return html;
+}
+
+/* ---------- GAPS (inline) ---------- */
+function gapSelect(g, j){
+  return `<select class="gapsel" data-g="${j}">
+    <option value="">— chọn —</option>
+    ${g.opts.map((o,k)=>`<option value="${k}">${esc(o)}</option>`).join('')}
+  </select>`;
+}
+function gapResult(g, userIdx){
+  if(userIdx===g.a) return `<span class="gap-res ok">${esc(g.opts[g.a])} ✓</span>`;
+  return `<span class="gap-res no">${esc(g.opts[userIdx])}</span> <span class="gap-res ok"><span class="fixv">${esc(g.opts[g.a])}</span></span>`;
+}
+function renderGaps(st, answered){
+  let text = st.text;
+  st.gaps.forEach((g,j)=>{
+    const rep = answered ? gapResult(g, answers[cur][j]) : gapSelect(g,j);
+    text = text.replace('{'+j+'}', rep);
+  });
+  return `<div class="gap-text">${text}</div>`;
+}
+
+/* ---------- ROWS (label + select) ---------- */
+function renderRows(st, answered){
+  return `<div class="rows">` + st.rows.map((r,j)=>{
+    const ctl = answered ? gapResult(r, answers[cur][j]) : gapSelect(r,j);
+    return `<div class="row-item"><span class="rlab">${r.label}</span>${ctl}</div>`;
+  }).join('') + `</div>`;
+}
+
+/* ============================================================
+   WIRE INTERACTIONS (unanswered step)
+   ============================================================ */
+function wireStep(st){
+  const btn = $('#btnCheck');
+
+  if(st.type==='mcq'){
+    pending = null;
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        rightPane.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+        el.classList.add('sel');
+        pending = +el.dataset.j;
+        btn.disabled = false;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='multi'){
+    pending = [];
+    const hint = $('#pickHint');
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const j = +el.dataset.j;
+        if(pending.includes(j)){
+          pending = pending.filter(x=>x!==j);
+          el.classList.remove('sel');
+        } else if(pending.length < st.pick){
+          pending.push(j);
+          el.classList.add('sel');
+        }
+        hint.textContent = `Đã chọn ${pending.length}/${st.pick}`;
+        hint.classList.toggle('full', pending.length===st.pick);
+        btn.disabled = pending.length !== st.pick;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='order'){
+    pending = []; // array of orig indices in click order
+    rightPane.querySelectorAll('.ord').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const orig = +el.dataset.orig;
+        const pos = pending.indexOf(orig);
+        if(pos>=0){ pending.splice(pos,1); }
+        else { pending.push(orig); }
+        // repaint slots
+        rightPane.querySelectorAll('.ord').forEach(x=>{
+          const o = +x.dataset.orig;
+          const p = pending.indexOf(o);
+          x.classList.toggle('picked', p>=0);
+          x.querySelector('.slot').textContent = p>=0 ? (p+1) : '';
+        });
+        btn.disabled = pending.length !== st.items.length;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='gaps' || st.type==='rows'){
+    const n = (st.gaps||st.rows).length;
+    pending = Array(n).fill(null);
+    rightPane.querySelectorAll('.gapsel').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const j = +sel.dataset.g;
+        pending[j] = sel.value==='' ? null : +sel.value;
+        sel.classList.toggle('answered', sel.value!=='');
+        btn.disabled = pending.some(v=>v===null);
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+function check(st){
+  let res;
+  if(st.type==='mcq'){
+    answers[cur] = pending;
+    res = (pending===st.answer) ? 'ok' : 'no';
+  }
+  if(st.type==='multi'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter(j=>st.answers.includes(j)).length;
+    res = nC===st.pick ? 'ok' : (nC>0 ? 'half' : 'no');
+  }
+  if(st.type==='order'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter((orig,pos)=>orig===pos).length;
+    res = nC===st.items.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  if(st.type==='gaps' || st.type==='rows'){
+    answers[cur] = pending.slice();
+    const defs = st.gaps||st.rows;
+    const nC = pending.filter((v,j)=>v===defs[j].a).length;
+    res = nC===defs.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  results[cur] = res;
+  renderStep();        // re-render locked with colors
+  updatePath();
+  glow(st.focus);
+  setTimeout(()=> showOverlay(cur,false), 750);
+}
+
+/* ============================================================
+   FEEDBACK OVERLAY
+   ============================================================ */
+function correctKeyHtml(st){
+  if(st.type==='mcq') return `<b>${'ABC'[st.answer]}.</b> ${st.options[st.answer]}`;
+  if(st.type==='multi') return st.answers.map(j=>`<b>${'ABCD'[j]}.</b> ${st.options[j]}`).join('<br>');
+  if(st.type==='order') return st.items.map((it,i)=>`<b>${i+1}.</b> ${it}`).join('<br>');
+  const defs = st.gaps||st.rows;
+  return defs.map((g,j)=>`<b>${j+1}.</b> ${esc(g.opts[g.a])}`).join(' &nbsp;·&nbsp; ');
+}
+
+function showOverlay(i, readOnly){
+  const st = STEPS[i];
+  const res = results[i];
+  const badge = res==='ok' ? `<span class="ov-badge ok">✓ Chính xác!</span>`
+              : res==='half' ? `<span class="ov-badge half">◐ Đúng một phần</span>`
+              : `<span class="ov-badge no">✕ Chưa đúng</span>`;
+  const done = results.filter(Boolean).length;
+  const marks = score();
+
+  let nextBtn;
+  if(readOnly){
+    nextBtn = `<button class="btn-next" id="btnNext">Đóng</button>`;
+  } else if(allDone()){
+    nextBtn = `<button class="btn-next final" id="btnNext">Xem kết quả tổng kết ✨</button>`;
+  } else {
+    nextBtn = `<button class="btn-next" id="btnNext">Câu tiếp theo →</button>`;
+  }
+
+  $('#ovCard').innerHTML = `
+    ${badge}
+    <div class="donut-wrap">
+      <div class="donut">${donutSVG(110,46,12)}
+        <div class="dn-center"><span class="big">${done}/${TOTAL}</span><span class="sm">${fmt(marks)} điểm</span></div>
+      </div>
+    </div>
+    <div class="ov-key"><span class="klab">ĐÁP ÁN ĐÚNG</span>${correctKeyHtml(st)}</div>
+    <div class="ov-expl"><span class="klab">GIẢI THÍCH</span>${st.expl}
+      ${st.quote ? `<div class="ov-quote">“${st.quote}”</div>` : ''}
+    </div>
+    ${nextBtn}`;
+
+  $('#overlay').classList.add('show');
+  $('#btnNext').onclick = ()=>{
+    $('#overlay').classList.remove('show');
+    if(readOnly) return;
+    if(allDone()){ showSummary(); updatePath(); return; }
+    const nx = nextUnanswered(cur);
+    if(nx>=0) go(nx);
+  };
+}
+$('#overlay').addEventListener('click', e=>{
+  if(e.target===$('#overlay')) $('#overlay').classList.remove('show');
+});
+
+/* ============================================================
+   FINAL SUMMARY + MODEL ANSWER
+   ============================================================ */
+const MODEL = [
+  `The diagram illustrates the various stages through which a monarch butterfly <span class="m-verb">passes</span> during its life, from the laying of eggs to full adulthood.`,
+  `<span class="m-seq">Overall</span>, the life cycle consists of four main stages — egg, larva, pupa and adult — and it repeats itself with each new generation, as mature butterflies return to mate and lay their eggs.`,
+  `<span class="m-seq">To begin</span>, the adult butterfly <span class="m-verb">mates</span> and <span class="m-verb">lays</span> its eggs on the leaves of the milkweed plant. After approximately 14 days, tiny larvae <span class="m-verb">hatch</span> from these eggs and immediately begin to <span class="m-verb">feed</span> on the milkweed. <span class="m-seq">As</span> it eats, the caterpillar <span class="m-verb">grows</span> rapidly, <span class="m-verb">shedding</span> its skin several times.`,
+  `<span class="m-seq">Once</span> it is fully grown, the larva <span class="m-verb">attaches</span> itself to a stem and <span class="m-verb">transforms</span> into a chrysalis, a stage which lasts around ten days. A fully formed adult then <span class="m-verb">emerges</span> from the case and <span class="m-verb">migrates</span> south, where it spends roughly six months before flying north again. <span class="m-seq">Finally</span>, the mature butterflies mate and lay their own eggs, and the cycle begins again.`
+];
+
+function showSummary(){
+  clearGlow();
+  const marks = score();
+  const pct = marks/TOTAL;
+  const enc = pct>=0.9 ? "Xuất sắc! Bạn đã sẵn sàng tự viết một bài life cycle hoàn chỉnh." :
+              pct>=0.7 ? "Tốt lắm! Xem lại vài bước chưa đúng rồi thử viết bài hoàn chỉnh nhé." :
+              pct>=0.5 ? "Khá ổn — hãy bấm vào các nốt đỏ trên thanh tiến trình để xem lại giải thích." :
+              "Đừng nản — bấm “Làm lại” và đi chậm qua từng phần giải thích nhé.";
+  const nOk = results.filter(r=>r==='ok').length;
+  const nHalf = results.filter(r=>r==='half').length;
+  const nNo = results.filter(r=>r==='no').length;
+
+  // word count (strip tags)
+  const tmp = document.createElement('div');
+  tmp.innerHTML = MODEL.join(' ');
+  const wc = tmp.textContent.trim().split(/\s+/).length;
+
+  rightPane.innerHTML = `
+  <div class="summary">
+    <div class="sum-card">
+      <h2>Hoàn thành bài học! 🎉</h2>
+      <div class="enc">${enc}</div>
+      <div class="donut-big">${donutSVG(170,72,16)}
+        <div class="dn-center"><span class="big">${fmt(marks)}/${TOTAL}</span><span class="sm">điểm</span></div>
+      </div>
+      <div class="sum-stats">
+        <span class="ok">✓ ${nOk} đúng</span>
+        <span class="half">◐ ${nHalf} đúng một phần</span>
+        <span class="no">✕ ${nNo} chưa đúng</span>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <h3>Model Answer — The Monarch Butterfly Life Cycle</h3>
+      <span class="wc">${wc} words ✓ (yêu cầu tối thiểu: 150)</span>
+      ${MODEL.map(p=>`<p>${p}</p>`).join('')}
+      <div class="legend">
+        <span><span class="sw" style="background:var(--hl)"></span>Sequencers &amp; linking devices</span>
+        <span><span class="sw" style="background:#fff;border-bottom:3px solid var(--blue)"></span>Precise process verbs</span>
+      </div>
+    </div>
+
+    <button class="btn-redo" id="btnRedo">↺ Làm lại từ đầu</button>
+  </div>`;
+  $('#btnRedo').addEventListener('click', restart);
+  rightPane.scrollTop = 0;
+}
+
+/* ============================================================
+   RESTART / INIT
+   ============================================================ */
+function restart(){
+  answers = Array(TOTAL).fill(null);
+  results = Array(TOTAL).fill(null);
+  clearGlow();
+  go(0);
+}
+$('#btnRestart').addEventListener('click', ()=>{
+  if(results.some(Boolean) && !confirm('Bắt đầu lại từ đầu? Toàn bộ tiến trình sẽ bị xóa.')) return;
+  restart();
+});
+
+buildPath();
+go(0);
+</script>
+</body>
+</html>

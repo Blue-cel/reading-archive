@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Lab — Writing Task 1: Natural Process (Guided Lesson)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A; --navy-deep:#14306E; --gold:#F5B82E; --gold-hover:#E0A21C;
+  --blue:#2563EB; --blue-badge:#1D4ED8; --head:#1E3A5F; --body:#374151;
+  --muted:#6B7280; --border:#E5E7EB; --surface:#FFFFFF; --subtle:#F8FAFC;
+  --callout:#EFF4FB;
+  --correct-bg:#ECFDF5; --correct-bd:#10B981; --correct-tx:#065F46;
+  --wrong-bg:#FEF2F2; --wrong-bd:#EF4444; --wrong-tx:#991B1B;
+  --hl:#FDF0D5;
+  /* diagram palette (vault design.md) */
+  --d-navy:#1f4e79; --d-amber:#e0922f; --d-teal:#2a9d8f; --d-ink:#23425f;
+  --d-bd:#7d9dc0; --d-fill1:#dce8f5; --d-fill2:#cfe1f2; --d-fill3:#eef4fb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--body);background:var(--subtle);overflow:hidden}
+h1,h2,h3,.font-head{font-family:'Poppins','Inter',sans-serif}
+button{font-family:inherit;cursor:pointer}
+
+/* ================= TOP BAR ================= */
+.topbar{height:64px;background:var(--navy);display:flex;align-items:center;gap:20px;padding:0 20px;position:relative;z-index:30}
+.logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:21px;color:#fff;white-space:nowrap}
+.logo .lab{background:var(--gold);color:var(--navy-deep);border-radius:6px;padding:1px 7px;margin-left:5px;font-weight:700}
+.restart{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+.restart:hover{background:rgba(255,255,255,.12)}
+/* node path */
+.path-wrap{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;justify-content:center}
+.path-wrap::-webkit-scrollbar{display:none}
+.path{display:flex;align-items:center;padding:4px 8px}
+.node{width:32px;height:32px;flex:0 0 32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;transition:all .25s}
+.node:hover{transform:scale(1.12)}
+.connector{width:14px;height:3px;flex:0 0 14px;background:rgba(255,255,255,.25);transition:background .3s}
+.connector.fill{background:var(--gold)}
+.node.current{border-color:#fff;background:rgba(255,255,255,.18)}
+.node.current::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.13)}}
+.node.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.node.ok{background:var(--correct-bd);border-color:var(--correct-bd)}
+.node.no{background:var(--wrong-bd);border-color:var(--wrong-bd)}
+.node.half{background:linear-gradient(135deg,var(--correct-bd) 50%,var(--wrong-bd) 50%);border-color:var(--gold)}
+/* progress bar */
+.progress{height:5px;background:var(--border)}
+.progress>div{height:100%;width:0;background:var(--gold);transition:width .4s ease}
+
+/* ================= BODY ================= */
+.main{display:flex;height:calc(100vh - 69px)}
+.pane{flex:1 1 50%;overflow-y:auto;padding:32px 36px}
+.pane-left{background:var(--subtle);border-right:1px solid var(--border)}
+.pane-right{background:var(--surface)}
+
+/* left pane */
+.pane-left h2{color:var(--blue);font-size:23px;font-weight:700}
+.pane-left .subtitle{font-size:15px;font-style:italic;color:var(--muted);margin:4px 0 18px}
+.task-callout{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;line-height:1.7;margin-bottom:10px}
+.task-note{font-size:13px;color:var(--muted);margin-bottom:18px}
+.diagram-card{background:#f3f7fc;border:1px solid var(--border);border-radius:12px;padding:14px}
+.diagram-card svg{width:100%;height:auto;display:block}
+.stage .badge-rect{transition:all .3s}
+.stage.glow .badge-rect{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 7px rgba(245,184,46,.9))}
+.stage.glow .stage-label{font-weight:700;fill:var(--navy)}
+
+/* right pane */
+.part-tag{display:inline-block;background:var(--callout);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.06em;border-radius:999px;padding:5px 13px;margin-bottom:14px}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px 28px;max-width:680px}
+.step-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.qbadge{flex:0 0 32px;width:32px;height:32px;background:var(--navy-deep);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.step-title{font-size:17px;font-weight:600;color:var(--head);line-height:1.45;padding-top:4px}
+.teach{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:11px 15px;font-size:14.5px;line-height:1.65;margin:14px 0 18px;color:var(--body)}
+.teach b{color:var(--head)}
+
+/* option cards */
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px;font-size:15px;line-height:1.55;color:var(--body);transition:all .15s}
+.opt:hover:not(:disabled){background:var(--subtle);border-color:#cbd5e1}
+.opt .letter{font-weight:700;color:var(--head)}
+.opt .radio{flex:0 0 18px;width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;margin-top:2px;position:relative;transition:all .15s}
+.opt.sel{border-color:var(--blue);background:#f5f8ff}
+.opt.sel .radio{border-color:var(--blue)}
+.opt.sel .radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.opt.correct .letter{color:var(--correct-tx)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.opt.wrong .letter{color:var(--wrong-tx)}
+.opt.dim{opacity:.5}
+.opt .mark{margin-left:auto;font-weight:800;flex:0 0 auto}
+.opt.correct .mark{color:var(--correct-bd)}
+.opt.wrong .mark{color:var(--wrong-bd)}
+.pick-hint{font-size:13px;font-weight:600;color:var(--muted);margin-top:10px}
+.pick-hint.full{color:var(--correct-tx)}
+
+/* order exercise */
+.order-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.ord{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:13px 16px;font-size:15px;line-height:1.5;transition:all .15s}
+.ord:hover:not(:disabled){background:var(--subtle)}
+.ord .slot{flex:0 0 28px;width:28px;height:28px;border-radius:8px;border:2px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
+.ord.picked{border-color:var(--blue);background:#f5f8ff}
+.ord.picked .slot{border:none;background:var(--navy-deep)}
+.ord.r-ok{border-color:var(--correct-bd);background:var(--correct-bg)}
+.ord.r-ok .slot{border:none;background:var(--correct-bd)}
+.ord.r-no{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.ord.r-no .slot{border:none;background:var(--wrong-bd)}
+.ord .fix{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--wrong-tx);white-space:nowrap}
+
+/* gaps / rows */
+.gap-text{font-size:15.5px;line-height:2.15;margin-top:14px}
+.gapsel{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;border:1px solid var(--border);border-radius:9px;padding:6px 28px 6px 11px;font-size:14.5px;font-family:inherit;color:var(--body);margin:0 2px;max-width:260px}
+.gapsel:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+.gapsel.answered{border-color:var(--blue);background-color:var(--callout);color:var(--blue-badge);font-weight:600}
+.gap-res{display:inline-block;border-radius:8px;padding:3px 10px;font-weight:600;font-size:14.5px;margin:0 2px;white-space:nowrap}
+.gap-res.ok{background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd)}
+.gap-res.no{background:var(--wrong-bg);color:var(--wrong-tx);border:1px solid var(--wrong-bd);text-decoration:line-through}
+.gap-res .fixv{text-decoration:none;color:var(--correct-tx);font-weight:700}
+.rows{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.row-item{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:12px 16px}
+.row-item .rlab{font-size:15px;font-weight:600;color:var(--head);flex:1 1 200px}
+
+/* check bar */
+.checkbar{margin-top:22px;display:flex;gap:10px;align-items:center}
+.btn-check{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700;transition:all .15s}
+.btn-check:hover:not(:disabled){background:var(--blue-badge)}
+.btn-check:disabled{background:#cbd5e1;cursor:not-allowed}
+.btn-review{background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700}
+.btn-review:hover{background:var(--callout)}
+.locked-note{font-size:13px;color:var(--muted)}
+
+/* ================= OVERLAY ================= */
+.overlay{position:fixed;inset:0;background:rgba(20,48,110,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+.overlay.show{display:flex;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px 32px;text-align:center;animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+.ov-badge{display:inline-block;border-radius:999px;padding:8px 22px;font-weight:800;font-size:17px;font-family:'Poppins',sans-serif;margin-bottom:16px}
+.ov-badge.ok{background:var(--correct-bg);color:var(--correct-tx);border:2px solid var(--correct-bd)}
+.ov-badge.no{background:var(--wrong-bg);color:var(--wrong-tx);border:2px solid var(--wrong-bd)}
+.ov-badge.half{background:var(--hl);color:#92400E;border:2px solid var(--gold)}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 16px}
+.donut{position:relative;width:110px;height:110px}
+.donut svg{transform:rotate(-90deg)}
+.donut .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dn-center .big{font-weight:800;font-size:19px;color:var(--head);font-family:'Poppins',sans-serif}
+.dn-center .sm{font-size:11px;color:var(--muted);font-weight:600}
+.ov-key{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:13px 16px;text-align:left;font-size:14.5px;line-height:1.65;margin-bottom:12px}
+.ov-key .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:5px}
+.ov-expl{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:14px 17px;text-align:left;font-size:14.5px;line-height:1.7;margin-bottom:14px}
+.ov-expl .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:6px}
+.ov-quote{border-left:4px solid var(--gold);background:var(--hl);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-style:italic;color:var(--head);font-size:14px;line-height:1.6}
+.btn-next{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:700;width:100%}
+.btn-next:hover{background:var(--blue-badge)}
+.btn-next.final{background:var(--gold);color:var(--navy-deep)}
+.btn-next.final:hover{background:var(--gold-hover)}
+
+/* ================= SUMMARY ================= */
+.summary{max-width:680px}
+.sum-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px 32px;text-align:center;margin-bottom:20px}
+.sum-card h2{color:var(--head);font-size:24px;margin-bottom:6px}
+.sum-card .enc{color:var(--muted);font-size:15px;margin-bottom:18px}
+.donut-big{position:relative;width:170px;height:170px;margin:0 auto 16px}
+.donut-big svg{transform:rotate(-90deg)}
+.donut-big .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-big .big{font-weight:800;font-size:30px;color:var(--head);font-family:'Poppins',sans-serif}
+.donut-big .sm{font-size:12.5px;color:var(--muted);font-weight:600}
+.sum-stats{display:flex;justify-content:center;gap:22px;font-size:14px;font-weight:600}
+.sum-stats .ok{color:var(--correct-tx)} .sum-stats .half{color:#92400E} .sum-stats .no{color:var(--wrong-tx)}
+.model-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;margin-bottom:20px}
+.model-card h3{color:var(--blue);font-size:19px;margin-bottom:4px}
+.model-card .wc{display:inline-block;background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd);border-radius:999px;font-size:12.5px;font-weight:700;padding:4px 12px;margin:6px 0 14px}
+.model-card p{font-size:15px;line-height:1.85;text-align:justify;margin-bottom:13px}
+.m-seq{background:var(--hl);border-radius:4px;padding:0 3px;font-weight:600}
+.m-verb{border-bottom:2px solid var(--blue);font-weight:600;color:var(--head)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px;padding-top:12px;border-top:1px solid var(--border)}
+.legend .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.btn-redo{background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:800;width:100%}
+.btn-redo:hover{background:var(--gold-hover)}
+
+@media (max-width: 900px){
+  body{overflow:auto}
+  .main{flex-direction:column;height:auto}
+  .pane{overflow:visible;padding:22px 18px}
+  .pane-left{border-right:none;border-bottom:1px solid var(--border)}
+  .logo{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="topbar">
+  <div class="logo">IELTS<span class="lab">Lab</span></div>
+  <div class="path-wrap"><div class="path" id="path"></div></div>
+  <button class="restart" id="btnRestart">↺ Bắt đầu lại</button>
+</header>
+<div class="progress"><div id="progFill"></div></div>
+
+<div class="main">
+  <!-- ================= LEFT: TASK + DIAGRAM ================= -->
+  <section class="pane pane-left">
+    <h2>Writing Task 1 — Natural Process</h2>
+    <div class="subtitle">Guided lesson · learn one micro-skill, practise it immediately</div>
+    <div class="task-callout">
+      <b>The diagram below shows the water cycle, which is the continuous movement of water on, above and below the surface of the Earth.</b><br>
+      Summarise the information by selecting and reporting the main features, and make comparisons where relevant.
+    </div>
+    <div class="task-note">You should write at least <b>150 words</b>. · You should spend about 20 minutes on this task.</div>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 720 540" xmlns="http://www.w3.org/2000/svg" aria-label="Diagram of the water cycle with six numbered stages">
+        <defs>
+          <marker id="arrN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#1f4e79"/>
+          </marker>
+          <marker id="arrT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#2a9d8f"/>
+          </marker>
+        </defs>
+
+        <!-- sky -->
+        <rect x="0" y="0" width="720" height="540" rx="10" fill="#f3f7fc"/>
+        <text x="360" y="32" text-anchor="middle" font-family="Poppins,Inter,sans-serif" font-size="19" font-weight="700" fill="#173a63">The Water Cycle</text>
+
+        <!-- sun -->
+        <g>
+          <circle cx="86" cy="92" r="30" fill="#e0922f"/>
+          <g stroke="#e0922f" stroke-width="3" stroke-linecap="round">
+            <line x1="86" y1="46" x2="86" y2="34"/><line x1="86" y1="138" x2="86" y2="150"/>
+            <line x1="40" y1="92" x2="28" y2="92"/><line x1="132" y1="92" x2="144" y2="92"/>
+            <line x1="53" y1="59" x2="45" y2="51"/><line x1="119" y1="59" x2="127" y2="51"/>
+            <line x1="53" y1="125" x2="45" y2="133"/><line x1="119" y1="125" x2="127" y2="133"/>
+          </g>
+        </g>
+
+        <!-- mountains / land -->
+        <path d="M300 540 L300 430 L380 330 L450 380 L520 268 L610 360 L720 330 L720 540 Z" fill="#dce8f5" stroke="#7d9dc0" stroke-width="2"/>
+        <path d="M508 288 L520 268 L536 290 L526 286 L518 296 Z" fill="#ffffff" stroke="#7d9dc0" stroke-width="1.5"/>
+        <!-- underground layer -->
+        <path d="M300 540 L300 470 L720 440 L720 540 Z" fill="#cfe1f2" opacity="0.8"/>
+        <text x="610" y="505" text-anchor="middle" font-size="13" font-style="italic" fill="#23425f">groundwater</text>
+
+        <!-- ocean -->
+        <path d="M0 400 Q40 388 80 400 T160 400 T240 400 T320 400 L320 540 L0 540 Z" fill="#cfe1f2" stroke="#1f4e79" stroke-width="2"/>
+        <text x="120" y="480" text-anchor="middle" font-family="Poppins,Inter,sans-serif" font-size="15" font-weight="700" fill="#1f4e79">OCEAN</text>
+
+        <!-- clouds -->
+        <g fill="#ffffff" stroke="#7d9dc0" stroke-width="2">
+          <g>
+            <ellipse cx="300" cy="105" rx="46" ry="22"/>
+            <ellipse cx="268" cy="115" rx="30" ry="17"/>
+            <ellipse cx="334" cy="116" rx="30" ry="16"/>
+          </g>
+          <g>
+            <ellipse cx="520" cy="120" rx="58" ry="26"/>
+            <ellipse cx="478" cy="132" rx="36" ry="19"/>
+            <ellipse cx="562" cy="133" rx="36" ry="18"/>
+          </g>
+        </g>
+
+        <!-- STAGE 1: evaporation -->
+        <g class="stage" id="st1">
+          <g stroke="#2a9d8f" stroke-width="3" fill="none">
+            <path d="M150 372 q-12 -28 0 -56 q12 -28 0 -56 q-10 -24 -2 -48" marker-end="url(#arrT)"/>
+            <path d="M205 372 q-12 -28 0 -56 q12 -28 0 -56 q-10 -24 -2 -48" marker-end="url(#arrT)"/>
+          </g>
+          <rect class="badge-rect" x="232" y="262" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="245" y="280" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+          <text class="stage-label" x="266" y="274" font-size="14" font-weight="600" fill="#23425f">Evaporation</text>
+          <text class="stage-label" x="266" y="292" font-size="11.5" font-style="italic" fill="#6B7280">80% of water vapour</text>
+          <text class="stage-label" x="266" y="306" font-size="11.5" font-style="italic" fill="#6B7280">comes from the oceans</text>
+        </g>
+
+        <!-- STAGE 2: condensation -->
+        <g class="stage" id="st2">
+          <path d="M352 96 L448 102" stroke="#1f4e79" stroke-width="3" fill="none" marker-end="url(#arrN)"/>
+          <rect class="badge-rect" x="372" y="52" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="385" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+          <text class="stage-label" x="406" y="70" font-size="14" font-weight="600" fill="#23425f">Condensation</text>
+        </g>
+
+        <!-- STAGE 3: precipitation -->
+        <g class="stage" id="st3">
+          <g stroke="#1f4e79" stroke-width="2.5" stroke-linecap="round">
+            <line x1="478" y1="162" x2="468" y2="192"/><line x1="506" y1="166" x2="496" y2="196"/>
+            <line x1="534" y1="166" x2="524" y2="196"/><line x1="562" y1="162" x2="552" y2="192"/>
+            <line x1="490" y1="206" x2="480" y2="236"/><line x1="520" y1="210" x2="510" y2="240"/>
+            <line x1="548" y1="206" x2="538" y2="236"/>
+          </g>
+          <rect class="badge-rect" x="588" y="176" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="601" y="194" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+          <text class="stage-label" x="619" y="188" font-size="14" font-weight="600" fill="#23425f">Precipitation</text>
+          <text class="stage-label" x="619" y="205" font-size="11.5" font-style="italic" fill="#6B7280">(rain &amp; snow)</text>
+        </g>
+
+        <!-- STAGE 4: surface runoff -->
+        <g class="stage" id="st4">
+          <path d="M468 350 Q420 392 348 402" stroke="#1f4e79" stroke-width="3" fill="none" marker-end="url(#arrN)"/>
+          <rect class="badge-rect" x="408" y="408" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="421" y="426" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+          <text class="stage-label" x="442" y="426" font-size="14" font-weight="600" fill="#23425f">Surface runoff</text>
+        </g>
+
+        <!-- STAGE 5: infiltration -->
+        <g class="stage" id="st5">
+          <g stroke="#2a9d8f" stroke-width="3" fill="none" stroke-dasharray="7 6">
+            <path d="M560 380 L555 460" marker-end="url(#arrT)"/>
+            <path d="M620 388 L615 452" marker-end="url(#arrT)"/>
+          </g>
+          <rect class="badge-rect" x="636" y="402" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="649" y="420" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+          <text class="stage-label" x="649" y="446" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Infiltration</text>
+        </g>
+
+        <!-- STAGE 6: return to ocean -->
+        <g class="stage" id="st6">
+          <path d="M520 488 L330 500 Q280 504 255 520" stroke="#2a9d8f" stroke-width="3" fill="none" stroke-dasharray="7 6" marker-end="url(#arrT)"/>
+          <rect class="badge-rect" x="360" y="466" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="373" y="484" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+          <text class="stage-label" x="394" y="484" font-size="13.5" font-weight="600" fill="#23425f">Return to the ocean</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= RIGHT: LESSON ================= -->
+  <section class="pane pane-right" id="rightPane"></section>
+</div>
+
+<!-- ================= FEEDBACK OVERLAY ================= -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — 20 micro-steps in 9 parts
+   types: mcq | multi | order | gaps | rows
+   ============================================================ */
+const STEPS = [
+/* ---------- PART 1 · READ THE DIAGRAM ---------- */
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Before writing a single word: what kind of process is this?",
+  teach:"Your very first decision controls your grammar for the whole report. Look at the diagram: is anything done <b>by people or machines</b>?",
+  options:[
+    "A man-made process — people manufacture a product step by step.",
+    "A natural process — it happens by itself, without human action.",
+    "A comparison of two different ways water is used."
+  ],
+  answer:1, focus:["st1","st2","st3"],
+  expl:"Đây là quy trình <b>tự nhiên</b>: nước tự bốc hơi, tự ngưng tụ, tự rơi xuống — không có con người hay máy móc tác động. Phân loại này cực kỳ quan trọng vì nó quyết định <b>thể (voice)</b> bạn dùng ở phần sau: quy trình tự nhiên → chủ động; quy trình sản xuất → bị động.",
+  quote:"The sun heats the ocean and water evaporates — nothing is done by people."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Is this process linear or cyclical?",
+  teach:"Follow the arrows to the very last stage. Where does the water go after stage 6?",
+  options:[
+    "Linear — it has a clear start point and a finished end product.",
+    "Cyclical — the last stage feeds back into the first, so it never ends.",
+    "Neither — the stages happen in a random order."
+  ],
+  answer:1, focus:["st6"],
+  expl:"Mũi tên cuối cùng đưa nước <b>quay về đại dương</b>, nơi nó lại bốc hơi — giai đoạn cuối nối thẳng vào giai đoạn đầu. Đây là <b>chu trình khép kín (cyclical process)</b>. Đặc điểm này bắt buộc phải được nêu trong câu overview, và nó cũng quyết định cách bạn kết bài.",
+  quote:"The water returns to the ocean, and the cycle begins again."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"How many main stages does the cycle have?",
+  teach:"Count the numbered labels — this number goes straight into your overview sentence.",
+  options:["Four","Six","Eight"],
+  answer:1, focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Đếm theo nhãn: evaporation → condensation → precipitation → surface runoff → infiltration → return to the ocean = <b>6 giai đoạn chính</b>. Con số này là 'nguyên liệu' số một của overview: <i>the cycle consists of six main stages</i>. Luôn đếm giai đoạn trước khi viết!",
+  quote:"Overall, the water cycle consists of six main stages…"
+},
+
+/* ---------- PART 2 · NAME THE STAGES ---------- */
+{
+  part:"PART 2 · NAME THE STAGES", type:"rows",
+  title:"Match each scientific term to its plain-English meaning.",
+  teach:"These four terms are the 'official names' of the stages. Learn them as noun–verb pairs: <b>evaporation – evaporate</b>, <b>condensation – condense</b>, etc.",
+  rows:[
+    {label:"Evaporation", opts:["water soaks down into the soil","liquid water turns into vapour","vapour cools and forms clouds","water falls as rain or snow"], a:1},
+    {label:"Condensation", opts:["water soaks down into the soil","liquid water turns into vapour","vapour cools and forms clouds","water falls as rain or snow"], a:2},
+    {label:"Precipitation", opts:["water soaks down into the soil","liquid water turns into vapour","vapour cools and forms clouds","water falls as rain or snow"], a:3},
+    {label:"Infiltration", opts:["water soaks down into the soil","liquid water turns into vapour","vapour cools and forms clouds","water falls as rain or snow"], a:0}
+  ],
+  focus:["st1","st2","st3","st5"],
+  expl:"Dùng <b>danh từ</b> để gọi tên giai đoạn (<i>a stage known as precipitation</i>) và <b>động từ</b> để miêu tả hành động (<i>the water falls as rain</i>). Bộ tứ cần thuộc lòng: evaporation–evaporate, condensation–condense, precipitation–fall (as rain/snow), infiltration–percolate/seep.",
+  quote:"As the vapour rises, it cools and condenses to form clouds."
+},
+{
+  part:"PART 2 · NAME THE STAGES", type:"order",
+  title:"Click the stages in the correct order, starting from the ocean.",
+  teach:"The sequence is the <b>skeleton</b> of your whole report — Body 1 will describe stages 1–3, Body 2 stages 4–6. Click items in order; click again to undo.",
+  items:[
+    "The sun heats the ocean and water evaporates",
+    "Vapour rises, cools and condenses into clouds",
+    "Rain and snow fall over high ground",
+    "Water runs over the land into rivers and lakes",
+    "Some water percolates underground",
+    "Water drains back into the ocean"
+  ],
+  present:[2,5,0,3,1,4],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Trình tự đúng: evaporation → condensation → precipitation → runoff → infiltration → return. Hãy luôn 'đi' theo mũi tên một vòng trước khi viết — xác định sai trình tự thì cả bài sai theo. Với chu trình, bạn được phép <b>chọn điểm bắt đầu</b>, và đại dương là lựa chọn tự nhiên nhất vì 80% hơi nước sinh ra từ đó.",
+  quote:"…beginning with the evaporation of seawater and ending with its return to the ocean."
+},
+
+/* ---------- PART 3 · TENSE & VOICE ---------- */
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Which tense should the whole report use?",
+  teach:"Ask yourself: does this process happen once in the past, right now only, or <b>again and again, forever</b>?",
+  options:[
+    "Past simple — the diagram describes something that happened.",
+    "Present simple — the cycle repeats endlessly; it is a general truth.",
+    "Present continuous — the water is moving as we speak."
+  ],
+  answer:1,
+  expl:"Chu trình nước lặp đi lặp lại và đúng ở <b>mọi thời điểm</b> — một 'chân lý chung' — nên dùng <b>present simple</b>. Lỗi phổ biến: <i>water is evaporating</i> (chỉ tả khoảnh khắc đang diễn ra) hoặc past simple (chỉ dùng khi sơ đồ có mốc thời gian trong quá khứ).",
+  quote:"Water evaporates, rises and condenses — every day, endlessly."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Active or passive? In a manufacturing process we write “the bottles are filled”. What about a natural process?",
+  teach:"Think about <b>who performs the action</b>. In a factory, workers act on objects. In nature…?",
+  options:[
+    "Mostly passive — the same as any other process diagram.",
+    "Mostly active — water acts by itself: “water evaporates”, “rain falls”.",
+    "It makes no difference which voice you use."
+  ],
+  answer:1,
+  expl:"Đây là điểm khác biệt lớn nhất giữa hai loại process. Quy trình tự nhiên: chủ thể <b>tự hành động</b> → dùng <b>chủ động</b> (<i>water evaporates</i>). Quy trình sản xuất: hành động do người/máy thực hiện lên vật thể, mà người làm không quan trọng → bị động (<i>the leather is tanned</i>). Bị động chỉ xuất hiện lác đác trong bài natural process.",
+  quote:"Natural: water evaporates. Man-made: the leather is tanned."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"gaps",
+  title:"Choose the correct form in each sentence.",
+  teach:"Default to <b>active</b> — but watch out: one of these three needs the passive. Ask: can the subject do this action <b>to itself</b>?",
+  text:"Water {0} from the surface of the sea. The vapour then {1} into clouds high in the sky. Deep below the ground, water {2} as groundwater.",
+  gaps:[
+    {opts:["evaporates","is evaporated"], a:0},
+    {opts:["condenses","is condensed"], a:0},
+    {opts:["stores","is stored"], a:1}
+  ],
+  focus:["st1","st2","st5"],
+  expl:"Hai câu đầu dùng <b>chủ động</b> vì nước tự thực hiện hành động. Câu 3 là ngoại lệ quan trọng: <i>store</i> cần tân ngữ (cất giữ <i>cái gì đó</i>) — nước không thể tự 'cất' chính nó, nên phải dùng bị động <b>is stored</b>. Quy tắc: chủ động là mặc định; bị động chỉ dùng khi chủ thể không thể tự làm hành động đó.",
+  quote:"…the remainder percolates through the soil, where it is stored as groundwater."
+},
+
+/* ---------- PART 4 · PROCESS VERBS ---------- */
+{
+  part:"PART 4 · PROCESS VERBS", type:"gaps",
+  title:"Complete the description with the correct verb.",
+  teach:"Precise verbs are the easiest Lexical Resource points in a process task. Careful with the classic traps: <b>rise</b> (go up by itself) vs <b>raise</b> (lift something), <b>heat</b> vs <b>boil</b>.",
+  text:"The sun {0} the surface of the ocean, and water vapour {1} into the air. As it gets higher, the vapour {2} and condenses into clouds. Later, the water {3} over the mountains as rain, and eventually it {4} back towards the sea.",
+  gaps:[
+    {opts:["heats","boils","burns"], a:0},
+    {opts:["raises","rises","arises"], a:1},
+    {opts:["cools","colds","chills"], a:0},
+    {opts:["falls","fells","slips"], a:0},
+    {opts:["flows","floats","flies"], a:0}
+  ],
+  focus:["st1","st2","st3","st4"],
+  expl:"Các cặp dễ nhầm: <b>rise</b> (nội động từ — tự đi lên, không có tân ngữ) ≠ <b>raise</b> (ngoại động từ — nâng cái gì đó lên); <b>heat</b> (làm nóng) ≠ <b>boil</b> (đun sôi — mặt trời không đun sôi đại dương!); <b>cool</b> vừa là tính từ vừa là động từ, còn <i>cold</i> chỉ là tính từ.",
+  quote:"The sun heats the ocean; the vapour rises and cools."
+},
+{
+  part:"PART 4 · PROCESS VERBS", type:"rows",
+  title:"Upgrade the casual phrase to a precise, band-7 verb.",
+  teach:"Band 6 says <i>“goes down”</i>; band 7+ says <b>percolates</b>. One precise verb is worth more than a long sentence.",
+  rows:[
+    {label:"“goes down through the soil” →", opts:["pours","percolates","drips"], a:1},
+    {label:"“comes together in rivers and lakes” →", opts:["collects","sticks","crowds"], a:0},
+    {label:"“goes back to the ocean” →", opts:["retreats","repeats","returns"], a:2}
+  ],
+  focus:["st4","st5","st6"],
+  expl:"Học động từ theo bộ cho bài water cycle: <b>percolate / seep</b> (thấm xuống), <b>collect / accumulate</b> (tụ lại), <b>return / drain back</b> (quay về). Đây chính là những từ giúp giám khảo đánh dấu 'less common vocabulary' trong tiêu chí Lexical Resource.",
+  quote:"…the remainder percolates through the soil, collecting in lakes and rivers."
+},
+
+/* ---------- PART 5 · INTRODUCTION ---------- */
+{
+  part:"PART 5 · INTRODUCTION", type:"mcq",
+  title:"Which is the best introduction?",
+  teach:"The introduction = the task prompt <b>in your own words</b>. Two deadly sins: copying the rubric, and adding your opinion.",
+  options:[
+    "The diagram below shows the water cycle, which is the continuous movement of water on, above and below the surface of the Earth.",
+    "The diagram illustrates how water circulates between the ocean, the atmosphere and the land in a continuous natural cycle.",
+    "The diagram proves that rain is extremely important for all humans and animals."
+  ],
+  answer:1,
+  expl:"Câu A <b>chép nguyên văn đề</b> — giám khảo trừ những từ chép nguyên khỏi word count và đánh giá thấp khả năng paraphrase. Câu C đưa <b>ý kiến</b> (<i>extremely important</i>) — Task 1 tuyệt đối không có opinion. Câu B paraphrase chuẩn: shows → illustrates, movement → circulates, on/above/below the surface → between the ocean, the atmosphere and the land.",
+  quote:"The diagram illustrates how water circulates between the ocean, the atmosphere and the land."
+},
+{
+  part:"PART 5 · INTRODUCTION", type:"gaps",
+  title:"Now build your own introduction.",
+  teach:"Three paraphrase moves to memorise: <b>shows → illustrates</b> · <b>movement → circulates</b> · keep <b>continuous</b> (or swap for <i>never-ending</i>).",
+  text:"The diagram {0} how water {1} between the sea, the air and the land in a {2} natural cycle.",
+  gaps:[
+    {opts:["illustrates","writes","draws"], a:0},
+    {opts:["wanders","jumps","circulates"], a:2},
+    {opts:["continuous","occasional","temporary"], a:0}
+  ],
+  expl:"<b>Illustrates / depicts</b> là cặp thay thế an toàn nhất cho <i>shows</i>. <b>Circulates</b> đặc biệt đắt giá ở đây vì bản thân nó đã gợi tính tuần hoàn (circle → circulate). Những từ khóa khó thay (water, cycle) thì <b>giữ nguyên</b> — paraphrase mọi thứ bằng mọi giá sẽ tạo ra lỗi.",
+  quote:"The diagram illustrates how water circulates… in a continuous natural cycle."
+},
+
+/* ---------- PART 6 · OVERVIEW ---------- */
+{
+  part:"PART 6 · OVERVIEW", type:"multi", pick:2,
+  title:"Which TWO sentences belong in the overview?",
+  teach:"The overview answers two big-picture questions only: <b>how many stages?</b> and <b>what shape is the process?</b> No details, no data, no opinions.",
+  options:[
+    "Overall, the cycle consists of six main stages, from the evaporation of seawater to the return of water to the sea.",
+    "Around 80% of water vapour in the air comes from the ocean.",
+    "It is a continuous process with no clear beginning or end, repeating itself naturally.",
+    "In my opinion, the water cycle is the most important natural process on Earth."
+  ],
+  answers:[0,2],
+  expl:"Overview chỉ chứa '<b>bức tranh lớn</b>': số giai đoạn (câu 1) và tính tuần hoàn (câu 3). Số liệu chi tiết như <i>80%</i> thuộc về body paragraph; ý kiến cá nhân thì không bao giờ xuất hiện trong Task 1. Mẹo: nếu một câu trả lời câu hỏi 'bao nhiêu bước?' hoặc 'hình dạng quy trình thế nào?' → nó thuộc overview.",
+  quote:"Overall, the cycle consists of six main stages and repeats itself continuously."
+},
+{
+  part:"PART 6 · OVERVIEW", type:"gaps",
+  title:"Build the overview sentence.",
+  teach:"A high-band overview pattern for cycles: <b>Overall, … consists of X stages, beginning with … and ending with …, after which the process repeats itself.</b>",
+  text:"Overall, the water cycle {0} six main stages, {1} with the evaporation of seawater and ending with its return to the ocean, after which the process {2} itself.",
+  gaps:[
+    {opts:["consists of","is consisted of","makes of"], a:0},
+    {opts:["begins","begun","beginning"], a:2},
+    {opts:["replays","repeats","rewinds"], a:1}
+  ],
+  expl:"<b>Consist of</b> không bao giờ dùng bị động (✗ <i>is consisted of</i>). <b>Beginning with… and ending with…</b> là mệnh đề phân từ (participle clause) — gói gọn cả chu trình trong một câu và ghi điểm ngữ pháp. <b>Repeats itself</b> là collocation chuẩn để chốt tính tuần hoàn.",
+  quote:"Overall, the water cycle consists of six main stages… after which the process repeats itself."
+},
+
+/* ---------- PART 7 · SEQUENCING ---------- */
+{
+  part:"PART 7 · SEQUENCING", type:"gaps",
+  title:"Complete the body paragraph with the best connective.",
+  teach:"Vary your sequencers — never <i>then… then… then</i>. A strong chain: <b>To begin → As → Once → Subsequently → Finally</b>.",
+  text:"{0}, the sun heats the ocean and water evaporates into the air. {1} the vapour rises, it cools and condenses into clouds. {2} the clouds reach higher ground, the water falls as rain or snow. {3}, some water flows into rivers and lakes, while the rest soaks into the soil. {4}, all of the water drains back into the sea.",
+  gaps:[
+    {opts:["To begin","In conclusion","However"], a:0},
+    {opts:["Despite","As","Unless"], a:1},
+    {opts:["Although","Whereas","Once"], a:2},
+    {opts:["Surprisingly","Similarly","Subsequently"], a:2},
+    {opts:["Finally","Firstly","Fortunately"], a:0}
+  ],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Chuỗi connectives đa dạng là cách ăn điểm Coherence &amp; Cohesion trực tiếp nhất. Lưu ý hai kiểu nối khác nhau: trạng từ đứng đầu câu (<i>Subsequently, Finally</i>) và liên từ + mệnh đề (<i>As the vapour rises…, Once the clouds reach…</i>) — kiểu thứ hai 'mượt' hơn và cho thấy bạn kiểm soát được câu phức.",
+  quote:"Once the clouds reach higher ground, the water falls as rain or snow."
+},
+{
+  part:"PART 7 · SEQUENCING", type:"mcq",
+  title:"A cycle never ends — so how should the description finish?",
+  teach:"Your last sentence must close the report <b>and</b> reopen the loop.",
+  options:[
+    "Finally, the process stops when the water reaches the ocean.",
+    "Finally, the water returns to the ocean, and the cycle begins again.",
+    "In conclusion, water is recycled in nature."
+  ],
+  answer:1, focus:["st6"],
+  expl:"Chu trình không có điểm dừng — <i>the process stops</i> mâu thuẫn trực tiếp với sơ đồ. <i>In conclusion</i> là ngôn ngữ của essay Task 2, không dùng cho Task 1. Câu B vừa khép lại bài viết vừa nhấn lại tính tuần hoàn — đúng một công đôi việc.",
+  quote:"Finally, the water returns to the ocean, and the cycle begins again."
+},
+
+/* ---------- PART 8 · COMPLEX SENTENCES ---------- */
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “Water percolates through the soil.” + “It is stored there as groundwater.”",
+  teach:"Two short sentences about the <b>same place</b> → join them with relative <b>where</b>.",
+  options:[
+    "Water percolates through the soil, where it is stored as groundwater.",
+    "Water percolates through the soil where is stored as groundwater.",
+    "Water percolates through the soil, and where it is stored as groundwater."
+  ],
+  answer:0, focus:["st5"],
+  expl:"Mệnh đề quan hệ với <b>where</b> thay cho 'ở đó' — cấu trúc ghi điểm Grammatical Range kinh điển của bài process. Câu B thiếu chủ ngữ <i>it</i> sau where; câu C thừa <i>and</i> (where tự nó đã là từ nối rồi, không cần thêm liên từ).",
+  quote:"…percolates through the soil, where it is stored as groundwater."
+},
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “The water drains back into the ocean.” + “Then the whole cycle repeats.”",
+  teach:"To link a stage with what happens <b>after</b> it, use the formal connector <b>, after which</b>.",
+  options:[
+    "The water drains back into the ocean. After which the whole cycle repeats.",
+    "The water drains back into the ocean, after that which the whole cycle repeats.",
+    "The water drains back into the ocean, after which the whole cycle repeats."
+  ],
+  answer:2, focus:["st6"],
+  expl:"<b>', after which'</b> = 'và sau đó' ở văn phong trang trọng — cực hợp với Task 1. Nó phải đi sau dấu phẩy trong <b>cùng một câu</b>: đứng đầu câu mới sẽ tạo ra mảnh câu (câu A); và không bao giờ ghép <i>after that which</i> (câu B).",
+  quote:"…back into the ocean, after which the whole cycle repeats."
+},
+
+/* ---------- PART 9 · ORGANISE & ASSEMBLE ---------- */
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"rows",
+  title:"Divide the six stages into two balanced body paragraphs.",
+  teach:"The most logical split for this cycle: <b>Body 1 = the journey up and down</b> (in the sky) · <b>Body 2 = the journey back</b> (on and under the land).",
+  rows:[
+    {label:"1 · Evaporation", opts:["Body 1","Body 2"], a:0},
+    {label:"2 · Condensation", opts:["Body 1","Body 2"], a:0},
+    {label:"3 · Precipitation", opts:["Body 1","Body 2"], a:0},
+    {label:"4 · Surface runoff", opts:["Body 1","Body 2"], a:1},
+    {label:"5 · Infiltration / groundwater", opts:["Body 1","Body 2"], a:1},
+    {label:"6 · Return to the ocean", opts:["Body 1","Body 2"], a:1}
+  ],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Chia <b>3 + 3</b>: Body 1 tả hành trình nước bay lên và rơi xuống (evaporation → precipitation), Body 2 tả hành trình trên/dưới mặt đất quay về biển (runoff → return). Hai đoạn cân đối, mỗi đoạn có một 'chủ đề không gian' riêng — giám khảo nhìn thấy ngay khả năng tổ chức của bạn.",
+  quote:"Body 1: ocean → sky. Body 2: land → ocean."
+},
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"order",
+  title:"Finally — put the report skeleton in order.",
+  teach:"The Task 1 process skeleton never changes. No conclusion, no opinion — ever.",
+  items:[
+    "Introduction — paraphrase what the diagram shows",
+    "Overview — six stages, a continuous cycle",
+    "Body 1 — from the ocean to the sky: evaporation, condensation, precipitation",
+    "Body 2 — back to the ocean: runoff, groundwater, return"
+  ],
+  present:[2,0,3,1],
+  expl:"Khung bài Task 1 process luôn cố định: <b>Introduction → Overview → Body 1 → Body 2</b>. Không có kết luận (đó là việc của Task 2), không có ý kiến. Giờ bạn đã có đủ mọi 'viên gạch' — xem bài mẫu hoàn chỉnh ở màn hình tổng kết nhé!",
+  quote:"Introduction → Overview → Body 1 → Body 2. Nothing else."
+}
+];
+
+const TOTAL = STEPS.length;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let cur = 0;
+let answers = Array(TOTAL).fill(null);   // raw response per step
+let results = Array(TOTAL).fill(null);   // 'ok' | 'half' | 'no'
+let pending = [];                        // working selection for current step
+
+const $ = s => document.querySelector(s);
+const rightPane = $('#rightPane');
+const pathEl = $('#path');
+
+/* ============================================================
+   NODE PATH
+   ============================================================ */
+function buildPath(){
+  pathEl.innerHTML = '';
+  STEPS.forEach((st,i)=>{
+    if(i>0){
+      const c = document.createElement('div');
+      c.className = 'connector'; c.id = 'conn'+i;
+      pathEl.appendChild(c);
+    }
+    const n = document.createElement('button');
+    n.className = 'node'; n.id = 'node'+i; n.textContent = i+1;
+    n.title = st.part;
+    n.addEventListener('click', ()=>{ go(i); });
+    pathEl.appendChild(n);
+  });
+}
+function updatePath(){
+  STEPS.forEach((st,i)=>{
+    const n = document.getElementById('node'+i);
+    n.className = 'node';
+    if(results[i]) n.classList.add(results[i]);
+    if(i===cur) n.classList.add(results[i] ? 'viewing' : 'current');
+    if(i>0){
+      document.getElementById('conn'+i).className = 'connector' + (results[i-1] ? ' fill' : '');
+    }
+  });
+  const done = results.filter(Boolean).length;
+  $('#progFill').style.width = (done/TOTAL*100) + '%';
+  const active = document.getElementById('node'+cur);
+  if(active) active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+}
+
+/* ============================================================
+   DIAGRAM HIGHLIGHT
+   ============================================================ */
+function clearGlow(){ document.querySelectorAll('.stage.glow').forEach(g=>g.classList.remove('glow')); }
+function glow(ids){
+  clearGlow();
+  (ids||[]).forEach(id=>{ const g = document.getElementById(id); if(g) g.classList.add('glow'); });
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function score(){
+  let marks = 0;
+  results.forEach(r=>{ if(r==='ok') marks += 1; else if(r==='half') marks += 0.5; });
+  return marks;
+}
+function allDone(){ return results.every(Boolean); }
+function nextUnanswered(from){
+  for(let k=1;k<=TOTAL;k++){ const i=(from+k)%TOTAL; if(!results[i]) return i; }
+  return -1;
+}
+function fmt(n){ return (n%1===0) ? n : n.toFixed(1); }
+
+function donutSVG(size, r, sw){
+  const C = 2*Math.PI*r;
+  const marks = score();
+  const wrong = results.filter(Boolean).length - results.filter(r=>r==='ok').length; // not used directly
+  let green = 0, red = 0;
+  results.forEach(x=>{
+    if(x==='ok') green += 1;
+    else if(x==='half'){ green += .5; red += .5; }
+    else if(x==='no') red += 1;
+  });
+  const gFrac = green/TOTAL, rFrac = red/TOTAL;
+  const cx = size/2;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${sw}"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--correct-bd)" stroke-width="${sw}"
+      stroke-dasharray="${gFrac*C} ${C}" stroke-linecap="butt"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--wrong-bd)" stroke-width="${sw}"
+      stroke-dasharray="${rFrac*C} ${C}" stroke-dashoffset="${-gFrac*C}" stroke-linecap="butt"/>
+  </svg>`;
+}
+
+/* ============================================================
+   RENDER STEP
+   ============================================================ */
+function go(i){
+  cur = i;
+  pending = [];
+  renderStep();
+  updatePath();
+  rightPane.scrollTop = 0;
+}
+
+function renderStep(){
+  const st = STEPS[cur];
+  const answered = !!results[cur];
+  if(answered) glow(st.focus); else clearGlow();
+
+  let bodyHtml = '';
+  if(st.type==='mcq')   bodyHtml = renderMcq(st, answered);
+  if(st.type==='multi') bodyHtml = renderMulti(st, answered);
+  if(st.type==='order') bodyHtml = renderOrder(st, answered);
+  if(st.type==='gaps')  bodyHtml = renderGaps(st, answered);
+  if(st.type==='rows')  bodyHtml = renderRows(st, answered);
+
+  const checkBar = answered
+    ? `<div class="checkbar"><button class="btn-review" id="btnReview">Xem lại giải thích</button><span class="locked-note">Bước này đã hoàn thành — đáp án được khóa.</span></div>`
+    : `<div class="checkbar"><button class="btn-check" id="btnCheck" disabled>Kiểm tra đáp án</button></div>`;
+
+  rightPane.innerHTML = `
+    <span class="part-tag">${st.part} · BƯỚC ${cur+1}/${TOTAL}</span>
+    <div class="step-card">
+      <div class="step-head">
+        <div class="qbadge">${cur+1}</div>
+        <div class="step-title">${st.title}</div>
+      </div>
+      ${st.teach ? `<div class="teach">${st.teach}</div>` : ''}
+      ${bodyHtml}
+      ${checkBar}
+    </div>`;
+
+  if(answered){
+    $('#btnReview').addEventListener('click', ()=> showOverlay(cur, true));
+  } else {
+    wireStep(st);
+  }
+}
+
+/* ---------- MCQ ---------- */
+function renderMcq(st, answered){
+  const letters = ['A','B','C','D'];
+  return `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur];
+      if(j===st.answer){ cls += ' correct'; mark = '✓'; }
+      else if(j===u){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+}
+
+/* ---------- MULTI (choose N) ---------- */
+function renderMulti(st, answered){
+  const letters = ['A','B','C','D'];
+  let html = `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur] || [];
+      if(st.answers.includes(j)){ cls += ' correct'; mark = '✓'; }
+      else if(u.includes(j)){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+  if(!answered) html += `<div class="pick-hint" id="pickHint">Đã chọn 0/${st.pick}</div>`;
+  return html;
+}
+
+/* ---------- ORDER ---------- */
+function renderOrder(st, answered){
+  const present = st.present;
+  if(!answered){
+    return `<div class="order-list">` + present.map(origIdx=>{
+      return `<button class="ord" data-orig="${origIdx}"><span class="slot"></span><span>${st.items[origIdx]}</span></button>`;
+    }).join('') + `</div>`;
+  }
+  // review: show user's sequence with right/wrong
+  const u = answers[cur]; // array of orig indices in user's chosen order
+  let html = `<div class="order-list">` + u.map((origIdx,pos)=>{
+    const okPos = origIdx === pos;
+    return `<div class="ord ${okPos?'r-ok':'r-no'}">
+      <span class="slot">${pos+1}</span><span>${st.items[origIdx]}</span>
+      ${okPos?'':`<span class="fix">đúng ra: vị trí ${origIdx+1}</span>`}</div>`;
+  }).join('') + `</div>`;
+  return html;
+}
+
+/* ---------- GAPS (inline) ---------- */
+function gapSelect(g, j){
+  return `<select class="gapsel" data-g="${j}">
+    <option value="">— chọn —</option>
+    ${g.opts.map((o,k)=>`<option value="${k}">${esc(o)}</option>`).join('')}
+  </select>`;
+}
+function gapResult(g, userIdx){
+  if(userIdx===g.a) return `<span class="gap-res ok">${esc(g.opts[g.a])} ✓</span>`;
+  return `<span class="gap-res no">${esc(g.opts[userIdx])}</span> <span class="gap-res ok"><span class="fixv">${esc(g.opts[g.a])}</span></span>`;
+}
+function renderGaps(st, answered){
+  let text = st.text;
+  st.gaps.forEach((g,j)=>{
+    const rep = answered ? gapResult(g, answers[cur][j]) : gapSelect(g,j);
+    text = text.replace('{'+j+'}', rep);
+  });
+  return `<div class="gap-text">${text}</div>`;
+}
+
+/* ---------- ROWS (label + select) ---------- */
+function renderRows(st, answered){
+  return `<div class="rows">` + st.rows.map((r,j)=>{
+    const ctl = answered ? gapResult(r, answers[cur][j]) : gapSelect(r,j);
+    return `<div class="row-item"><span class="rlab">${r.label}</span>${ctl}</div>`;
+  }).join('') + `</div>`;
+}
+
+/* ============================================================
+   WIRE INTERACTIONS (unanswered step)
+   ============================================================ */
+function wireStep(st){
+  const btn = $('#btnCheck');
+
+  if(st.type==='mcq'){
+    pending = null;
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        rightPane.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+        el.classList.add('sel');
+        pending = +el.dataset.j;
+        btn.disabled = false;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='multi'){
+    pending = [];
+    const hint = $('#pickHint');
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const j = +el.dataset.j;
+        if(pending.includes(j)){
+          pending = pending.filter(x=>x!==j);
+          el.classList.remove('sel');
+        } else if(pending.length < st.pick){
+          pending.push(j);
+          el.classList.add('sel');
+        }
+        hint.textContent = `Đã chọn ${pending.length}/${st.pick}`;
+        hint.classList.toggle('full', pending.length===st.pick);
+        btn.disabled = pending.length !== st.pick;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='order'){
+    pending = []; // array of orig indices in click order
+    rightPane.querySelectorAll('.ord').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const orig = +el.dataset.orig;
+        const pos = pending.indexOf(orig);
+        if(pos>=0){ pending.splice(pos,1); }
+        else { pending.push(orig); }
+        // repaint slots
+        rightPane.querySelectorAll('.ord').forEach(x=>{
+          const o = +x.dataset.orig;
+          const p = pending.indexOf(o);
+          x.classList.toggle('picked', p>=0);
+          x.querySelector('.slot').textContent = p>=0 ? (p+1) : '';
+        });
+        btn.disabled = pending.length !== st.items.length;
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+
+  if(st.type==='gaps' || st.type==='rows'){
+    const n = (st.gaps||st.rows).length;
+    pending = Array(n).fill(null);
+    rightPane.querySelectorAll('.gapsel').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const j = +sel.dataset.g;
+        pending[j] = sel.value==='' ? null : +sel.value;
+        sel.classList.toggle('answered', sel.value!=='');
+        btn.disabled = pending.some(v=>v===null);
+      });
+    });
+    btn.addEventListener('click', ()=> check(st));
+  }
+}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+function check(st){
+  let res;
+  if(st.type==='mcq'){
+    answers[cur] = pending;
+    res = (pending===st.answer) ? 'ok' : 'no';
+  }
+  if(st.type==='multi'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter(j=>st.answers.includes(j)).length;
+    res = nC===st.pick ? 'ok' : (nC>0 ? 'half' : 'no');
+  }
+  if(st.type==='order'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter((orig,pos)=>orig===pos).length;
+    res = nC===st.items.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  if(st.type==='gaps' || st.type==='rows'){
+    answers[cur] = pending.slice();
+    const defs = st.gaps||st.rows;
+    const nC = pending.filter((v,j)=>v===defs[j].a).length;
+    res = nC===defs.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  results[cur] = res;
+  renderStep();        // re-render locked with colors
+  updatePath();
+  glow(st.focus);
+  setTimeout(()=> showOverlay(cur,false), 750);
+}
+
+/* ============================================================
+   FEEDBACK OVERLAY
+   ============================================================ */
+function correctKeyHtml(st){
+  if(st.type==='mcq') return `<b>${'ABC'[st.answer]}.</b> ${st.options[st.answer]}`;
+  if(st.type==='multi') return st.answers.map(j=>`<b>${'ABCD'[j]}.</b> ${st.options[j]}`).join('<br>');
+  if(st.type==='order') return st.items.map((it,i)=>`<b>${i+1}.</b> ${it}`).join('<br>');
+  const defs = st.gaps||st.rows;
+  return defs.map((g,j)=>`<b>${j+1}.</b> ${esc(g.opts[g.a])}`).join(' &nbsp;·&nbsp; ');
+}
+
+function showOverlay(i, readOnly){
+  const st = STEPS[i];
+  const res = results[i];
+  const badge = res==='ok' ? `<span class="ov-badge ok">✓ Chính xác!</span>`
+              : res==='half' ? `<span class="ov-badge half">◐ Đúng một phần</span>`
+              : `<span class="ov-badge no">✕ Chưa đúng</span>`;
+  const done = results.filter(Boolean).length;
+  const marks = score();
+
+  let nextBtn;
+  if(readOnly){
+    nextBtn = `<button class="btn-next" id="btnNext">Đóng</button>`;
+  } else if(allDone()){
+    nextBtn = `<button class="btn-next final" id="btnNext">Xem kết quả tổng kết ✨</button>`;
+  } else {
+    nextBtn = `<button class="btn-next" id="btnNext">Câu tiếp theo →</button>`;
+  }
+
+  $('#ovCard').innerHTML = `
+    ${badge}
+    <div class="donut-wrap">
+      <div class="donut">${donutSVG(110,46,12)}
+        <div class="dn-center"><span class="big">${done}/${TOTAL}</span><span class="sm">${fmt(marks)} điểm</span></div>
+      </div>
+    </div>
+    <div class="ov-key"><span class="klab">ĐÁP ÁN ĐÚNG</span>${correctKeyHtml(st)}</div>
+    <div class="ov-expl"><span class="klab">GIẢI THÍCH</span>${st.expl}
+      ${st.quote ? `<div class="ov-quote">“${st.quote}”</div>` : ''}
+    </div>
+    ${nextBtn}`;
+
+  $('#overlay').classList.add('show');
+  $('#btnNext').onclick = ()=>{
+    $('#overlay').classList.remove('show');
+    if(readOnly) return;
+    if(allDone()){ showSummary(); updatePath(); return; }
+    const nx = nextUnanswered(cur);
+    if(nx>=0) go(nx);
+  };
+}
+$('#overlay').addEventListener('click', e=>{
+  if(e.target===$('#overlay')) $('#overlay').classList.remove('show');
+});
+
+/* ============================================================
+   FINAL SUMMARY + MODEL ANSWER
+   ============================================================ */
+const MODEL = [
+  `The diagram illustrates how water <span class="m-verb">circulates</span> between the ocean, the atmosphere and the land in a continuous natural cycle.`,
+  `<span class="m-seq">Overall</span>, the water cycle consists of six main stages, beginning with the evaporation of seawater and ending with the return of water to the ocean, <span class="m-seq">after which</span> the entire process repeats itself.`,
+  `<span class="m-seq">To begin</span>, the sun <span class="m-verb">heats</span> the surface of the ocean, causing water to <span class="m-verb">evaporate</span> into the air; around 80% of all water vapour comes from the sea. <span class="m-seq">As</span> this vapour <span class="m-verb">rises</span>, it <span class="m-verb">cools</span> and <span class="m-verb">condenses</span> to form clouds, which are then carried towards higher ground by the wind.`,
+  `<span class="m-seq">Once</span> the clouds reach the mountains, the water <span class="m-verb">falls</span> as rain or snow, a stage known as precipitation. <span class="m-seq">Subsequently</span>, some of this water <span class="m-verb">flows</span> over the land as surface runoff, <span class="m-verb">collecting</span> in lakes and rivers, while the remainder <span class="m-verb">percolates</span> through the soil, where it is stored as groundwater. <span class="m-seq">Finally</span>, both surface water and groundwater <span class="m-verb">drain</span> back into the ocean, and the cycle begins again.`
+];
+
+function showSummary(){
+  clearGlow();
+  const marks = score();
+  const pct = marks/TOTAL;
+  const enc = pct>=0.9 ? "Xuất sắc! Bạn đã sẵn sàng tự viết một bài natural process hoàn chỉnh." :
+              pct>=0.7 ? "Tốt lắm! Xem lại vài bước chưa đúng rồi thử viết bài hoàn chỉnh nhé." :
+              pct>=0.5 ? "Khá ổn — hãy bấm vào các nốt đỏ trên thanh tiến trình để xem lại giải thích." :
+              "Đừng nản — bấm “Làm lại” và đi chậm qua từng phần giải thích nhé.";
+  const nOk = results.filter(r=>r==='ok').length;
+  const nHalf = results.filter(r=>r==='half').length;
+  const nNo = results.filter(r=>r==='no').length;
+
+  // word count (strip tags)
+  const tmp = document.createElement('div');
+  tmp.innerHTML = MODEL.join(' ');
+  const wc = tmp.textContent.trim().split(/\s+/).length;
+
+  rightPane.innerHTML = `
+  <div class="summary">
+    <div class="sum-card">
+      <h2>Hoàn thành bài học! 🎉</h2>
+      <div class="enc">${enc}</div>
+      <div class="donut-big">${donutSVG(170,72,16)}
+        <div class="dn-center"><span class="big">${fmt(marks)}/${TOTAL}</span><span class="sm">điểm</span></div>
+      </div>
+      <div class="sum-stats">
+        <span class="ok">✓ ${nOk} đúng</span>
+        <span class="half">◐ ${nHalf} đúng một phần</span>
+        <span class="no">✕ ${nNo} chưa đúng</span>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <h3>Model Answer — The Water Cycle</h3>
+      <span class="wc">${wc} words ✓ (yêu cầu tối thiểu: 150)</span>
+      ${MODEL.map(p=>`<p>${p}</p>`).join('')}
+      <div class="legend">
+        <span><span class="sw" style="background:var(--hl)"></span>Sequencers &amp; linking devices</span>
+        <span><span class="sw" style="background:#fff;border-bottom:3px solid var(--blue)"></span>Precise process verbs</span>
+      </div>
+    </div>
+
+    <button class="btn-redo" id="btnRedo">↺ Làm lại từ đầu</button>
+  </div>`;
+  $('#btnRedo').addEventListener('click', restart);
+  rightPane.scrollTop = 0;
+}
+
+/* ============================================================
+   RESTART / INIT
+   ============================================================ */
+function restart(){
+  answers = Array(TOTAL).fill(null);
+  results = Array(TOTAL).fill(null);
+  clearGlow();
+  go(0);
+}
+$('#btnRestart').addEventListener('click', ()=>{
+  if(results.some(Boolean) && !confirm('Bắt đầu lại từ đầu? Toàn bộ tiến trình sẽ bị xóa.')) return;
+  restart();
+});
+
+buildPath();
+go(0);
+</script>
+</body>
+</html>
