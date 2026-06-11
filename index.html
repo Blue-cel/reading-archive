@@ -76,6 +76,22 @@ footer a:hover{text-decoration:underline}
 /* To add a new reading, drop the .html file in the repo and append an entry here. */
 const READINGS = [
   {
+    file: "writing-task-1-butterfly-life-cycle.html",
+    book: "Writing Task 1",
+    title: "Natural process — The Monarch Butterfly Life Cycle (guided lesson)",
+    desc: "21 practice steps · four main stages, life-cycle vocabulary, durations, intro, overview, model answer",
+    meta: "~30 min",
+    type: "Writing"
+  },
+  {
+    file: "writing-task-1-natural-process.html",
+    book: "Writing Task 1",
+    title: "Natural process — The Water Cycle (guided lesson)",
+    desc: "20 practice steps · read the diagram, tense & voice, intro, overview, sequencing, model answer",
+    meta: "~30 min",
+    type: "Writing"
+  },
+  {
     file: "cam-18-1-1-interactive.html",
     book: "Cambridge IELTS 18",
     title: "Urban farming",
@@ -109,7 +125,7 @@ function render(list){
     <a class="card" href="${r.file}">
       <div class="card-top">
         <span class="tag book">${r.book}</span>
-        <span class="tag">Reading</span>
+        <span class="tag">${r.type || 'Reading'}</span>
         <span class="meta">${r.meta}</span>
       </div>
       <h2>${r.title}</h2>
