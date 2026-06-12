@@ -3,68 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reading Archive — Interactive IELTS Practice</title>
+<title>IELTS Lab — Interactive Practice Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f0efea;
-  --card-bg: #fffdf6;
-  --header: #1c3557;
-  --accent: #2a7d6f;
-  --accent-soft: #f0f9f7;
-  --text: #222;
-  --muted: #777;
-  --border: #e0ddd5;
+:root{
+  --navy:#1E3A8A;
+  --navy-deep:#14306E;
+  --gold:#F5B82E;
+  --gold-hover:#E0A21C;
+  --blue:#2563EB;
+  --blue-badge:#1D4ED8;
+  --heading:#1E3A5F;
+  --text:#374151;
+  --muted:#6B7280;
+  --border:#E5E7EB;
+  --surface:#FFFFFF;
+  --subtle:#F8FAFC;
+  --tint:#EFF4FB;
+  --bg:#F8FAFC;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia','Times New Roman',serif;color:var(--text);background:var(--bg);min-height:100vh;line-height:1.6}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--text);background:var(--bg);min-height:100vh;line-height:1.6}
+h1,h2,.logo,.tab,.go{font-family:'Poppins','Inter',sans-serif}
 
-header{background:var(--header);color:#fff;padding:38px 22px 34px;text-align:center}
-header h1{font-size:1.7rem;font-weight:600;letter-spacing:.4px;margin-bottom:8px}
-header p{font-size:.92rem;color:rgba(255,255,255,.78);max-width:560px;margin:0 auto;font-style:italic}
+/* Hero */
+header.hero{background:var(--navy-deep);color:#fff;padding:34px 24px 38px;text-align:center}
+header.hero h1{font-size:1.7rem;font-weight:600;letter-spacing:.3px;margin-bottom:8px}
+header.hero p{font-size:.95rem;color:rgba(255,255,255,.8);max-width:560px;margin:0 auto}
 
-main{max-width:860px;margin:0 auto;padding:34px 22px 60px}
+main{max-width:920px;margin:0 auto;padding:28px 22px 60px}
 
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-.count{font-size:.82rem;color:var(--muted)}
-.count b{color:var(--accent);font-weight:700}
-.search{flex:1;min-width:200px;max-width:320px;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.86rem;background:#fff;color:var(--text)}
-.search:focus{outline:none;border-color:var(--accent)}
+/* Tab-bar filter */
+.tabbar{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:18px}
+.tab{appearance:none;border:none;background:none;cursor:pointer;font-size:.9rem;font-weight:500;color:var(--text);
+  padding:11px 14px 12px;display:inline-flex;align-items:center;gap:8px;border-bottom:3px solid transparent;
+  margin-bottom:-1px;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--blue)}
+.tab .badge{font-size:.72rem;font-weight:600;background:var(--border);color:var(--muted);padding:2px 8px;border-radius:11px;transition:background .15s,color .15s}
+.tab[aria-selected="true"]{color:var(--blue);font-weight:600;border-bottom-color:var(--blue)}
+.tab[aria-selected="true"] .badge{background:var(--blue-badge);color:#fff}
+.tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.count{font-size:.84rem;color:var(--muted)}
+.count b{color:var(--blue);font-weight:600}
+.search{flex:1;min-width:200px;max-width:320px;padding:10px 13px;border:1px solid var(--border);border-radius:9px;
+  font-family:inherit;font-size:.88rem;background:#fff;color:var(--text)}
+.search:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
 
 .grid{display:grid;gap:14px}
 
-.card{display:block;text-decoration:none;color:inherit;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:18px 20px;transition:border-color .15s,box-shadow .15s,transform .15s}
-.card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-2px)}
-.card-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:9px}
-.tag{font-size:.66rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#fff;background:var(--accent);padding:3px 9px;border-radius:11px}
-.tag.book{background:var(--header)}
-.meta{font-size:.74rem;color:var(--muted)}
-.card h2{font-size:1.12rem;font-weight:600;color:var(--header);line-height:1.35;margin-bottom:5px}
-.card .desc{font-size:.84rem;color:var(--muted)}
-.card .go{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.6px}
+.card{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.card:hover{border-color:var(--blue);box-shadow:0 4px 14px rgba(20,48,110,.08);transform:translateY(-2px)}
+.card-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--blue);padding:3px 9px;border-radius:11px}
+.tag.book{background:var(--navy-deep)}
+.meta{font-size:.76rem;color:var(--muted)}
+.card h2{font-size:1.1rem;font-weight:600;color:var(--heading);line-height:1.35;margin-bottom:5px}
+.card .desc{font-size:.86rem;color:var(--muted)}
+.card .go{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:.76rem;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.5px}
 .card .go::after{content:"→";font-size:.95rem}
 
 .empty{text-align:center;color:var(--muted);font-style:italic;padding:40px 0;display:none}
 
-footer{text-align:center;padding:26px 22px;font-size:.76rem;color:var(--muted);border-top:1px solid var(--border)}
-footer a{color:var(--accent);text-decoration:none}
+footer{text-align:center;padding:26px 22px;font-size:.78rem;color:var(--muted);border-top:1px solid var(--border)}
+footer a{color:var(--blue);text-decoration:none}
 footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Reading Archive</h1>
-  <p>A collection of interactive IELTS reading-practice passages — read, answer, and check yourself in the browser.</p>
+<header class="hero">
+  <h1>Practice Archive</h1>
+  <p>A collection of interactive IELTS practice materials — read, answer, and check yourself right in the browser.</p>
 </header>
 
 <main>
+  <div class="tabbar" id="tabbar" role="tablist" aria-label="Filter by skill"></div>
+
   <div class="toolbar">
-    <span class="count"><b id="shown">0</b> reading<span id="plural">s</span></span>
-    <input type="search" id="search" class="search" placeholder="Search by title or book…" aria-label="Search readings">
+    <span class="count"><b id="shown">0</b> <span id="noun">item</span><span id="plural">s</span></span>
+    <input type="search" id="search" class="search" placeholder="Search by title or book…" aria-label="Search materials">
   </div>
 
   <div class="grid" id="grid"></div>
-  <p class="empty" id="empty">No readings match your search.</p>
+  <p class="empty" id="empty">No materials match your search.</p>
 </main>
 
 <footer>
@@ -73,7 +99,8 @@ footer a:hover{text-decoration:underline}
 </footer>
 
 <script>
-/* To add a new reading, drop the .html file in the repo and append an entry here. */
+/* To add a new item, drop the .html file in the repo and append an entry here.
+   `type` drives the skill filter — one of: Reading, Writing, Speaking, Listening, Grammar, Vocabulary. */
 const READINGS = [
   {
     file: "writing-task1-line-graph-metals-guided.html",
@@ -152,29 +179,55 @@ const READINGS = [
     book: "Cambridge IELTS 18",
     title: "Urban farming",
     desc: "Test 1 · Reading Passage 1 · Questions 1–13",
-    meta: "~20 min"
+    meta: "~20 min",
+    type: "Reading"
   },
   {
     file: "cam-17-1-1-interactive.html",
     book: "Cambridge IELTS 17",
     title: "The development of the London underground railway",
     desc: "Test 1 · Reading Passage 1 · Questions 1–13",
-    meta: "~20 min"
+    meta: "~20 min",
+    type: "Reading"
   },
   {
     file: "cam-16-test-2-passage-3-interactive.html",
     book: "Cambridge IELTS 16",
     title: "How to make wise decisions",
     desc: "Test 2 · Reading Passage 3 · Questions 27–40",
-    meta: "~20 min"
+    meta: "~20 min",
+    type: "Reading"
   }
 ];
+
+const CATEGORIES = ["Reading","Writing","Speaking","Listening","Grammar","Vocabulary"];
 
 const grid = document.getElementById('grid');
 const search = document.getElementById('search');
 const shown = document.getElementById('shown');
+const noun = document.getElementById('noun');
 const plural = document.getElementById('plural');
 const empty = document.getElementById('empty');
+const tabbar = document.getElementById('tabbar');
+
+let activeCat = "All";
+
+/* Build filter tabs: All + each skill, with live counts */
+function buildTabs(){
+  const cats = ["All", ...CATEGORIES];
+  tabbar.innerHTML = cats.map(c => {
+    const n = c === "All" ? READINGS.length : READINGS.filter(r => r.type === c).length;
+    return `<button class="tab" role="tab" data-cat="${c}" aria-selected="${c===activeCat}">
+      ${c}<span class="badge">${n}</span></button>`;
+  }).join('');
+  tabbar.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      activeCat = t.dataset.cat;
+      tabbar.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', x === t));
+      apply();
+    });
+  });
+}
 
 function render(list){
   grid.innerHTML = list.map(r => `
@@ -189,18 +242,23 @@ function render(list){
       <span class="go">Open</span>
     </a>`).join('');
   shown.textContent = list.length;
+  noun.textContent = activeCat === "All" ? "item" : activeCat.toLowerCase() + " item";
   plural.style.display = list.length === 1 ? 'none' : 'inline';
   empty.style.display = list.length ? 'none' : 'block';
 }
 
-search.addEventListener('input', () => {
+function apply(){
   const q = search.value.trim().toLowerCase();
   render(READINGS.filter(r =>
+    (activeCat === "All" || r.type === activeCat) &&
     (r.title + ' ' + r.book + ' ' + r.desc).toLowerCase().includes(q)
   ));
-});
+}
 
-render(READINGS);
+search.addEventListener('input', apply);
+
+buildTabs();
+apply();
 </script>
 
 </body>
