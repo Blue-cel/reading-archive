@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guided Practice · Cam 12 · Test 2 · Listening Section 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Passage / audio (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:0 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* sticky audio player */
+.audio-wrap{position:sticky;top:0;z-index:6;background:var(--surface-subtle);padding:20px 0 14px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+.audio-label{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-weight:600;font-size:.9rem;color:var(--heading);margin-bottom:10px}
+.audio-label svg{width:18px;height:18px;color:var(--action-blue)}
+.audio-wrap audio{width:100%;height:40px}
+.audio-hint{font-size:.78rem;color:var(--muted);margin-top:8px;line-height:1.45}
+
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.55rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.script-head{font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--action-blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.line{font-size:.97rem;line-height:1.7;color:var(--body);margin-bottom:13px;display:flex;gap:10px}
+.line .who{flex-shrink:0;font-weight:700;color:var(--navy-deep);min-width:54px}
+.line .sp{display:block}
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+.hl.flash{animation:hlflash 1s ease}
+@keyframes hlflash{0%{background:rgba(245,184,46,.95)}100%{background:var(--hl)}}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.wide{width:auto;padding:0 10px;border-radius:15px;font-size:.7rem;letter-spacing:.2px}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pnode.done.half{background:var(--gold);color:var(--navy-deep)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:540px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.05rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+.q-prompt .gap{display:inline-block;min-width:64px;border-bottom:2px dashed var(--action-blue);vertical-align:bottom}
+
+/* fill input */
+.fill-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:1rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);font-weight:600}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);font-weight:600}
+
+/* notes completion — full outline kept intact */
+.summary-card{border:1px solid var(--border);border-radius:13px;background:var(--surface-subtle);padding:18px 20px;font-size:.96rem;line-height:1.95;color:var(--body)}
+.summary-card .sum-head{font-family:var(--font-head);font-weight:700;color:var(--heading);text-align:center;font-size:1.05rem;margin-bottom:12px;line-height:1.3}
+.sum-p{margin-bottom:14px}
+.sum-p:last-child{margin-bottom:0}
+.sum-sub{display:block;font-family:var(--font-head);font-weight:600;color:var(--navy-deep);font-size:.95rem;margin-bottom:4px}
+.sum-ex{display:block;font-size:.85rem;color:var(--muted);font-style:italic;padding-bottom:10px;margin-bottom:4px;border-bottom:1px dashed var(--border)}
+.sum-ex b{color:var(--heading);font-style:normal}
+.fill-input.sum-inline{display:inline-block;width:150px;max-width:60%;padding:5px 11px;font-size:.92rem;vertical-align:baseline}
+.sum-gap{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:0 8px;border-bottom:2px dashed var(--action-blue);color:var(--action-blue);font-weight:700;font-size:.82rem;vertical-align:baseline}
+.sum-filled{display:inline-block;padding:2px 9px;border-radius:6px;font-weight:600;font-size:.9rem;vertical-align:baseline}
+.sum-filled.cok{background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd)}
+.sum-filled.cno{background:var(--wrong-bg);color:var(--wrong-tx);border:1px solid var(--wrong-bd)}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.check-btn.review{background:#fff;color:var(--action-blue);border:1px solid var(--action-blue)}
+.check-btn.review:hover{background:var(--callout)}
+
+/* ── FEEDBACK OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.overlay.show{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:20px;max-width:470px;width:100%;max-height:92vh;overflow-y:auto;padding:26px 28px 24px;text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.35);animation:pop .26s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{transform:scale(.92) translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+.ov-card::-webkit-scrollbar{width:7px}
+.ov-card::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 4px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin:6px 0 4px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.result-badge.half{background:#FFF4D6;color:#8a6d1a}
+.ov-answer{font-size:.96rem;color:var(--body);margin:8px 0 14px}
+.ov-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary */
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:42vh}
+  .q-card{padding:26px 20px 44px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- AUDIO + TAPESCRIPT (left) -->
+    <div class="p-pane" id="passagePanel">
+
+      <div class="audio-wrap">
+        <div class="audio-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          Section 1 recording
+        </div>
+        <audio controls preload="auto" src="Cam12-Test2-Section1.mp3"></audio>
+        <div class="audio-hint">Nghe đoạn ghi âm rồi trả lời từng câu ở bên phải. Sau khi kiểm tra, câu nói chứa đáp án sẽ được tô sáng trong lời thoại bên dưới.</div>
+      </div>
+
+      <div class="p-eyebrow">Listening · Section 1 · Questions 1–10</div>
+      <h1 class="p-title">Kenton Festival</h1>
+      <p class="p-sub">A caller asks the festival box office about the programme of events. Complete the notes — write ONE WORD AND/OR A NUMBER for each answer.</p>
+
+      <div class="script-head">Audio script</div>
+
+      <div class="line"><span class="who">MAN:</span><span class="sp">Good morning, Kenton Festival box office. How can I help you?</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Oh, good morning. I'm coming to Kenton for a few days' holiday next month, and a friend told me there's a festival. She gave me this number to find out about it.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">That's right, the festival begins on the 16th of May <em>(Example)</em> and goes on till the 19th.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Oh, that's great. I'll be there from the 15th till the 19th. So could you tell me the programme, please?</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Well, on the first day, there's the opening ceremony, in the town centre. People start gathering around 2 o'clock, to get a good place to see from, and <span class="hl" id="ev-q1">the events will start at 2.45</span>, and finish about 5.30.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">OK, thanks. I'll make sure I get there early to get a good spot.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">The festival will be officially opened by the mayor. He'll just speak for a few minutes, welcoming everyone to the festival. All the town councillors will be there, and of course lots of other people.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Right.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Then <span class="hl" id="ev-q2">there'll be a performance by a band</span>. Most years we have a children's choir, but this year the local army cadets offered to perform, and they're very good.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Uhuh.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">After that, a community group from the town will <span class="hl" id="ev-q3">perform a play they've written themselves, just a short one. It's about Helen Tungate</span>. I don't know if you've heard of her?</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">I certainly have. <span class="hl" id="ev-q4">She was a scientist years ago.</span></span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">That's right. She was born in Kenton exactly 100 years ago, so we're celebrating her centenary.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">I'm a biologist, so I've always been interested in her, I didn't realise she came from Kenton.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Yes. Well, all that will take place in the afternoon, and later, as the sun sets, there'll be a firework display. You should go to the park to watch, as you'll get the best view from there, and <span class="hl" id="ev-q5">the display takes place on the opposite side of the river</span>. It's always one of the most popular events in the festival.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Sounds great. And what's happening on the other days?</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">There are several events that go on the whole time. For example, the students of the art college have produced a number of videos, all connected with <span class="hl" id="ev-q6">relationships between children and their grandparents</span>.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">That sounds interesting. It makes a change from children and parents, doesn't it!</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Exactly. Because the art college is in use for classes, throughout the festival, <span class="hl" id="ev-q7">the videos are being shown in Handsworth House</span>.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">How do you spell the name?</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">H-A-N-D-S-W-O-R-T-H. Handsworth House. It's close to the Town Hall.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Right. Are there any displays of ballet dancing? I'm particularly interested in that as I do it as a hobby.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">There isn't any ballet, I'm afraid, but <span class="hl" id="ev-q8">there'll be a demonstration of traditional dances from all round the country</span>.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Oh, that'd be nice. Where's that being held?</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">It's in <span class="hl" id="ev-q9">the market in the town centre – the outdoor one, not the covered market</span>. And it's on at 2 and 5 every afternoon of the festival, apart from the first day.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Lovely. And I'd really like to go to some concerts, if there are any.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Yes, there are several. Three performed by professionals, and one by local children. It's in the library, which is in Part Street. On the 18th, at 6.30 in the evening.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">I presume I'll need tickets for that.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">Yes, you can book online, or you can buy them when you arrive in Kenton, either at the festival box office, or <span class="hl" id="ev-q10">from any shops displaying our logo in the windows</span>.</span></div>
+      <div class="line"><span class="who">WOMAN:</span><span class="sp">Well, I think that'll keep me busy for the whole of my stay in Kenton. Thank you so much for all your help.</span></div>
+      <div class="line"><span class="who">MAN:</span><span class="sp">You're welcome. I hope you enjoy your stay.</span></div>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEEDBACK / PROGRESS OVERLAY ── -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<script>
+const MARKS = 10;   // total marks (Q1–10)
+
+/* Full notes kept intact; {n} marks each gap */
+const SUMMARY = {
+  head:'Events during Kenton Festival',
+  text:"<span class='sum-ex'>Example — Start date: <b>16th</b> May</span>\n\n"
+      +"<span class='sum-sub'>Opening ceremony (first day)</span>"
+      +"● In the town centre, starting at {1}<br>"
+      +"● The mayor will make a speech<br>"
+      +"● A {2} will perform<br>"
+      +"● Performance of a {3} about Helen Tungate (a {4})<br>"
+      +"● Evening fireworks display situated across the {5}\n\n"
+      +"<span class='sum-sub'>Other events</span>"
+      +"● Video about relationships that children have with their {6}<br>"
+      +"&nbsp;&nbsp;&nbsp;Venue: {7} House<br>"
+      +"● Performance of {8} dances<br>"
+      +"&nbsp;&nbsp;&nbsp;Venue: the {9} market in the town centre<br>"
+      +"&nbsp;&nbsp;&nbsp;Time: 2 and 5 pm every day except the 1st day<br>"
+      +"● Several professional concerts and one by children<br>"
+      +"&nbsp;&nbsp;&nbsp;Venue: library · Time: 6.30 pm on the 18th<br>"
+      +"● Tickets available online and from shops that display the festival {10} in their windows"
+};
+
+const STEPS = [
+  {type:'summary',label:1,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['2.45','2:45'],ev:'ev-q1',
+   expl:"Người đàn ông nói sau khi mọi người tụ tập lúc 2 giờ thì các sự kiện sẽ bắt đầu lúc 2.45. Đáp án: <b>2.45</b>."},
+  {type:'summary',label:2,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['band'],ev:'ev-q2',
+   expl:"Sau bài phát biểu của thị trưởng, sẽ có một <b>band</b> (ban nhạc) biểu diễn — không phải dàn hợp xướng trẻ em như mọi năm. Đáp án: <b>band</b>."},
+  {type:'summary',label:3,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['play'],ev:'ev-q3',
+   expl:"Một nhóm cộng đồng sẽ diễn một vở kịch (a <b>play</b>) do họ tự viết về Helen Tungate. Đáp án: <b>play</b>."},
+  {type:'summary',label:4,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['scientist'],ev:'ev-q4',
+   expl:"Người phụ nữ xác nhận Helen Tungate trước đây là một nhà khoa học (a <b>scientist</b>). Đáp án: <b>scientist</b>."},
+  {type:'summary',label:5,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['river'],ev:'ev-q5',
+   expl:"Màn pháo hoa diễn ra ở phía bên kia con sông (the opposite side of the <b>river</b>), nên xem từ công viên là đẹp nhất. Đáp án: <b>river</b>."},
+  {type:'summary',label:6,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['grandparents'],ev:'ev-q6',
+   expl:"Các video nói về mối quan hệ giữa trẻ em và ông bà của chúng (their <b>grandparents</b>) — chứ không phải bố mẹ. Đáp án: <b>grandparents</b>."},
+  {type:'summary',label:7,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['Handsworth','handsworth'],ev:'ev-q7',
+   expl:"Vì trường nghệ thuật đang dùng để dạy học, các video được chiếu ở <b>Handsworth</b> House (đánh vần H-A-N-D-S-W-O-R-T-H). Đáp án: <b>Handsworth</b>."},
+  {type:'summary',label:8,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['traditional'],ev:'ev-q8',
+   expl:"Không có ballet, nhưng sẽ có màn trình diễn các điệu nhảy truyền thống (<b>traditional</b> dances) từ khắp đất nước. Đáp án: <b>traditional</b>."},
+  {type:'summary',label:9,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['outdoor'],ev:'ev-q9',
+   expl:"Sự kiện diễn ra ở khu chợ ngoài trời (the <b>outdoor</b> one), không phải chợ có mái che. Đáp án: <b>outdoor</b>."},
+  {type:'summary',label:10,task:'Notes · ONE WORD AND/OR A NUMBER',
+   answer:['logo'],ev:'ev-q10',
+   expl:"Vé bán online hoặc tại các cửa hàng có trưng biểu trưng/logo của lễ hội trên cửa sổ (displaying our <b>logo</b>). Đáp án: <b>logo</b>."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'half' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+let idx=0, correctCount=0, wrongCount=0, selected=null, multiSel=[], locked=false;
+
+const host=document.getElementById('qHost');
+const overlay=document.getElementById('overlay');
+const ovCard=document.getElementById('ovCard');
+
+const navLabel = q => String(q.label);
+
+/* notes rendering — full outline, active gap = input, earlier gaps filled, later gaps numbered */
+const given={};
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function summaryHTML(active){
+  const render=s=>s.replace(/\{(\d+)\}/g,(m,n)=>{
+    n=+n;
+    if(n===active)return `<input class="fill-input sum-inline" id="fillIn" type="text" placeholder="…" autocomplete="off" spellcheck="false">`;
+    if(given[n])return `<span class="sum-filled ${given[n].ok?'cok':'cno'}">${escapeHtml(given[n].val)}</span>`;
+    return `<span class="sum-gap">${n}</span>`;
+  });
+  return `<div class="summary-card"><div class="sum-head">${SUMMARY.head}</div>`+
+    SUMMARY.text.split('\n\n').map(p=>`<p class="sum-p">${render(p)}</p>`).join('')+`</div>`;
+}
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const lbl=q.label;
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${lbl}" onclick="jumpNode(${i})">${lbl}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){           // click any node to move to that question
+  if(i===idx)return;
+  overlay.classList.remove('show');
+  idx=i;
+  showQuestion();
+}
+function closeRecap(){overlay.classList.remove('show');}
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;multiSel=[];locked=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  const answerHTML=summaryHTML(q.label);
+
+  const promptHTML = `Nghe và hoàn thành phần ghi chú — điền vào ô trống <b>${q.label}</b> (ONE WORD AND/OR A NUMBER):`;
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${navLabel(q)}</div><div class="q-prompt">${promptHTML}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  const inp=document.getElementById('fillIn');
+  inp.addEventListener('input',()=>{selected=inp.value.trim();document.getElementById('checkBtn').disabled=!selected;});
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked&&selected)checkNow();});
+  inp.focus();
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    const cb=document.getElementById('checkBtn');
+    if(cb)cb.outerHTML=`<button class="check-btn review" onclick="openFeedback(STEPS[${idx}],results[${idx}],true)">Xem lại giải thích</button>`;
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Grade, highlight, then show overlay ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+  const state = ok?'ok':'no';
+  given[q.label]={val:selected,ok};
+
+  locked=true;
+  results[idx]=state;
+  answers[idx]=selected;
+  revealAnswer(q);
+  updatePath();
+  setTimeout(()=>openFeedback(q,state),720);
+}
+
+/* Apply the locked correct/wrong highlight using the stored answer */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  const inp=document.getElementById('fillIn');
+  if(inp){inp.value=selected;inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add(isCorrect(q,selected)?'correct':'wrong');}
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){
+  const v=String(val).toLowerCase().replace(/\s+/g,' ').trim();
+  return q.answer.some(a=>a.toLowerCase()===v);
+}
+
+/* ── Donut ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Feedback overlay ── */
+function openFeedback(q,state,recap){
+  const done=correctCount+wrongCount;
+  const last=!recap && results.every(r=>r!=null);
+
+  const ansText=Array.isArray(q.answer)?q.answer[0]:q.answer;
+  const el=document.getElementById(q.ev);
+  const quoteHTML=el?`<span class="ov-quote">“${el.textContent.trim()}”</span>`:'';
+
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    half:'<div class="result-badge half"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>Đúng một phần</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${done}<small>/${MARKS}</small>`,`${correctCount} đúng · ${wrongCount} sai`)}
+    ${badges[state]}
+    <div class="ov-answer">Đáp án đúng: <b>${ansText}</b></div>
+    <div class="ov-expl">
+      <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+      ${q.expl}
+      ${quoteHTML}
+    </div>
+    ${recap
+      ? `<button class="next-btn" onclick="closeRecap()">Quay lại câu hiện tại →</button>`
+      : `<button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>`}`;
+  overlay.classList.add('show');
+}
+
+function nextStep(){
+  overlay.classList.remove('show');
+  if(results.every(r=>r!=null)){showFinal();return;}     // all done → summary
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Final summary ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn nghe và bắt thông tin rất tốt.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần nghe lại.';
+  else if(pct>=45)msg='Khá ổn. Hãy nghe lại và đọc phần giải thích để củng cố nhé.';
+  else msg='Đừng nản — nghe lại đoạn ghi âm và xem kỹ phần giải thích sẽ tiến bộ nhanh.';
+
+  ovCard.innerHTML=`
+    ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+    <div class="fin-title">Hoàn thành bài luyện tập!</div>
+    <div class="fin-msg">${msg}</div>
+    <div class="fin-stats">
+      <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+      <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+      <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+    </div>
+    <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>`;
+  overlay.classList.add('show');
+}
+
+/* ── Passage evidence highlight ── */
+function clearHighlight(){document.querySelectorAll('.hl.active,.hl.flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(evId){
+  const ev=document.getElementById(evId);
+  if(!ev)return;
+  clearHighlight();
+  ev.classList.add('active','flash');
+  scrollToEv(ev);
+}
+function scrollToEv(ev){
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect(), er=ev.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-120,behavior:'smooth'});
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>
