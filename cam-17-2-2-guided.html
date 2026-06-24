@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guided Practice · Cam 17 · Test 2 · Passage 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Passage (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.55rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:8px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.sec-label{display:inline-block;font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--action-blue);background:var(--callout);width:30px;height:30px;line-height:30px;text-align:center;border-radius:8px;margin-bottom:8px}
+.para{font-size:1rem;line-height:1.75;color:var(--body);margin-bottom:18px;text-align:justify}
+.footnote{font-size:.82rem;color:var(--muted);font-style:italic;line-height:1.5;margin:-6px 0 18px;padding-left:14px;border-left:2px solid var(--border)}
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+.hl.flash{animation:hlflash 1s ease}
+@keyframes hlflash{0%{background:rgba(245,184,46,.95)}100%{background:var(--hl)}}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:520px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.08rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+.q-prompt .gap{display:inline-block;min-width:60px;border-bottom:2px dashed var(--action-blue);vertical-align:bottom}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.sec-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:14px 16px;font-family:var(--font-body);font-size:.97rem;color:var(--body);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not(.locked){background:var(--surface-subtle);border-color:#cbd5e1}
+.opt.selected{border-color:var(--action-blue);background:var(--callout);box-shadow:inset 0 0 0 1px var(--action-blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);box-shadow:inset 0 0 0 1px var(--correct-bd)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);box-shadow:inset 0 0 0 1px var(--wrong-bd)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.5}
+.opt .lt{width:28px;height:28px;border-radius:7px;background:var(--surface-subtle);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy-deep);font-size:.9rem;flex-shrink:0}
+.opt.correct .lt{background:#fff;border-color:var(--correct-bd);color:var(--correct-tx)}
+.opt.wrong .lt{background:#fff;border-color:var(--wrong-bd);color:var(--wrong-tx)}
+.opt .ot{line-height:1.45}
+.sec-grid .opt{justify-content:center;font-weight:700;font-size:1.05rem;padding:13px 0}
+.opt .mk{margin-left:auto;font-weight:800;font-size:1.05rem;padding-left:8px}
+
+/* fill input (sentence completion) */
+.fill-input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:11px;font-family:var(--font-body);font-size:1rem;color:var(--body);background:#fff;transition:border-color .15s,box-shadow .15s}
+.fill-input::placeholder{color:#9ca3af}
+.fill-input:focus{outline:none;border-color:var(--action-blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.fill-input.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);font-weight:600}
+.fill-input.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);font-weight:600}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+
+/* ── INLINE FEEDBACK (no overlay) ── */
+.feedback{margin-top:24px;border-top:1px solid var(--border);padding-top:20px;animation:fbin .25s ease}
+@keyframes fbin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin-bottom:10px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.fb-answer{font-size:.96rem;color:var(--body);margin-bottom:14px}
+.fb-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.relight{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--action-blue);border:1px solid var(--action-blue);font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:7px 13px;border-radius:9px;cursor:pointer;margin-bottom:14px;transition:background .15s}
+.relight:hover{background:var(--callout)}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary (inline, not a modal) */
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 8px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+.fin{text-align:center;max-width:420px;margin:0 auto}
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+
+/* researcher list reference card */
+.ref-card{border:1px solid var(--border);border-radius:12px;background:var(--surface-subtle);padding:13px 16px;margin-bottom:18px}
+.ref-card .ref-head{font-family:var(--font-head);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.6px;color:var(--heading);margin-bottom:8px}
+.ref-card ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.ref-card li{font-size:.9rem;color:var(--body)}
+.ref-card li b{color:var(--navy-deep)}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:38vh}
+  .q-card{padding:26px 20px 44px}
+  .ref-card ul{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- PASSAGE (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Reading Passage 2 · Questions 14–26</div>
+      <h1 class="p-title">A second attempt at domesticating the tomato</h1>
+      <p class="p-sub">Using CRISPR gene editing, teams in Brazil, China and the US have re-domesticated wild tomatoes — and a relative, the groundcherry — in under three years, producing more nutritious, hardier crops.</p>
+
+      <div class="sec-label">A</div>
+      <p class="para"><span class="hl" id="ev-q17">It took at least 3,000 years for humans to learn how to domesticate the wild tomato and cultivate it for food. Now two separate teams in Brazil and China have done it all over again in less than three years.</span> And they have done it better in some ways, as the re-domesticated tomatoes are more nutritious than the ones we eat at present.</p>
+      <p class="para">This approach relies on the revolutionary CRISPR genome editing technique, in which changes are deliberately made to the DNA of a living cell, allowing genetic material to be added, removed or altered. The technique could not only improve existing crops, but could also be used to turn thousands of wild plants into useful and appealing foods. In fact, a third team in the US has already begun to do this with a relative of the tomato called the groundcherry.</p>
+      <p class="para">This fast-track domestication could help make the world's food supply healthier and far more resistant to diseases, such as the rust fungus devastating wheat crops.</p>
+      <p class="para">'This could transform what we eat,' says Jorg Kudla at the University of Munster in Germany, a member of the Brazilian team. '<span class="hl" id="ev-q23">There are 50,000 edible plants in the world, but 90 percent of our energy comes from just 15 crops.</span>'</p>
+      <p class="para">'We can now mimic the known domestication course of major crops like rice, maize, sorghum or others,' says Caixia Gao of the Chinese Academy of Sciences in Beijing. 'Then we might try to domesticate plants that have never been domesticated.'</p>
+
+      <div class="sec-label">B</div>
+      <p class="para">Wild tomatoes, which are native to the Andes region in South America, produce pea-sized fruits. Over many generations, peoples such as the Aztecs and Incas transformed the plant by selecting and breeding plants with mutations* in their genetic structure, which resulted in desirable traits such as larger fruit.</p>
+      <p class="para">But <span class="hl" id="ev-q15">every time a single plant with a mutation is taken from a larger population for breeding, much genetic diversity is lost. And sometimes the desirable mutations come with less desirable traits.</span> For instance, <span class="hl" id="ev-q24">the tomato strains grown for supermarkets have lost much of their flavour</span>.</p>
+      <p class="para">By comparing the genomes of modern plants to those of their wild relatives, biologists have been working out what genetic changes occurred as plants were domesticated. The teams in Brazil and China have now used this knowledge to reintroduce these changes from scratch while maintaining or even enhancing the desirable traits of wild strains.</p>
+
+      <div class="sec-label">C</div>
+      <p class="para">Kudla's team made six changes altogether. For instance, <span class="hl" id="ev-q25">they tripled the size of fruit by editing a gene called FRUIT WEIGHT</span>, and increased the number of tomatoes per truss by editing another called MULTIFLORA.</p>
+      <p class="para">While the historical domestication of tomatoes reduced levels of the red pigment lycopene – thought to have potential health benefits – the team in Brazil managed to boost it instead. The wild tomato has twice as much lycopene as cultivated ones; the newly domesticated one has five times as much.</p>
+      <p class="para"><span class="hl" id="ev-q18">'They are quite tasty,' says Kudla. 'A little bit strong. And very aromatic.'</span></p>
+      <p class="para">The team in China re-domesticated several strains of wild tomatoes with desirable traits lost in domesticated tomatoes. In this way they managed to <span class="hl" id="ev-q14">create a strain resistant to a common disease called bacterial spot race, which can devastate yields</span>. They also <span class="hl" id="ev-q26">created another strain that is more salt tolerant – and has higher levels of vitamin C</span>.</p>
+
+      <div class="sec-label">D</div>
+      <p class="para">Meanwhile, Joyce Van Eck at the Boyce Thompson Institute in New York state decided to use the same approach to domesticate the groundcherry or goldenberry (<em>Physalis pruinosa</em>) for the first time. This fruit looks similar to the closely related Cape gooseberry (<em>Physalis peruviana</em>).</p>
+      <p class="para">Groundcherries are already sold to a limited extent in the US but they are hard to produce because the plant has a sprawling growth habit and the small fruits fall off the branches when ripe. Van Eck's team has edited the plants to increase fruit size, make their growth more compact and to stop fruits dropping. 'There's potential for this to be a commercial crop,' says Van Eck. But she adds that <span class="hl" id="ev-q22">taking the work further would be expensive because of the need to pay for a licence for the CRISPR technology and get regulatory approval</span>.</p>
+
+      <div class="sec-label">E</div>
+      <p class="para">This approach could boost the use of many obscure plants, says Jonathan Jones of the Sainsbury Lab in the UK. But <span class="hl" id="ev-q20">it will be hard for new foods to grow so popular with farmers and consumers that they become new staple crops</span>, he thinks.</p>
+      <p class="para">The three teams already have their eye on <span class="hl" id="ev-q16">other plants that could be 'catapulted into the mainstream', including foxtail, oat-grass and cowpea</span>. <span class="hl" id="ev-q19">By choosing wild plants that are drought or heat tolerant, says Gao, we could create crops that will thrive even as the planet warms.</span></p>
+      <p class="para">But <span class="hl" id="ev-q21">Kudla didn't want to reveal which species were in his team's sights</span>, because CRISPR has made the process so easy. 'Any one with the right skills could go to their lab and do this.'</p>
+      <p class="footnote">*mutations: changes in an organism's genetic structure that can be passed down to later generations</p>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MARKS = 13;   // total marks (Q14–26)
+
+const RESEARCHERS=[
+  {l:'A',n:'Jorg Kudla'},
+  {l:'B',n:'Caixia Gao'},
+  {l:'C',n:'Joyce Van Eck'},
+  {l:'D',n:'Jonathan Jones'}
+];
+
+const STEPS = [
+  {type:'section',label:14,task:'Which section A–E?',
+   prompt:'a reference to a type of tomato that can resist a dangerous infection',
+   answer:'C',ev:'ev-q14',
+   expl:"Đoạn C: nhóm Trung Quốc tạo ra 'a strain resistant to a common disease called bacterial spot race' — giống cà chua kháng được một bệnh nguy hiểm. → <b>C</b>."},
+  {type:'section',label:15,task:'Which section A–E?',
+   prompt:'an explanation of how problems can arise from focusing only on a certain type of tomato plant',
+   answer:'B',ev:'ev-q15',
+   expl:"Đoạn B giải thích vấn đề khi chỉ chọn một cây để nhân giống: 'much genetic diversity is lost' và đôi khi 'desirable mutations come with less desirable traits'. → <b>B</b>."},
+  {type:'section',label:16,task:'Which section A–E?',
+   prompt:'a number of examples of plants that are not cultivated at present but could be useful as food sources',
+   answer:'E',ev:'ev-q16',
+   expl:"Đoạn E nêu ví dụ các cây hoang dã có thể đưa vào trồng trọt: 'foxtail, oat-grass and cowpea'. → <b>E</b>."},
+  {type:'section',label:17,task:'Which section A–E?',
+   prompt:'a comparison between the early domestication of the tomato and more recent research',
+   answer:'A',ev:'ev-q17',
+   expl:"Đoạn A so sánh thuần hóa thời xưa ('at least 3,000 years') với nghiên cứu gần đây ('in less than three years'). → <b>A</b>."},
+  {type:'section',label:18,task:'Which section A–E?',
+   prompt:'a personal reaction to the flavour of a tomato that has been genetically edited',
+   answer:'C',ev:'ev-q18',
+   expl:"Đoạn C: phản ứng cá nhân của Kudla về hương vị: 'They are quite tasty... A little bit strong. And very aromatic.' → <b>C</b>."},
+
+  {type:'match',label:19,task:'Match the researcher · A–D',
+   prompt:'Domestication of certain plants could allow them to adapt to future environmental challenges.',
+   answer:'B',ev:'ev-q19',
+   expl:"Gao nói chọn cây chịu hạn/chịu nóng để 'create crops that will thrive even as the planet warms' — thích nghi với thách thức môi trường tương lai. → <b>B — Caixia Gao</b>."},
+  {type:'match',label:20,task:'Match the researcher · A–D',
+   prompt:'The idea of growing and eating unusual plants may not be accepted on a large scale.',
+   answer:'D',ev:'ev-q20',
+   expl:"Jones cho rằng 'it will be hard for new foods to grow so popular... that they become new staple crops' — khó được chấp nhận trên diện rộng. → <b>D — Jonathan Jones</b>."},
+  {type:'match',label:21,task:'Match the researcher · A–D',
+   prompt:'It is not advisable for the future direction of certain research to be made public.',
+   answer:'A',ev:'ev-q21',
+   expl:"Kudla 'didn't want to reveal which species were in his team's sights' — không muốn công khai hướng nghiên cứu sắp tới. → <b>A — Jorg Kudla</b>."},
+  {type:'match',label:22,task:'Match the researcher · A–D',
+   prompt:'Present efforts to domesticate one wild fruit are limited by the costs involved.',
+   answer:'C',ev:'ev-q22',
+   expl:"Van Eck nói tiếp tục nghiên cứu 'would be expensive because of the need to pay for a licence... and get regulatory approval' — bị giới hạn bởi chi phí. → <b>C — Joyce Van Eck</b>."},
+  {type:'match',label:23,task:'Match the researcher · A–D',
+   prompt:'Humans only make use of a small proportion of the plant food available on Earth.',
+   answer:'A',ev:'ev-q23',
+   expl:"Kudla: 'There are 50,000 edible plants in the world, but 90 percent of our energy comes from just 15 crops' — con người chỉ dùng một phần nhỏ thực vật ăn được. → <b>A — Jorg Kudla</b>."},
+
+  {type:'sentence',label:24,task:'Sentence completion · ONE WORD ONLY',
+   prompt:"An undesirable trait such as loss of <span class='gap'>&nbsp;24&nbsp;</span> may be caused by a mutation in a tomato gene.",
+   answer:['flavour','flavor'],ev:'ev-q24',
+   expl:"Đoạn B: 'the tomato strains grown for supermarkets have lost much of their flavour' — đặc tính không mong muốn bị mất đi là hương vị. Đáp án: <b>flavour</b>."},
+  {type:'sentence',label:25,task:'Sentence completion · ONE WORD ONLY',
+   prompt:"By modifying one gene in a tomato plant, researchers made the tomato three times its original <span class='gap'>&nbsp;25&nbsp;</span>.",
+   answer:['size'],ev:'ev-q25',
+   expl:"Đoạn C: 'they tripled the size of fruit by editing a gene called FRUIT WEIGHT' — gấp ba kích thước quả. Đáp án: <b>size</b>."},
+  {type:'sentence',label:26,task:'Sentence completion · ONE WORD ONLY',
+   prompt:"A type of tomato which was not badly affected by <span class='gap'>&nbsp;26&nbsp;</span>, and was rich in vitamin C, was produced by a team of researchers in China.",
+   answer:['salt'],ev:'ev-q26',
+   expl:"Đoạn C: nhóm Trung Quốc tạo giống 'more salt tolerant – and has higher levels of vitamin C' — chịu được muối, giàu vitamin C. Đáp án: <b>salt</b>."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+let idx=0, correctCount=0, wrongCount=0, selected=null, locked=false, advanceReady=false;
+
+const host=document.getElementById('qHost');
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${q.label}" onclick="jumpNode(${i})">${q.label}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){ if(i===idx)return; idx=i; showQuestion(); }
+
+/* Enter advances once the inline feedback is up (guarded so the check keypress can't also advance) */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&locked&&advanceReady){
+    const b=host.querySelector('.next-btn');
+    if(b){e.preventDefault();b.click();}
+  }
+});
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;locked=false;advanceReady=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  let answerHTML='';
+  if(q.type==='section'){
+    answerHTML='<div class="sec-grid">'+['A','B','C','D','E'].map(v=>
+      `<button class="opt" data-val="${v}" onclick="pickOne(this,'${v}')">${v}</button>`).join('')+'</div>';
+  }else if(q.type==='match'){
+    answerHTML='<div class="ref-card"><div class="ref-head">List of Researchers</div><ul>'+
+      RESEARCHERS.map(r=>`<li><b>${r.l}</b>&nbsp; ${r.n}</li>`).join('')+'</ul></div>'+
+      '<div class="opts">'+RESEARCHERS.map(r=>
+      `<button class="opt" data-val="${r.l}" onclick="pickOne(this,'${r.l}')"><span class="lt">${r.l}</span><span class="ot">${r.n}</span></button>`).join('')+'</div>';
+  }else{ // sentence
+    answerHTML=`<input class="fill-input" id="fillIn" type="text" placeholder="Nhập câu trả lời…" autocomplete="off" spellcheck="false">`;
+  }
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${q.label}</div><div class="q-prompt">${q.prompt}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  if(q.type==='sentence'){
+    const inp=document.getElementById('fillIn');
+    inp.addEventListener('input',()=>{selected=inp.value.trim();document.getElementById('checkBtn').disabled=!selected;});
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!locked&&selected)checkNow();});
+    inp.focus();
+  }
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;advanceReady=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    renderFeedback(q,results[idx]);
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickOne(el,val){
+  if(locked)return;
+  selected=val;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('checkBtn').disabled=false;
+}
+
+/* ── Grade, reveal inline, highlight passage ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+
+  locked=true;
+  results[idx]=ok?'ok':'no';
+  answers[idx]=selected;
+  revealAnswer(q);
+  renderFeedback(q,results[idx]);
+  updatePath();
+  advanceReady=false;setTimeout(()=>{advanceReady=true;},260);
+}
+
+/* Apply the locked correct/wrong styling + light the passage evidence */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  if(q.type==='sentence'){
+    const inp=document.getElementById('fillIn');
+    if(inp){inp.value=selected;inp.disabled=true;inp.classList.add(isCorrect(q,selected)?'correct':'wrong');}
+  }else{ // section / match
+    document.querySelectorAll('.opt').forEach(o=>{
+      o.classList.add('locked');
+      const v=o.dataset.val;
+      if(v===q.answer){o.classList.add('correct');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✓</span>');}
+      else if(v===selected){o.classList.add('wrong');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✕</span>');}
+      else o.classList.add('dim');
+    });
+  }
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){
+  if(q.type==='sentence'){
+    const v=String(val).toLowerCase().replace(/\s+/g,' ').trim();
+    return q.answer.some(a=>a.toLowerCase()===v);
+  }
+  return val===q.answer;
+}
+
+/* ── Inline feedback (replaces the check button; no modal overlay) ── */
+function renderFeedback(q,state){
+  const ansText = q.type==='match'
+    ? `${q.answer} — ${(RESEARCHERS.find(r=>r.l===q.answer)||{}).n}`
+    : (Array.isArray(q.answer)?q.answer[0]:q.answer);
+  const el=document.getElementById(q.ev);
+  const quoteHTML=el?`<span class="ov-quote">“${el.textContent.trim()}”</span>`:'';
+  const last=results.every(r=>r!=null);
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+  const fb=`
+    <div class="feedback">
+      ${badges[state]}
+      <div class="fb-answer">Đáp án đúng: <b>${ansText}</b></div>
+      <button class="relight" onclick="highlight('${q.ev}')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Xem lại trong bài</button>
+      <div class="ov-expl">
+        <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+        ${q.expl}
+        ${quoteHTML}
+      </div>
+      <button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>
+    </div>`;
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.outerHTML=fb; else host.insertAdjacentHTML('beforeend',fb);
+}
+
+function nextStep(){
+  if(results.every(r=>r!=null)){showFinal();return;}     // all done → summary
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Donut (used only in the final summary) ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Final summary (rendered inline in the question pane) ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  clearHighlight();
+  STEPS.forEach((q,i)=>{const n=document.getElementById('pnode-'+i);if(n){n.className='pnode done '+results[i];}});
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn đã nắm rất chắc bài đọc này.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần xem lại.';
+  else if(pct>=45)msg='Khá ổn. Hãy đọc lại phần giải thích để củng cố nhé.';
+  else msg='Đừng nản — luyện lại và xem kỹ phần giải thích sẽ tiến bộ nhanh.';
+  host.innerHTML=`
+    <div class="fin">
+      ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+      <div class="fin-title">Hoàn thành bài luyện tập!</div>
+      <div class="fin-msg">${msg}</div>
+      <div class="fin-stats">
+        <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+        <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+        <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+      </div>
+      <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>
+    </div>`;
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Passage evidence highlight ── */
+function clearHighlight(){document.querySelectorAll('.hl.active,.hl.flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(evId){
+  const ev=document.getElementById(evId);
+  if(!ev)return;
+  clearHighlight();
+  ev.classList.add('active','flash');
+  scrollToEv(ev);
+}
+function scrollToEv(ev){
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect(), er=ev.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-100,behavior:'smooth'});
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>

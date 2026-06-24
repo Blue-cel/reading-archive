@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guided Practice · Cam 17 · Test 2 · Passage 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A;--navy-deep:#14306E;--gold:#F5B82E;--gold-hover:#E0A21C;
+  --action-blue:#2563EB;--blue-badge:#1D4ED8;--heading:#1E3A5F;--body:#374151;--muted:#6B7280;
+  --border:#E5E7EB;--surface:#FFFFFF;--surface-subtle:#F8FAFC;--callout:#EFF4FB;
+  --correct-bg:#E7F6EC;--correct-bd:#1E9E54;--correct-tx:#13733b;
+  --wrong-bg:#FCE8E8;--wrong-bd:#D14343;--wrong-tx:#9b2222;
+  --hl:rgba(245,184,46,.45);
+  --font-head:'Poppins',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);color:var(--body);background:var(--surface-subtle);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{flex-shrink:0;height:64px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.top-right{display:flex;align-items:center;gap:14px}
+.btn-restart{background:rgba(255,255,255,.14);color:#fff;border:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn-restart:hover{background:rgba(255,255,255,.24)}
+
+.topprog{flex-shrink:0;height:4px;background:var(--border)}
+.topprog-fill{height:100%;width:0;background:var(--gold);transition:width .45s ease}
+
+/* ── BODY ── */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* Passage (left) */
+.p-pane{width:50%;background:var(--surface-subtle);overflow-y:auto;padding:34px 40px 56px;border-right:1px solid var(--border)}
+.p-pane::-webkit-scrollbar{width:7px}
+.p-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.p-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--action-blue);margin-bottom:8px}
+.p-title{font-family:var(--font-head);font-size:1.55rem;font-weight:700;color:var(--heading);line-height:1.25;margin-bottom:4px}
+.p-sub{font-size:.92rem;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.para{font-size:1rem;line-height:1.75;color:var(--body);margin-bottom:18px;text-align:justify}
+.hl{border-radius:3px;padding:1px 1px;transition:background .5s,box-shadow .5s}
+.hl.active{background:var(--hl);box-shadow:0 0 0 2px rgba(245,184,46,.3)}
+.hl.flash{animation:hlflash 1s ease}
+@keyframes hlflash{0%{background:rgba(245,184,46,.95)}100%{background:var(--hl)}}
+
+/* Question (right) */
+.q-pane{width:50%;background:#fff;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.q-pane::-webkit-scrollbar{width:7px}
+.q-pane::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+/* node progression path — lives in the navy top bar */
+.pathrail{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:0 16px;height:100%}
+.pathrail::-webkit-scrollbar{height:0}
+.pnode{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font-family:var(--font-body);font-weight:700;font-size:.76rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.pnode:hover{transform:scale(1.12);border-color:rgba(255,255,255,.6)}
+.pnode.upcoming{opacity:.72}
+.pnode.current{border-color:#fff;color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(245,184,46,.5);transform:scale(1.12);animation:nodepulse 1.8s ease-in-out infinite}
+@keyframes nodepulse{0%,100%{box-shadow:0 0 0 3px rgba(245,184,46,.5)}50%{box-shadow:0 0 0 6px rgba(245,184,46,.14)}}
+.pnode.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.pnode.done{color:#fff;border-color:transparent}
+.pnode.done.ok{background:var(--correct-bd)}
+.pnode.done.no{background:var(--wrong-bd)}
+.pconn{flex:0 0 16px;height:2px;background:rgba(255,255,255,.22);border-radius:2px;margin:0 2px;transition:background .3s}
+.pconn.filled{background:var(--gold)}
+
+.q-card{max-width:520px;margin:0 auto;width:100%;padding:34px 30px 56px}
+.q-tasktag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--action-blue);background:var(--callout);padding:5px 11px;border-radius:999px;margin-bottom:16px}
+.q-row{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px}
+.q-num{flex-shrink:0;min-width:34px;height:34px;background:var(--navy-deep);color:#fff;border-radius:9px;font-size:.95rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q-prompt{font-size:1.08rem;line-height:1.55;color:var(--heading);font-weight:500;padding-top:4px}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--border);border-radius:11px;background:#fff;padding:14px 16px;font-family:var(--font-body);font-size:.97rem;color:var(--body);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not(.locked){background:var(--surface-subtle);border-color:#cbd5e1}
+.opt.selected{border-color:var(--action-blue);background:var(--callout);box-shadow:inset 0 0 0 1px var(--action-blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg);color:var(--correct-tx);box-shadow:inset 0 0 0 1px var(--correct-bd)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg);color:var(--wrong-tx);box-shadow:inset 0 0 0 1px var(--wrong-bd)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.5}
+.opt.tfng{font-weight:600}
+.opt .lt{width:28px;height:28px;border-radius:7px;background:var(--surface-subtle);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy-deep);font-size:.9rem;flex-shrink:0}
+.opt.correct .lt{background:#fff;border-color:var(--correct-bd);color:var(--correct-tx)}
+.opt.wrong .lt{background:#fff;border-color:var(--wrong-bd);color:var(--wrong-tx)}
+.opt .ot{line-height:1.45}
+.opt .mk{margin-left:auto;font-weight:800;font-size:1.05rem;padding-left:8px}
+
+/* summary completion (word bank) — full paragraph kept intact */
+.summary-card{border:1px solid var(--border);border-radius:13px;background:var(--surface-subtle);padding:17px 19px;font-size:.97rem;line-height:2.05;color:var(--body);text-align:justify;margin-bottom:18px}
+.summary-card .sum-head{font-family:var(--font-head);font-weight:600;color:var(--heading);text-align:center;font-size:1rem;margin-bottom:10px;line-height:1.3}
+.sum-p{margin:0}
+.sum-gap{display:inline-flex;align-items:center;justify-content:center;min-width:28px;padding:0 8px;border-bottom:2px dashed var(--action-blue);color:var(--action-blue);font-weight:700;font-size:.82rem;vertical-align:baseline}
+.sum-gap.active-slot{background:var(--callout);border-bottom-style:solid;box-shadow:inset 0 0 0 1px var(--action-blue);border-radius:6px 6px 0 0}
+.sum-filled{display:inline-block;padding:2px 9px;border-radius:6px;font-weight:600;font-size:.9rem;vertical-align:baseline}
+.sum-filled.cok{background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd)}
+.sum-filled.cno{background:var(--wrong-bg);color:var(--wrong-tx);border:1px solid var(--wrong-bd)}
+.wb-head{font-family:var(--font-head);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.6px;color:var(--heading);margin-bottom:9px}
+.wb-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.check-btn{margin-top:24px;width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.check-btn:hover:not(:disabled){background:var(--blue-badge)}
+.check-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+
+/* ── INLINE FEEDBACK (no overlay) ── */
+.feedback{margin-top:24px;border-top:1px solid var(--border);padding-top:20px;animation:fbin .25s ease}
+@keyframes fbin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.result-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-weight:700;font-size:.95rem;margin-bottom:10px}
+.result-badge svg{width:17px;height:17px}
+.result-badge.ok{background:var(--correct-bg);color:var(--correct-tx)}
+.result-badge.no{background:var(--wrong-bg);color:var(--wrong-tx)}
+.fb-answer{font-size:.96rem;color:var(--body);margin-bottom:14px}
+.fb-answer b{color:var(--heading)}
+.ov-expl{text-align:left;background:var(--surface-subtle);border:1px solid var(--border);border-radius:13px;padding:15px 17px;font-size:.9rem;line-height:1.65;color:var(--body);margin-bottom:16px}
+.ov-expl .lbl{display:flex;align-items:center;gap:7px;font-family:var(--font-head);font-weight:600;font-size:.82rem;color:var(--heading);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ov-quote{display:block;margin-top:10px;padding-left:12px;border-left:3px solid var(--gold);color:#5b6472;font-style:italic;font-size:.86rem;line-height:1.55}
+.relight{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--action-blue);border:1px solid var(--action-blue);font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:7px 13px;border-radius:9px;cursor:pointer;margin-bottom:14px;transition:background .15s}
+.relight:hover{background:var(--callout)}
+.next-btn{width:100%;background:var(--action-blue);color:#fff;border:none;padding:14px;border-radius:11px;font-family:var(--font-body);font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s}
+.next-btn:hover{background:var(--blue-badge)}
+.next-btn.gold{background:var(--gold);color:var(--navy-deep)}
+.next-btn.gold:hover{background:var(--gold-hover)}
+
+/* final summary (inline, not a modal) */
+.donut-wrap{position:relative;width:150px;height:150px;margin:0 auto 8px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:var(--font-head);font-weight:700;font-size:2rem;color:var(--heading);line-height:1}
+.donut-num small{font-size:1rem;color:var(--muted);font-weight:600}
+.donut-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;letter-spacing:.3px}
+.fin{text-align:center;max-width:420px;margin:0 auto}
+.fin-title{font-family:var(--font-head);font-weight:700;font-size:1.4rem;color:var(--heading);margin:6px 0 2px}
+.fin-msg{font-size:.92rem;color:var(--muted);margin-bottom:14px}
+.fin-stats{display:flex;gap:10px;margin-bottom:18px}
+.fin-stat{flex:1;border:1px solid var(--border);border-radius:12px;padding:12px 6px}
+.fin-stat b{display:block;font-family:var(--font-head);font-size:1.4rem;line-height:1.1}
+.fin-stat span{font-size:.72rem;color:var(--muted);font-weight:600}
+.fin-stat.ok b{color:var(--correct-bd)}
+.fin-stat.no b{color:var(--wrong-bd)}
+
+@media(max-width:860px){
+  .body{flex-direction:column}
+  .p-pane,.q-pane{width:100%}
+  .p-pane{border-right:none;border-bottom:1px solid var(--border);max-height:38vh}
+  .q-card{padding:26px 20px 44px}
+  .wb-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP BAR ── -->
+  <div class="topbar">
+    <div class="pathrail" id="pathrail"><!-- node progression path --></div>
+    <div class="top-right">
+      <button class="btn-restart" onclick="location.reload()">Bắt đầu lại</button>
+    </div>
+  </div>
+  <div class="topprog"><div class="topprog-fill" id="topProg"></div></div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- PASSAGE (left) -->
+    <div class="p-pane" id="passagePanel">
+      <div class="p-eyebrow">Reading Passage 3 · Questions 27–40</div>
+      <h1 class="p-title">Insight or evolution?</h1>
+      <p class="p-sub">Two scientists consider the origins of discoveries and other innovative behavior</p>
+
+      <p class="para"><span class="hl" id="ev-q27">Scientific discovery is popularly believed to result from the sheer genius of such intellectual stars as naturalist Charles Darwin and theoretical physicist Albert Einstein.</span> Our view of such unique contributions to science often disregards the person's prior experience and the efforts of their lesser-known predecessors. Conventional wisdom also places great weight on insight in promoting breakthrough scientific achievements, <span class="hl" id="ev-q37">as if ideas spontaneously pop into someone's head – fully formed and functional</span>.</p>
+
+      <p class="para">There may be some limited truth to this view. <span class="hl" id="ev-q28">However, we believe that it largely misrepresents the real nature of scientific discovery, as well as that of creativity and innovation in many other realms of human endeavor.</span></p>
+
+      <p class="para"><span class="hl" id="ev-q29">Setting aside such greats as Darwin and Einstein – whose monumental contributions are duly celebrated – we suggest that innovation is more a process of trial and error</span>, where two steps forward may sometimes come with one step back, as well as one or more stops to the right or left. This evolutionary view of human innovation undermines the notion of creative genius and recognizes the cumulative nature of scientific progress.</p>
+
+      <p class="para">Consider one unheralded scientist: John Nicholson, a mathematical physicist working in the 1910s who postulated the existence of 'proto-elements' in outer space. By combining different numbers of weights of these proto-elements' atoms, Nicholson could recover the weights of all the elements in the then-known periodic table. These successes are all the more noteworthy given the fact that <span class="hl" id="ev-q38">Nicholson was wrong about the presence of proto-elements: they do not actually exist</span>. Yet, amid his often fanciful theories and wild speculations, Nicholson also proposed a novel theory about the structure of atoms. <span class="hl" id="ev-q30">Niels Bohr, the Nobel prize-winning father of modern atomic theory, jumped off from this interesting idea to conceive his now-famous model of the atom.</span></p>
+
+      <p class="para">What are we to make of this story? One might simply conclude that science is a collective and cumulative enterprise. That may be true, but there may be a deeper insight to be gleaned. We propose that science is constantly evolving, much as species of animals do. In biological systems, organisms may display new characteristics that result from random genetic mutations. In the same way, random, arbitrary or accidental mutations of ideas may help pave the way for advances in science. If mutations prove beneficial, then the animal or the scientific theory will continue to thrive and perhaps reproduce.</p>
+
+      <p class="para">Support for this evolutionary view of behavioral innovation comes from many domains. Consider one example of an influential innovation in US horseracing. The so-called 'acey-deucy' stirrup placement, in which the rider's foot in his left stirrup is placed as much as 25 centimeters lower than the right, is believed to confer important speed advantages when turning on oval tracks. It was developed by a relatively unknown jockey named Jackie Westrope. Had Westrope conducted methodical investigations or examined extensive film records in a shrewd plan to outrun his rivals? Had he foreseen the speed advantage that would be conferred by riding acey-deucy? No. <span class="hl" id="ev-q31">He suffered a leg injury, which left him unable to fully bend his left knee. His modification just happened to coincide with enhanced left-hand turning performance.</span> This led to the rapid and widespread adoption of riding acey-deucy by many riders, a racing style which continues in today's thoroughbred racing.</p>
+
+      <p class="para"><span class="hl" id="ev-q39">Plenty of other stories show that fresh advances can arise from error, misadventure, and also pure serendipity – a happy accident.</span> For example, in the early 1970s, two employees of the company 3M each had a problem: Spencer Silver had a product – a glue which was only slightly sticky – and no use for it, while his colleague Art Fry was trying to figure out how to affix temporary bookmarks in his hymn book without damaging its pages. The solution to both these problems was invention of the brilliantly simple yet phenomenally successful Post-It note. Such examples give lie to the claim that ingenious, designing minds are responsible for human creativity and invention. Far more banal and mechanical forces may be at work; forces that are fundamentally connected to the laws of science.</p>
+
+      <p class="para">The notions of insight, creativity and genius are often invoked, but they remain vague and of doubtful scientific utility, especially when one considers the diverse and enduring contributions of individuals such as Plato, Leonardo da Vinci, Shakespeare, Beethoven, Galileo, Newton, Kepler, Curie, Pasteur and Edison. <span class="hl" id="ev-q32">These notions merely label rather than explain the evolution of human innovations.</span> We need another approach, and there is a promising candidate.</p>
+
+      <p class="para"><span class="hl" id="ev-q33">The Law of Effect was advanced by psychologist Edward Thorndike in 1898, some 40 years after Charles Darwin published his groundbreaking work on biological evolution, <em>On the Origin of Species</em>.</span> This simple law holds that organisms tend to repeat successful behaviors and to refrain from performing unsuccessful ones. Just like Darwin's Law of Natural Selection, <span class="hl" id="ev-q34">the Law of Effect involves an entirely mechanical process of variation and selection, <span class="hl" id="ev-q40">without any end objective in sight</span></span>.</p>
+
+      <p class="para">Of course, the origin of human innovation demands much further study. In particular, <span class="hl" id="ev-q35">the provenance of the raw material on which the Law of Effect operates is not as clearly known as that of the genetic mutations on which the Law of Natural Selection operates</span>. The generation of novel ideas and behaviors may not be entirely random, but constrained by prior successes and failures – of the current individual (such as Bohr) or of predecessors (such as Nicholson).</p>
+
+      <p class="para"><span class="hl" id="ev-q36">The time seems right for abandoning the naïve notion of intelligent design and genius, and for scientifically exploring the true origins of creative behavior.</span></p>
+    </div>
+
+    <!-- QUESTION (right) -->
+    <div class="q-pane" id="qPane">
+      <div class="q-card" id="qHost"><!-- one question injected here --></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MARKS = 14;   // total marks (Q27–40)
+
+/* word bank for the summary completion (Q37–40) */
+const WORDBANK=[
+  {l:'A',w:'mistakes'},{l:'B',w:'feelings'},{l:'C',w:'luck'},{l:'D',w:'inspiration'},
+  {l:'E',w:'problems'},{l:'F',w:'purpose'},{l:'G',w:'experience'}
+];
+
+/* full summary text kept intact (Q37–40); {n} marks each gap */
+const SUMMARY = {
+  head:'The origins of creative behaviour',
+  text:"The traditional view of scientific discovery is that breakthroughs happen when a single great mind has sudden {37}. Although this can occur, it is not often the case. Advances are more likely to be the result of a longer process. In some cases, this process involves {38}, such as Nicholson's theory about proto-elements. In others, simple necessity may provoke innovation, as with Westrope's decision to modify the position of his riding stirrups. There is also often an element of {39}, for example, the coincidence of ideas that led to the invention of the Post-It note. With both the Law of Natural Selection and the Law of Effect, there may be no clear {40} involved, but merely a process of variation and selection."
+};
+
+const STEPS = [
+  {type:'mcq',label:27,task:'Multiple choice · A–D',
+   prompt:'The purpose of the first paragraph is to',
+   options:[{l:'A',t:'defend particular ideas.'},{l:'B',t:'compare certain beliefs.'},{l:'C',t:'disprove a widely held view.'},{l:'D',t:'outline a common assumption.'}],
+   answer:'D',ev:'ev-q27',
+   expl:"Đoạn 1 trình bày quan niệm phổ biến: khám phá khoa học đến từ thiên tài, ý tưởng tự nhiên 'pop into someone's head'. Mục đích là nêu một giả định phổ biến. → <b>D</b>."},
+  {type:'mcq',label:28,task:'Multiple choice · A–D',
+   prompt:'What are the writers doing in the second paragraph?',
+   options:[{l:'A',t:'criticising an opinion'},{l:'B',t:'justifying a standpoint'},{l:'C',t:'explaining an approach'},{l:'D',t:'supporting an argument'}],
+   answer:'B',ev:'ev-q28',
+   expl:"Đoạn 2: 'we believe that it largely misrepresents the real nature of scientific discovery' — các tác giả nêu và bảo vệ quan điểm của chính mình. → <b>B — justifying a standpoint</b>."},
+  {type:'mcq',label:29,task:'Multiple choice · A–D',
+   prompt:'In the third paragraph, what do the writers suggest about Darwin and Einstein?',
+   options:[{l:'A',t:'They represent an exception to a general rule.'},{l:'B',t:'Their way of working has been misunderstood.'},{l:'C',t:'They are an ideal which others should aspire to.'},{l:'D',t:'Their achievements deserve greater recognition.'}],
+   answer:'A',ev:'ev-q29',
+   expl:"Đoạn 3: 'Setting aside such greats as Darwin and Einstein... we suggest that innovation is more a process of trial and error' — họ là ngoại lệ so với quy luật chung. → <b>A</b>."},
+  {type:'mcq',label:30,task:'Multiple choice · A–D',
+   prompt:'John Nicholson is an example of a person whose idea',
+   options:[{l:'A',t:'established his reputation as an influential scientist.'},{l:'B',t:'was only fully understood at a later point in history.'},{l:'C',t:"laid the foundations for someone else's breakthrough."},{l:'D',t:'initially met with scepticism from the scientific community.'}],
+   answer:'C',ev:'ev-q30',
+   expl:"Nicholson đề xuất lý thuyết về cấu trúc nguyên tử, rồi 'Niels Bohr... jumped off from this interesting idea' — ý tưởng của ông đặt nền cho đột phá của người khác. → <b>C</b>."},
+  {type:'mcq',label:31,task:'Multiple choice · A–D',
+   prompt:"What is the key point of interest about the 'acey-deucy' stirrup placement?",
+   options:[{l:'A',t:'the simple reason why it was invented'},{l:'B',t:'the enthusiasm with which it was adopted'},{l:'C',t:'the research that went into its development'},{l:'D',t:'the cleverness of the person who first used it'}],
+   answer:'A',ev:'ev-q31',
+   expl:"Điểm thú vị: acey-deucy ra đời chỉ vì Westrope 'suffered a leg injury' chứ không do tính toán — lý do đơn giản. → <b>A</b>."},
+
+  {type:'ynng',label:32,task:'YES / NO / NOT GIVEN',
+   prompt:'Acknowledging people such as Plato or da Vinci as geniuses will help us understand the process by which great minds create new ideas.',
+   answer:'NO',ev:'ev-q32',
+   expl:"Tác giả nói các khái niệm thiên tài 'merely label rather than explain the evolution of human innovations' — chúng KHÔNG giúp hiểu quá trình sáng tạo. Mâu thuẫn → <b>NO</b>."},
+  {type:'ynng',label:33,task:'YES / NO / NOT GIVEN',
+   prompt:'The Law of Effect was discovered at a time when psychologists were seeking a scientific reason why creativity occurs.',
+   answer:'NOT GIVEN',ev:'ev-q33',
+   expl:"Bài chỉ nói Law of Effect được Thorndike đưa ra năm 1898, KHÔNG nói lúc đó các nhà tâm lý đang đi tìm lý do khoa học cho sự sáng tạo. → <b>NOT GIVEN</b>."},
+  {type:'ynng',label:34,task:'YES / NO / NOT GIVEN',
+   prompt:'The Law of Effect states that no planning is involved in the behaviour of organisms.',
+   answer:'YES',ev:'ev-q34',
+   expl:"Law of Effect là 'an entirely mechanical process of variation and selection, without any end objective in sight' — không có kế hoạch/mục tiêu. Khớp với 'no planning' → <b>YES</b>."},
+  {type:'ynng',label:35,task:'YES / NO / NOT GIVEN',
+   prompt:'The Law of Effect sets out clear explanations about the sources of new ideas and behaviours.',
+   answer:'NO',ev:'ev-q35',
+   expl:"Bài nói nguồn gốc nguyên liệu mà Law of Effect vận hành 'is not as clearly known' — KHÔNG rõ ràng. Mâu thuẫn với 'clear explanations' → <b>NO</b>."},
+  {type:'ynng',label:36,task:'YES / NO / NOT GIVEN',
+   prompt:'Many scientists are now turning away from the notion of intelligent design and genius.',
+   answer:'NOT GIVEN',ev:'ev-q36',
+   expl:"Bài nói 'The time seems right for abandoning...' (đã đến lúc nên từ bỏ) nhưng KHÔNG nói nhiều nhà khoa học HIỆN đang quay lưng với quan niệm đó. → <b>NOT GIVEN</b>."},
+
+  {type:'summary-list',label:37,task:'Summary · word list A–G',
+   answer:'D',ev:'ev-q37',
+   expl:"Quan niệm truyền thống: một bộ óc vĩ đại chợt 'lóe sáng' — 'ideas spontaneously pop into someone's head'. Từ phù hợp: <b>inspiration</b>. → D."},
+  {type:'summary-list',label:38,task:'Summary · word list A–G',
+   answer:'A',ev:'ev-q38',
+   expl:"Quá trình đôi khi gồm cả sai lầm: 'Nicholson was wrong about the presence of proto-elements'. Từ phù hợp: <b>mistakes</b>. → A."},
+  {type:'summary-list',label:39,task:'Summary · word list A–G',
+   answer:'C',ev:'ev-q39',
+   expl:"Yếu tố may mắn: 'pure serendipity – a happy accident' dẫn tới Post-It note. Từ phù hợp: <b>luck</b>. → C."},
+  {type:'summary-list',label:40,task:'Summary · word list A–G',
+   answer:'F',ev:'ev-q40',
+   expl:"Cả hai quy luật vận hành 'without any end objective in sight' — không có mục đích rõ ràng. Từ phù hợp: <b>purpose</b>. → F."}
+];
+
+const CIRC = 2*Math.PI*64;
+const NSTEPS = STEPS.length;
+const results = new Array(NSTEPS).fill(null);   // 'ok' | 'no' per step
+const answers = new Array(NSTEPS).fill(null);   // the learner's raw answer per step
+const given={};                                  // filled summary gaps {label:{val,ok}}
+let idx=0, correctCount=0, wrongCount=0, selected=null, locked=false, advanceReady=false;
+
+const host=document.getElementById('qHost');
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* summary rendering — full paragraph, active gap highlighted, earlier gaps filled, later gaps numbered */
+function summaryListHTML(active){
+  const render=s=>s.replace(/\{(\d+)\}/g,(m,n)=>{
+    n=+n;
+    if(given[n])return `<span class="sum-filled ${given[n].ok?'cok':'cno'}">${escapeHtml(given[n].val)}</span>`;
+    if(n===active)return `<span class="sum-gap active-slot" id="sumActive">${n}</span>`;
+    return `<span class="sum-gap">${n}</span>`;
+  });
+  return `<div class="summary-card"><div class="sum-head">${SUMMARY.head}</div><p class="sum-p">${render(SUMMARY.text)}</p></div>`;
+}
+
+/* ── Node progression path ── */
+function buildPath(){
+  const rail=document.getElementById('pathrail');
+  rail.innerHTML=STEPS.map((q,i)=>{
+    const conn=i>0?`<span class="pconn" id="pconn-${i}"></span>`:'';
+    return conn+`<button class="pnode" id="pnode-${i}" title="Câu ${q.label}" onclick="jumpNode(${i})">${q.label}</button>`;
+  }).join('');
+}
+function updatePath(){
+  STEPS.forEach((q,i)=>{
+    const node=document.getElementById('pnode-'+i);
+    if(node){
+      node.className='pnode';
+      if(results[i])node.classList.add('done',results[i]);
+      if(i===idx)node.classList.add(results[i]?'viewing':'current');
+      else if(!results[i])node.classList.add('upcoming');
+    }
+    const conn=document.getElementById('pconn-'+i);
+    if(conn)conn.classList.toggle('filled',results[i-1]!=null);
+  });
+  const cur=document.getElementById('pnode-'+idx);
+  if(cur)cur.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+function jumpNode(i){ if(i===idx)return; idx=i; showQuestion(); }
+
+/* Enter advances once the inline feedback is up (guarded so the check keypress can't also advance) */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&locked&&advanceReady){
+    const b=host.querySelector('.next-btn');
+    if(b){e.preventDefault();b.click();}
+  }
+});
+
+/* ── Render the current step ── */
+function showQuestion(){
+  const q=STEPS[idx];
+  selected=null;locked=false;advanceReady=false;
+  document.getElementById('topProg').style.width=(results.filter(r=>r!=null).length/NSTEPS*100)+'%';
+  clearHighlight();
+
+  let answerHTML='';
+  if(q.type==='mcq'){
+    answerHTML='<div class="opts">'+q.options.map(o=>
+      `<button class="opt" data-val="${o.l}" onclick="pickOne(this,'${o.l}')"><span class="lt">${o.l}</span><span class="ot">${o.t}</span></button>`).join('')+'</div>';
+  }else if(q.type==='ynng'){
+    answerHTML='<div class="opts">'+['YES','NO','NOT GIVEN'].map(v=>
+      `<button class="opt tfng" data-val="${v}" onclick="pickOne(this,'${v}')"><span class="ot">${v}</span></button>`).join('')+'</div>';
+  }else{ // summary-list
+    answerHTML=summaryListHTML(q.label)+
+      '<div class="wb-head">Danh sách từ (A–G)</div><div class="wb-grid">'+
+      WORDBANK.map(w=>`<button class="opt" data-val="${w.l}" onclick="pickOne(this,'${w.l}')"><span class="lt">${w.l}</span><span class="ot">${w.w}</span></button>`).join('')+
+      '</div>';
+  }
+
+  const promptHTML = q.type==='summary-list'
+    ? `Chọn từ phù hợp (A–G) để điền vào ô trống <b>${q.label}</b>:`
+    : q.prompt;
+
+  host.innerHTML=`
+    <div class="q-tasktag">${q.task}</div>
+    <div class="q-row"><div class="q-num">${q.label}</div><div class="q-prompt">${promptHTML}</div></div>
+    ${answerHTML}
+    <button class="check-btn" id="checkBtn" onclick="checkNow()" disabled>Kiểm tra đáp án</button>`;
+
+  if(results[idx]!=null){           // already answered → locked review state
+    locked=true;advanceReady=true;
+    selected=answers[idx];
+    revealAnswer(q);
+    renderFeedback(q,results[idx]);
+  }
+
+  updatePath();
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickOne(el,val){
+  if(locked)return;
+  selected=val;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('checkBtn').disabled=false;
+}
+
+/* ── Grade, reveal inline, highlight passage ── */
+function checkNow(){
+  const q=STEPS[idx];
+  if(locked)return;
+  if(selected==null||selected==='')return;
+  const ok=isCorrect(q,selected);
+  if(ok)correctCount++;else wrongCount++;
+  if(q.type==='summary-list'){const w=(WORDBANK.find(x=>x.l===selected)||{}).w||selected; given[q.label]={val:w,ok};}
+
+  locked=true;
+  results[idx]=ok?'ok':'no';
+  answers[idx]=selected;
+  revealAnswer(q);
+  renderFeedback(q,results[idx]);
+  updatePath();
+  advanceReady=false;setTimeout(()=>{advanceReady=true;},260);
+}
+
+/* Apply the locked correct/wrong styling + light the passage evidence */
+function revealAnswer(q){
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.disabled=true;
+  if(q.type==='summary-list'){
+    const slot=document.getElementById('sumActive');
+    if(slot){const w=(WORDBANK.find(x=>x.l===selected)||{}).w||selected;
+      slot.outerHTML=`<span class="sum-filled ${isCorrect(q,selected)?'cok':'cno'}">${escapeHtml(w)}</span>`;}
+  }
+  document.querySelectorAll('.opt').forEach(o=>{
+    o.classList.add('locked');
+    const v=o.dataset.val;
+    if(v===q.answer){o.classList.add('correct');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✓</span>');}
+    else if(v===selected){o.classList.add('wrong');if(!o.querySelector('.mk'))o.insertAdjacentHTML('beforeend','<span class="mk">✕</span>');}
+    else o.classList.add('dim');
+  });
+  highlight(q.ev);
+}
+
+function isCorrect(q,val){ return val===q.answer; }
+
+/* ── Inline feedback (replaces the check button; no modal overlay) ── */
+function renderFeedback(q,state){
+  let ansText;
+  if(q.type==='mcq'){const o=q.options.find(x=>x.l===q.answer); ansText=`${q.answer} — ${o?o.t.replace(/\.$/,''):''}`;}
+  else if(q.type==='summary-list'){const w=WORDBANK.find(x=>x.l===q.answer); ansText=`${q.answer} — ${w?w.w:''}`;}
+  else ansText=q.answer; // ynng
+  const el=document.getElementById(q.ev);
+  const quoteHTML=el?`<span class="ov-quote">“${el.textContent.trim()}”</span>`:'';
+  const last=results.every(r=>r!=null);
+  const badges={
+    ok:'<div class="result-badge ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Chính xác!</div>',
+    no:'<div class="result-badge no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>Chưa đúng</div>'
+  };
+  const fb=`
+    <div class="feedback">
+      ${badges[state]}
+      <div class="fb-answer">Đáp án đúng: <b>${ansText}</b></div>
+      <button class="relight" onclick="highlight('${q.ev}')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Xem lại trong bài</button>
+      <div class="ov-expl">
+        <div class="lbl"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>Giải thích</div>
+        ${q.expl}
+        ${quoteHTML}
+      </div>
+      <button class="next-btn ${last?'gold':''}" onclick="nextStep()">${last?'Xem kết quả tổng kết →':'Câu tiếp theo →'}</button>
+    </div>`;
+  const cb=document.getElementById('checkBtn');
+  if(cb)cb.outerHTML=fb; else host.insertAdjacentHTML('beforeend',fb);
+}
+
+function nextStep(){
+  if(results.every(r=>r!=null)){showFinal();return;}     // all done → summary
+  for(let k=1;k<=NSTEPS;k++){const j=(idx+k)%NSTEPS;if(results[j]==null){idx=j;break;}}
+  showQuestion();
+}
+
+/* ── Donut (used only in the final summary) ── */
+function donut(correct,wrong,total,mainHTML,sub){
+  const cLen=correct/total*CIRC, wLen=wrong/total*CIRC;
+  return `<div class="donut-wrap">
+    <svg viewBox="0 0 150 150" width="150" height="150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#E5E7EB" stroke-width="13"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1E9E54" stroke-width="13"
+        stroke-dasharray="${cLen.toFixed(2)} ${CIRC.toFixed(2)}"/>
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#D14343" stroke-width="13"
+        stroke-dasharray="${wLen.toFixed(2)} ${CIRC.toFixed(2)}" stroke-dashoffset="${(-cLen).toFixed(2)}"/>
+    </svg>
+    <div class="donut-center"><div class="donut-num">${mainHTML}</div><div class="donut-sub">${sub}</div></div>
+  </div>`;
+}
+
+/* ── Final summary (rendered inline in the question pane) ── */
+function showFinal(){
+  document.getElementById('topProg').style.width='100%';
+  clearHighlight();
+  STEPS.forEach((q,i)=>{const n=document.getElementById('pnode-'+i);if(n){n.className='pnode done '+results[i];}});
+  const pct=Math.round(correctCount/MARKS*100);
+  let msg;
+  if(pct>=85)msg='Xuất sắc! Bạn đã nắm rất chắc bài đọc này.';
+  else if(pct>=65)msg='Làm tốt lắm — chỉ còn vài chỗ cần xem lại.';
+  else if(pct>=45)msg='Khá ổn. Hãy đọc lại phần giải thích để củng cố nhé.';
+  else msg='Đừng nản — luyện lại và xem kỹ phần giải thích sẽ tiến bộ nhanh.';
+  host.innerHTML=`
+    <div class="fin">
+      ${donut(correctCount,wrongCount,MARKS,`${correctCount}<small>/${MARKS}</small>`,`${pct}% đúng`)}
+      <div class="fin-title">Hoàn thành bài luyện tập!</div>
+      <div class="fin-msg">${msg}</div>
+      <div class="fin-stats">
+        <div class="fin-stat ok"><b>${correctCount}</b><span>ĐÚNG</span></div>
+        <div class="fin-stat no"><b>${wrongCount}</b><span>SAI</span></div>
+        <div class="fin-stat"><b>${pct}%</b><span>TỈ LỆ</span></div>
+      </div>
+      <button class="next-btn gold" onclick="location.reload()">Làm lại từ đầu</button>
+    </div>`;
+  host.parentElement.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Passage evidence highlight ── */
+function clearHighlight(){document.querySelectorAll('.hl.active,.hl.flash').forEach(s=>s.classList.remove('active','flash'));}
+function highlight(evId){
+  const ev=document.getElementById(evId);
+  if(!ev)return;
+  clearHighlight();
+  ev.classList.add('active','flash');
+  scrollToEv(ev);
+}
+function scrollToEv(ev){
+  const panel=document.getElementById('passagePanel');
+  const pr=panel.getBoundingClientRect(), er=ev.getBoundingClientRect();
+  panel.scrollTo({top:panel.scrollTop+(er.top-pr.top)-100,behavior:'smooth'});
+}
+
+/* start */
+buildPath();
+showQuestion();
+</script>
+</body>
+</html>
