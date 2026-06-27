@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Task 1: Brick Manufacturing Process (Guided Lesson)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E3A8A; --navy-deep:#14306E; --gold:#F5B82E; --gold-hover:#E0A21C;
+  --blue:#2563EB; --blue-badge:#1D4ED8; --head:#1E3A5F; --body:#374151;
+  --muted:#6B7280; --border:#E5E7EB; --surface:#FFFFFF; --subtle:#F8FAFC;
+  --callout:#EFF4FB;
+  --correct-bg:#ECFDF5; --correct-bd:#10B981; --correct-tx:#065F46;
+  --wrong-bg:#FEF2F2; --wrong-bd:#EF4444; --wrong-tx:#991B1B;
+  --hl:#FDF0D5;
+  /* diagram palette (vault design.md) */
+  --d-navy:#1f4e79; --d-amber:#e0922f; --d-teal:#2a9d8f; --d-ink:#23425f;
+  --d-bd:#7d9dc0; --d-fill1:#dce8f5; --d-fill2:#cfe1f2; --d-fill3:#eef4fb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--body);background:var(--subtle);overflow:hidden}
+h1,h2,h3,.font-head{font-family:'Poppins','Inter',sans-serif}
+button{font-family:inherit;cursor:pointer}
+
+/* ================= TOP BAR ================= */
+.topbar{height:64px;background:var(--navy);display:flex;align-items:center;gap:20px;padding:0 20px;position:relative;z-index:30}
+.logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:21px;color:#fff;white-space:nowrap}
+.logo .lab{background:var(--gold);color:var(--navy-deep);border-radius:6px;padding:1px 7px;margin-left:5px;font-weight:700}
+.restart{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+.restart:hover{background:rgba(255,255,255,.12)}
+/* node path */
+.path-wrap{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;justify-content:center}
+.path-wrap::-webkit-scrollbar{display:none}
+.path{display:flex;align-items:center;padding:4px 8px}
+.node{width:32px;height:32px;flex:0 0 32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;transition:all .25s}
+.node:hover{transform:scale(1.12)}
+.connector{width:14px;height:3px;flex:0 0 14px;background:rgba(255,255,255,.25);transition:background .3s}
+.connector.fill{background:var(--gold)}
+.node.current{border-color:#fff;background:rgba(255,255,255,.18)}
+.node.current::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.13)}}
+.node.viewing{box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.node.ok{background:var(--correct-bd);border-color:var(--correct-bd)}
+.node.no{background:var(--wrong-bd);border-color:var(--wrong-bd)}
+.node.half{background:linear-gradient(135deg,var(--correct-bd) 50%,var(--wrong-bd) 50%);border-color:var(--gold)}
+/* progress bar */
+.progress{height:5px;background:var(--border)}
+.progress>div{height:100%;width:0;background:var(--gold);transition:width .4s ease}
+
+/* ================= BODY ================= */
+.main{display:flex;height:calc(100vh - 69px)}
+.pane{flex:1 1 50%;overflow-y:auto;padding:32px 36px}
+.pane-left{background:var(--subtle);border-right:1px solid var(--border)}
+.pane-right{background:var(--surface)}
+
+/* left pane */
+.pane-left h2{color:var(--blue);font-size:23px;font-weight:700}
+.pane-left .subtitle{font-size:15px;font-style:italic;color:var(--muted);margin:4px 0 18px}
+.task-callout{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;line-height:1.7;margin-bottom:10px}
+.task-note{font-size:13px;color:var(--muted);margin-bottom:18px}
+.diagram-card{background:#f3f7fc;border:1px solid var(--border);border-radius:12px;padding:14px}
+.diagram-card svg{width:100%;height:auto;display:block}
+.stage .badge-rect{transition:all .3s}
+.stage.glow .badge-rect{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 7px rgba(245,184,46,.9))}
+.stage.glow .box-rect{stroke:var(--gold);stroke-width:3;filter:drop-shadow(0 0 7px rgba(245,184,46,.9))}
+.stage.glow .stage-label{font-weight:700;fill:var(--navy)}
+
+/* right pane */
+.part-tag{display:inline-block;background:var(--callout);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.06em;border-radius:999px;padding:5px 13px;margin-bottom:14px}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px 28px;max-width:680px}
+.step-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.qbadge{flex:0 0 32px;width:32px;height:32px;background:var(--navy-deep);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.step-title{font-size:17px;font-weight:600;color:var(--head);line-height:1.45;padding-top:4px}
+.teach{background:var(--callout);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:11px 15px;font-size:14.5px;line-height:1.65;margin:14px 0 18px;color:var(--body)}
+.teach b{color:var(--head)}
+
+/* option cards */
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px;font-size:15px;line-height:1.55;color:var(--body);transition:all .15s}
+.opt:hover:not(:disabled){background:var(--subtle);border-color:#cbd5e1}
+.opt .letter{font-weight:700;color:var(--head)}
+.opt .radio{flex:0 0 18px;width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;margin-top:2px;position:relative;transition:all .15s}
+.opt.sel{border-color:var(--blue);background:#f5f8ff}
+.opt.sel .radio{border-color:var(--blue)}
+.opt.sel .radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+.opt.correct{border-color:var(--correct-bd);background:var(--correct-bg)}
+.opt.correct .letter{color:var(--correct-tx)}
+.opt.wrong{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.opt.wrong .letter{color:var(--wrong-tx)}
+.opt.dim{opacity:.5}
+.opt .mark{margin-left:auto;font-weight:800;flex:0 0 auto}
+.opt.correct .mark{color:var(--correct-bd)}
+.opt.wrong .mark{color:var(--wrong-bd)}
+.pick-hint{font-size:13px;font-weight:600;color:var(--muted);margin-top:10px}
+.pick-hint.full{color:var(--correct-tx)}
+
+/* order exercise */
+.order-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.ord{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-radius:11px;padding:13px 16px;font-size:15px;line-height:1.5;transition:all .15s}
+.ord:hover:not(:disabled){background:var(--subtle)}
+.ord .slot{flex:0 0 28px;width:28px;height:28px;border-radius:8px;border:2px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
+.ord.picked{border-color:var(--blue);background:#f5f8ff}
+.ord.picked .slot{border:none;background:var(--navy-deep)}
+.ord.r-ok{border-color:var(--correct-bd);background:var(--correct-bg)}
+.ord.r-ok .slot{border:none;background:var(--correct-bd)}
+.ord.r-no{border-color:var(--wrong-bd);background:var(--wrong-bg)}
+.ord.r-no .slot{border:none;background:var(--wrong-bd)}
+.ord .fix{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--wrong-tx);white-space:nowrap}
+
+/* gaps / rows */
+.gap-text{font-size:15.5px;line-height:2.15;margin-top:14px}
+.gapsel{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;border:1px solid var(--border);border-radius:9px;padding:6px 28px 6px 11px;font-size:14.5px;font-family:inherit;color:var(--body);margin:0 2px;max-width:280px}
+.gapsel:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+.gapsel.answered{border-color:var(--blue);background-color:var(--callout);color:var(--blue-badge);font-weight:600}
+.gap-res{display:inline-block;border-radius:8px;padding:3px 10px;font-weight:600;font-size:14.5px;margin:0 2px;white-space:nowrap}
+.gap-res.ok{background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd)}
+.gap-res.no{background:var(--wrong-bg);color:var(--wrong-tx);border:1px solid var(--wrong-bd);text-decoration:line-through}
+.gap-res .fixv{text-decoration:none;color:var(--correct-tx);font-weight:700}
+.rows{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.row-item{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:12px 16px}
+.row-item .rlab{font-size:15px;font-weight:600;color:var(--head);flex:1 1 200px}
+
+/* check bar */
+.checkbar{margin-top:22px;display:flex;gap:10px;align-items:center}
+.btn-check{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700;transition:all .15s}
+.btn-check:hover:not(:disabled){background:var(--blue-badge)}
+.btn-check:disabled{background:#cbd5e1;cursor:not-allowed}
+.btn-review{background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:9px;padding:12px 24px;font-size:15px;font-weight:700}
+.btn-review:hover{background:var(--callout)}
+.btn-summary{background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;padding:12px 24px;font-size:15px;font-weight:800}
+.btn-summary:hover{background:var(--gold-hover)}
+.locked-note{font-size:13px;color:var(--muted)}
+
+/* ================= OVERLAY ================= */
+.overlay{position:fixed;inset:0;background:rgba(20,48,110,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+.overlay.show{display:flex;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.ov-card{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px 32px;text-align:center;animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+.ov-badge{display:inline-block;border-radius:999px;padding:8px 22px;font-weight:800;font-size:17px;font-family:'Poppins',sans-serif;margin-bottom:16px}
+.ov-badge.ok{background:var(--correct-bg);color:var(--correct-tx);border:2px solid var(--correct-bd)}
+.ov-badge.no{background:var(--wrong-bg);color:var(--wrong-tx);border:2px solid var(--wrong-bd)}
+.ov-badge.half{background:var(--hl);color:#92400E;border:2px solid var(--gold)}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 16px}
+.donut{position:relative;width:110px;height:110px}
+.donut svg{transform:rotate(-90deg)}
+.donut .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dn-center .big{font-weight:800;font-size:19px;color:var(--head);font-family:'Poppins',sans-serif}
+.dn-center .sm{font-size:11px;color:var(--muted);font-weight:600}
+.ov-key{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:13px 16px;text-align:left;font-size:14.5px;line-height:1.65;margin-bottom:12px}
+.ov-key .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:5px}
+.ov-expl{background:var(--subtle);border:1px solid var(--border);border-radius:11px;padding:14px 17px;text-align:left;font-size:14.5px;line-height:1.7;margin-bottom:14px}
+.ov-expl .klab{font-size:12px;font-weight:800;letter-spacing:.07em;color:var(--blue);display:block;margin-bottom:6px}
+.ov-quote{border-left:4px solid var(--gold);background:var(--hl);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-style:italic;color:var(--head);font-size:14px;line-height:1.6}
+.btn-next{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:700;width:100%}
+.btn-next:hover{background:var(--blue-badge)}
+.btn-next.final{background:var(--gold);color:var(--navy-deep)}
+.btn-next.final:hover{background:var(--gold-hover)}
+
+/* ================= SUMMARY ================= */
+.summary{max-width:680px}
+.sum-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px 32px;text-align:center;margin-bottom:20px}
+.sum-card h2{color:var(--head);font-size:24px;margin-bottom:6px}
+.sum-card .enc{color:var(--muted);font-size:15px;margin-bottom:18px}
+.donut-big{position:relative;width:170px;height:170px;margin:0 auto 16px}
+.donut-big svg{transform:rotate(-90deg)}
+.donut-big .dn-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-big .big{font-weight:800;font-size:30px;color:var(--head);font-family:'Poppins',sans-serif}
+.donut-big .sm{font-size:12.5px;color:var(--muted);font-weight:600}
+.sum-stats{display:flex;justify-content:center;gap:22px;font-size:14px;font-weight:600}
+.sum-stats .ok{color:var(--correct-tx)} .sum-stats .half{color:#92400E} .sum-stats .no{color:var(--wrong-tx)}
+.model-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;margin-bottom:20px}
+.model-card h3{color:var(--blue);font-size:19px;margin-bottom:4px}
+.model-card .wc{display:inline-block;background:var(--correct-bg);color:var(--correct-tx);border:1px solid var(--correct-bd);border-radius:999px;font-size:12.5px;font-weight:700;padding:4px 12px;margin:6px 0 14px}
+.model-card p{font-size:15px;line-height:1.85;text-align:justify;margin-bottom:13px}
+.m-seq{background:var(--hl);border-radius:4px;padding:0 3px;font-weight:600}
+.m-verb{border-bottom:2px solid var(--blue);font-weight:600;color:var(--head)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px;padding-top:12px;border-top:1px solid var(--border)}
+.legend .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.btn-redo{background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;padding:13px 30px;font-size:15px;font-weight:800;width:100%}
+.btn-redo:hover{background:var(--gold-hover)}
+
+@media (max-width: 900px){
+  body{overflow:auto}
+  .main{flex-direction:column;height:auto}
+  .pane{overflow:visible;padding:22px 18px}
+  .pane-left{border-right:none;border-bottom:1px solid var(--border)}
+  .logo{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="topbar">
+  <div class="path-wrap"><div class="path" id="path"></div></div>
+  <button class="restart" id="btnRestart">↺ Bắt đầu lại</button>
+</header>
+<div class="progress"><div id="progFill"></div></div>
+
+<div class="main">
+  <!-- ================= LEFT: TASK + DIAGRAM ================= -->
+  <section class="pane pane-left">
+    <h2>Writing Task 1 — Man-Made Process</h2>
+    <div class="subtitle">Guided lesson · learn one micro-skill, practise it immediately</div>
+    <div class="task-callout">
+      <b>The diagram below shows the process by which bricks are manufactured for the building industry.</b><br>
+      Summarise the information by selecting and reporting the main features, and make comparisons where relevant.
+    </div>
+    <div class="task-note">You should write at least <b>150 words</b>. · You should spend about 20 minutes on this task.</div>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 760 600" xmlns="http://www.w3.org/2000/svg" aria-label="Flowchart of the brick manufacturing process with nine numbered stages, from digging clay to delivery by truck">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#7d9dc0"/>
+          </marker>
+        </defs>
+
+        <rect x="0" y="0" width="760" height="600" rx="10" fill="#f3f7fc"/>
+        <text x="380" y="34" text-anchor="middle" font-family="Poppins,Inter,sans-serif" font-size="19" font-weight="700" fill="#173a63">The Brick Manufacturing Process</text>
+        <text x="118" y="56" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6B7280">raw material</text>
+        <text x="642" y="582" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6B7280">finished product</text>
+
+        <!-- ===== connectors ===== -->
+        <g stroke="#7d9dc0" stroke-width="2.5" fill="none">
+          <line x1="214" y1="130" x2="284" y2="130" marker-end="url(#arr)"/>
+          <line x1="476" y1="130" x2="546" y2="130" marker-end="url(#arr)"/>
+          <line x1="642" y1="190" x2="642" y2="250" marker-end="url(#arr)"/>
+          <line x1="546" y1="310" x2="476" y2="310" marker-end="url(#arr)"/>
+          <line x1="284" y1="310" x2="214" y2="310" marker-end="url(#arr)"/>
+          <line x1="118" y1="370" x2="118" y2="430" marker-end="url(#arr)"/>
+          <line x1="214" y1="490" x2="284" y2="490" marker-end="url(#arr)"/>
+          <line x1="476" y1="490" x2="546" y2="490" marker-end="url(#arr)"/>
+        </g>
+
+        <!-- ===== STAGE 1 · digging clay ===== -->
+        <g class="stage" id="st1">
+          <rect class="box-rect" x="24" y="72" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="102" y="108" width="18" height="12" rx="2" fill="#cfe1f2" stroke="#3d6da3" stroke-width="1.4"/>
+          <circle cx="106" cy="122" r="2.4" fill="#3d6da3"/><circle cx="116" cy="122" r="2.4" fill="#3d6da3"/>
+          <line x1="120" y1="110" x2="134" y2="98" stroke="#3d6da3" stroke-width="2"/>
+          <path d="M132 96 L141 95 L137 105 Z" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.2"/>
+          <rect class="badge-rect" x="34" y="60" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="47" y="78" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+          <text class="stage-label" x="118" y="158" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Digging clay</text>
+          <text class="stage-label" x="118" y="175" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">mechanical digger</text>
+        </g>
+
+        <!-- ===== STAGE 2 · crushing ===== -->
+        <g class="stage" id="st2">
+          <rect class="box-rect" x="286" y="72" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="360" y="112" width="40" height="9" rx="4.5" fill="#cfe1f2" stroke="#3d6da3" stroke-width="1.4"/>
+          <circle cx="360" cy="116.5" r="4.5" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.2"/>
+          <circle cx="400" cy="116.5" r="4.5" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.2"/>
+          <g stroke="#7d9dc0" stroke-width="1">
+            <line x1="366" y1="100" x2="394" y2="100"/><line x1="366" y1="106" x2="394" y2="106"/>
+            <line x1="372" y1="97" x2="372" y2="109"/><line x1="380" y1="97" x2="380" y2="109"/><line x1="388" y1="97" x2="388" y2="109"/>
+          </g>
+          <rect class="badge-rect" x="296" y="60" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="309" y="78" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+          <text class="stage-label" x="380" y="158" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Crushing</text>
+          <text class="stage-label" x="380" y="175" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">metal grid + roller</text>
+        </g>
+
+        <!-- ===== STAGE 3 · mixing ===== -->
+        <g class="stage" id="st3">
+          <rect class="box-rect" x="548" y="72" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <path d="M628 98 L656 98 L648 110 L636 110 Z" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.3"/>
+          <circle cx="642" cy="118" r="2.6" fill="#2a9d8f"/><circle cx="636" cy="122" r="1.8" fill="#2a9d8f"/><circle cx="648" cy="122" r="1.8" fill="#2a9d8f"/>
+          <circle cx="635" cy="95" r="1.5" fill="#e0922f"/><circle cx="642" cy="92" r="1.5" fill="#e0922f"/><circle cx="649" cy="95" r="1.5" fill="#e0922f"/>
+          <rect class="badge-rect" x="558" y="60" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="571" y="78" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+          <text class="stage-label" x="642" y="158" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Mixing</text>
+          <text class="stage-label" x="642" y="175" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">sand &amp; water added</text>
+        </g>
+
+        <!-- ===== STAGE 4 · shaping ===== -->
+        <g class="stage" id="st4">
+          <rect class="box-rect" x="548" y="252" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <g fill="#e0922f" stroke="#b8761f" stroke-width="1">
+            <rect x="628" y="296" width="14" height="7" rx="1"/>
+            <rect x="644" y="296" width="14" height="7" rx="1"/>
+            <rect x="636" y="288" width="14" height="7" rx="1"/>
+          </g>
+          <line x1="622" y1="284" x2="662" y2="306" stroke="#3d6da3" stroke-width="1.4" stroke-dasharray="3 2"/>
+          <rect class="badge-rect" x="558" y="240" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="571" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+          <text class="stage-label" x="642" y="338" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Shaping</text>
+          <text class="stage-label" x="642" y="355" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">wire cutter or mould</text>
+        </g>
+
+        <!-- ===== STAGE 5 · drying ===== -->
+        <g class="stage" id="st5">
+          <rect class="box-rect" x="286" y="252" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="362" y="286" width="36" height="20" rx="3" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.4"/>
+          <line x1="362" y1="300" x2="398" y2="300" stroke="#3d6da3" stroke-width="1"/>
+          <path d="M372 284 q3 -5 6 0 q3 5 6 0" fill="none" stroke="#e0922f" stroke-width="1.4"/>
+          <rect class="badge-rect" x="296" y="240" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="309" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+          <text class="stage-label" x="380" y="338" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Drying</text>
+          <text class="stage-label" x="380" y="355" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">drying oven · 24–48 hrs</text>
+        </g>
+
+        <!-- ===== STAGE 6 · firing ===== -->
+        <g class="stage" id="st6">
+          <rect class="box-rect" x="24" y="252" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="100" y="288" width="36" height="20" rx="3" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.4"/>
+          <path d="M118 282 c5 5 5 11 0 15 c-5 -4 -5 -10 0 -15 Z" fill="#e0922f" stroke="#b8761f" stroke-width="1"/>
+          <rect class="badge-rect" x="34" y="240" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="47" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+          <text class="stage-label" x="118" y="338" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Firing</text>
+          <text class="stage-label" x="118" y="355" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">kiln · 200–1300°C</text>
+        </g>
+
+        <!-- ===== STAGE 7 · cooling ===== -->
+        <g class="stage" id="st7">
+          <rect class="box-rect" x="24" y="432" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="100" y="466" width="36" height="20" rx="3" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.4"/>
+          <g stroke="#2a9d8f" stroke-width="1.5" stroke-linecap="round">
+            <line x1="118" y1="470" x2="118" y2="482"/>
+            <line x1="112" y1="473" x2="124" y2="479"/>
+            <line x1="124" y1="473" x2="112" y2="479"/>
+          </g>
+          <rect class="badge-rect" x="34" y="420" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="47" y="438" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">7</text>
+          <text class="stage-label" x="118" y="518" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Cooling</text>
+          <text class="stage-label" x="118" y="535" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">chamber · 48–72 hrs</text>
+        </g>
+
+        <!-- ===== STAGE 8 · packaging ===== -->
+        <g class="stage" id="st8">
+          <rect class="box-rect" x="286" y="432" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="364" y="464" width="32" height="18" rx="1.5" fill="#e0922f" stroke="#b8761f" stroke-width="1.2"/>
+          <g stroke="#b8761f" stroke-width=".8">
+            <line x1="364" y1="470" x2="396" y2="470"/><line x1="364" y1="476" x2="396" y2="476"/>
+            <line x1="375" y1="464" x2="375" y2="482"/><line x1="386" y1="464" x2="386" y2="482"/>
+          </g>
+          <rect x="360" y="483" width="40" height="4" rx="1" fill="#7d9dc0"/>
+          <rect class="badge-rect" x="296" y="420" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="309" y="438" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">8</text>
+          <text class="stage-label" x="380" y="518" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Packaging</text>
+          <text class="stage-label" x="380" y="535" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">stacked on pallets</text>
+        </g>
+
+        <!-- ===== STAGE 9 · delivery ===== -->
+        <g class="stage" id="st9">
+          <rect class="box-rect" x="548" y="432" width="188" height="116" rx="14" fill="#eef4fb" stroke="#7d9dc0" stroke-width="1.5"/>
+          <rect x="620" y="466" width="26" height="14" rx="1.5" fill="#dce8f5" stroke="#3d6da3" stroke-width="1.3"/>
+          <path d="M646 470 h9 l6 6 v4 h-15 Z" fill="#cfe1f2" stroke="#3d6da3" stroke-width="1.3"/>
+          <circle cx="628" cy="482" r="3" fill="#3d6da3"/><circle cx="656" cy="482" r="3" fill="#3d6da3"/>
+          <rect class="badge-rect" x="558" y="420" width="26" height="26" rx="7" fill="#14306E"/>
+          <text x="571" y="438" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">9</text>
+          <text class="stage-label" x="642" y="518" text-anchor="middle" font-size="13.5" font-weight="600" fill="#23425f">Delivery</text>
+          <text class="stage-label" x="642" y="535" text-anchor="middle" font-size="11" font-style="italic" fill="#6B7280">by truck</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= RIGHT: LESSON ================= -->
+  <section class="pane pane-right" id="rightPane"></section>
+</div>
+
+<!-- ================= FEEDBACK OVERLAY ================= -->
+<div class="overlay" id="overlay">
+  <div class="ov-card" id="ovCard"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA — 21 micro-steps in 9 parts
+   types: mcq | multi | order | gaps | rows
+   ============================================================ */
+const STEPS = [
+/* ---------- PART 1 · READ THE DIAGRAM ---------- */
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Before writing a single word: what kind of process is this?",
+  teach:"Your first decision controls your grammar for the whole report. Look at the diagram: are the actions performed <b>by people and machines</b>, or do they happen on their own?",
+  options:[
+    "A man-made process — bricks are manufactured by people and machines, step by step.",
+    "A natural process — it happens by itself, without any human action.",
+    "A set of instructions for repairing a damaged wall."
+  ],
+  answer:0, focus:["st1","st4","st6"],
+  expl:"Đây là quy trình <b>nhân tạo (man-made)</b> — con người và máy móc tác động lên nguyên liệu: máy xúc đào đất sét, máy cắt tạo hình, lò nung gạch. Phân loại này quyết định <b>thể (voice)</b> cho cả bài: quy trình sản xuất hầu hết dùng <b>bị động</b>. (Ngược lại, vòng đời tự nhiên dùng chủ động.)",
+  quote:"Clay is dug, shaped, fired and finally delivered — every action is carried out by people or machines."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"Is this process linear or cyclical?",
+  teach:"Follow the arrows all the way from the digger to the truck. Does the end loop back to the start, or does it simply stop?",
+  options:[
+    "Linear — it has a clear start (digging clay) and a clear end (delivery).",
+    "Cyclical — the finished bricks turn back into clay and the process repeats.",
+    "Neither — the stages happen in a random order."
+  ],
+  answer:0, focus:["st1","st9"],
+  expl:"Sản xuất gạch là quy trình <b>tuyến tính (linear)</b>: bắt đầu từ đào đất sét và kết thúc khi gạch được giao đi — không quay vòng như life cycle. Vì vậy overview phải nêu rõ <b>điểm đầu</b> (raw clay) và <b>điểm cuối</b> (delivery), và bạn dùng các từ nối chỉ trình tự thẳng: <i>first… then… finally</i>.",
+  quote:"The process begins with the digging of clay and ends with the delivery of the finished bricks."
+},
+{
+  part:"PART 1 · READ THE DIAGRAM", type:"mcq",
+  title:"How many MAIN stages does the process have?",
+  teach:"Don't list every picture. Group them into logical stages: extraction, preparation, shaping, drying, firing, cooling, and packaging &amp; delivery.",
+  options:[
+    "Seven — digging, preparing, shaping, drying, firing, cooling, and packaging & delivery.",
+    "Two — making the bricks and then selling them.",
+    "Twelve — one for every picture and label on the diagram."
+  ],
+  answer:0, focus:["st1","st2","st3","st4","st5","st6","st7","st8","st9"],
+  expl:"Có thể gom thành <b>bảy giai đoạn chính</b>: (1) đào đất sét, (2) nghiền &amp; trộn (lưới + con lăn + cát &amp; nước), (3) tạo hình, (4) sấy, (5) nung, (6) làm nguội, (7) đóng gói &amp; giao hàng. Nêu được con số tổng quát này cho thấy bạn đã 'đọc' được toàn bộ sơ đồ thay vì kể lể từng hình.",
+  quote:"Overall, the production of bricks involves seven main stages."
+},
+
+/* ---------- PART 2 · KEY VOCABULARY ---------- */
+{
+  part:"PART 2 · KEY VOCABULARY", type:"rows",
+  title:"Match each key term to its meaning.",
+  teach:"Four words you cannot describe this process without. Note: a <b>kiln</b> is not an ordinary oven — it reaches extremely high temperatures to harden the bricks.",
+  rows:[
+    {label:"kiln", opts:["a special oven that hardens bricks at a very high temperature","a hollow container that gives the soft clay its shape","to harden bricks by baking them with intense heat","an enclosed space where hot bricks are left to cool down"], a:0},
+    {label:"mould", opts:["a special oven that hardens bricks at a very high temperature","a hollow container that gives the soft clay its shape","to harden bricks by baking them with intense heat","an enclosed space where hot bricks are left to cool down"], a:1},
+    {label:"to fire (bricks)", opts:["a special oven that hardens bricks at a very high temperature","a hollow container that gives the soft clay its shape","to harden bricks by baking them with intense heat","an enclosed space where hot bricks are left to cool down"], a:2},
+    {label:"cooling chamber", opts:["a special oven that hardens bricks at a very high temperature","a hollow container that gives the soft clay its shape","to harden bricks by baking them with intense heat","an enclosed space where hot bricks are left to cool down"], a:3}
+  ],
+  focus:["st6","st4","st6","st7"],
+  expl:"<b>Kiln</b> = lò nung (khác 'oven' thường vì nhiệt rất cao). <b>Mould</b> = khuôn (tạo hình cho đất sét mềm). <b>To fire</b> = nung cho gạch cứng lại. <b>Cooling chamber</b> = buồng làm nguội. Đây là bộ từ vựng lõi — dùng đúng những từ này thay cho 'big oven' hay 'box' sẽ nâng điểm Lexical Resource.",
+  quote:"The bricks are fired in a kiln and then left to cool in a chamber."
+},
+{
+  part:"PART 2 · KEY VOCABULARY", type:"order",
+  title:"Click the stages in the correct order, starting with the raw clay.",
+  teach:"This linear process has one fixed order. Click items in sequence; click again to undo.",
+  items:[
+    "Clay is dug from the ground with a mechanical digger",
+    "The clay is broken up on a grid and roller, then mixed with sand and water",
+    "The mixture is shaped into bricks by a wire cutter or a mould",
+    "The bricks are dried in a drying oven for 24–48 hours",
+    "The bricks are fired in a kiln at moderate, then high, temperatures",
+    "The bricks are left to cool in a chamber for 48–72 hours",
+    "The finished bricks are packaged and delivered by truck"
+  ],
+  present:[3,0,5,1,6,2,4],
+  focus:["st1","st2","st4","st5","st6","st7","st9"],
+  expl:"Trình tự đúng: đào đất → nghiền &amp; trộn → tạo hình → sấy → nung → làm nguội → đóng gói &amp; giao hàng. Đây chính là 'bộ xương' của bài: Body 1 tả các bước chuẩn bị &amp; tạo hình (1–3), Body 2 tả các bước xử lý nhiệt &amp; xuất xưởng (4–7).",
+  quote:"…from the digging of clay to the delivery of the finished bricks."
+},
+
+/* ---------- PART 3 · TENSE & VOICE ---------- */
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Which tense should the whole report use?",
+  teach:"Ask yourself: is this a one-off event in the past, or a <b>general sequence of facts</b> that is true every time bricks are made?",
+  options:[
+    "Past simple — the diagram shows something that happened once.",
+    "Present simple — the process is a general, repeatable sequence of facts.",
+    "Future simple — the bricks will be manufactured tomorrow."
+  ],
+  answer:1,
+  expl:"Quy trình sản xuất là một 'chân lý chung', đúng với mọi mẻ gạch → dùng <b>present simple</b>. Past simple chỉ dùng khi sơ đồ gắn với một sự kiện quá khứ cụ thể; future simple sai hoàn toàn với mô tả quy trình.",
+  quote:"Clay is dug from the ground and shaped into bricks — a general process, true every time."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"mcq",
+  title:"Active or passive? Who performs the actions in a factory?",
+  teach:"Machines and workers act on the clay, but the diagram never names them. When the <b>doer</b> is unknown or unimportant, English prefers the passive.",
+  options:[
+    "Mostly passive — the focus is on the material: “the clay is dug”, “the bricks are fired”.",
+    "Mostly active — the clay digs and fires itself.",
+    "It makes no difference which voice you use."
+  ],
+  answer:0,
+  expl:"Quy trình sản xuất: hành động do <b>người/máy</b> thực hiện nhưng ta không cần nêu ai → dùng <b>bị động</b> (<i>the clay is dug, the bricks are fired</i>). Đây là điểm khác biệt then chốt với quy trình tự nhiên (life cycle) — nơi chủ thể tự hành động nên dùng chủ động.",
+  quote:"Man-made: the bricks are fired. Natural: the nymph hatches."
+},
+{
+  part:"PART 3 · TENSE & VOICE", type:"gaps",
+  title:"Choose the correct form in each sentence.",
+  teach:"Default to the <b>passive</b> for a factory process — but one verb here describes <b>movement</b>, and movement verbs usually stay active.",
+  text:"First, the clay {0} from the ground by a mechanical digger. It {1} onto a metal grid, and as it {2} onto the roller, it is broken into smaller pieces.",
+  gaps:[
+    {opts:["is dug","digs"], a:0},
+    {opts:["is placed","places"], a:0},
+    {opts:["passes","is passed"], a:0}
+  ],
+  focus:["st1","st2","st2"],
+  expl:"Mặc định dùng <b>bị động</b>: <i>is dug, is placed</i> (đất sét không tự đào/đặt chính nó). Nhưng động từ chỉ <b>sự di chuyển</b> như <i>pass / move / travel</i> thường giữ <b>chủ động</b>: <i>as it passes onto the roller</i> — bản thân vật liệu di chuyển. Mẹo: chủ ngữ tự di chuyển → chủ động; bị tác động → bị động.",
+  quote:"The clay is dug and placed on a grid, and then it passes onto a roller."
+},
+
+/* ---------- PART 4 · PROCESS VERBS ---------- */
+{
+  part:"PART 4 · PROCESS VERBS", type:"gaps",
+  title:"Complete the description with the correct verb (passive form).",
+  teach:"Manufacturing verbs to master: <b>dig / extract</b>, <b>crush</b>, <b>mix</b>, <b>shape / mould</b>, <b>fire</b>, <b>dry</b>, <b>cool</b>.",
+  text:"After the clay {0} from the ground, it {1} into small pieces and {2} with sand and water. The mixture {3} into bricks, which {4} in an oven and then {5} in a kiln.",
+  gaps:[
+    {opts:["is dug","is grown","is built"], a:0},
+    {opts:["is crushed","is melted","is sewn"], a:0},
+    {opts:["is mixed","is fried","is woven"], a:0},
+    {opts:["is shaped","is painted","is printed"], a:0},
+    {opts:["are dried","are washed","are frozen"], a:0},
+    {opts:["are fired","are planted","are typed"], a:0}
+  ],
+  focus:["st1","st2","st3","st4","st5","st6"],
+  expl:"Mỗi giai đoạn có một động từ chuẩn: <b>dig</b> (đào), <b>crush</b> (nghiền), <b>mix</b> (trộn), <b>shape</b> (tạo hình), <b>dry</b> (sấy), <b>fire</b> (nung). Tất cả ở dạng bị động vì đây là quy trình nhân tạo. Tránh các từ sai ngữ cảnh như <i>melt, fry, freeze</i>.",
+  quote:"The mixture is shaped into bricks, which are dried and then fired in a kiln."
+},
+{
+  part:"PART 4 · PROCESS VERBS", type:"rows",
+  title:"Upgrade each casual phrase to a precise, band-7 expression.",
+  teach:"Band 6 says <i>“heated a lot”</i>; band 7+ says <b>fired</b>. One precise verb is worth more than a long explanation.",
+  rows:[
+    {label:"“the digger takes out the clay” →", opts:["extracts the clay","borrows the clay","picks the clay"], a:0},
+    {label:"“the clay is broken into bits” →", opts:["is crushed","is smashed up","is cut up"], a:0},
+    {label:"“the bricks are heated a lot” →", opts:["are fired","are cooked","are warmed"], a:0},
+    {label:"“the bricks are left to get cold” →", opts:["are left to cool","are chilled","are made cold"], a:0}
+  ],
+  focus:["st1","st2","st6","st7"],
+  expl:"<b>Extract</b> (khai thác) sang hơn 'take out'; <b>crush</b> (nghiền) chuẩn hơn 'smash up'; <b>fire</b> là từ chuyên ngành cho nung gạch; <b>be left to cool</b> diễn đạt 'để nguội' tự nhiên. Những lựa chọn còn lại sai sắc thái (chill/chilled dùng cho thực phẩm, cooked dùng cho nấu ăn).",
+  quote:"The clay is extracted, the bricks are fired, and finally they are left to cool."
+},
+
+/* ---------- PART 5 · INTRODUCTION ---------- */
+{
+  part:"PART 5 · INTRODUCTION", type:"mcq",
+  title:"Which is the best introduction?",
+  teach:"The introduction = the task prompt <b>in your own words</b>. Two deadly sins: copying the rubric, and adding your opinion.",
+  options:[
+    "The diagram below shows how bricks are manufactured.",
+    "The diagram illustrates the various stages and equipment involved in the production of bricks for the building industry.",
+    "The diagram proves that making bricks is a long and rather boring process."
+  ],
+  answer:1,
+  expl:"Câu A <b>chép gần nguyên văn đề</b> — giám khảo loại những từ chép khỏi word count. Câu C thêm <b>ý kiến</b> (<i>boring</i>) — Task 1 tuyệt đối không có opinion. Câu B paraphrase chuẩn: shows → illustrates, thêm <i>stages and equipment</i> để mở rộng cụm danh từ.",
+  quote:"The diagram illustrates the various stages and equipment involved in the production of bricks."
+},
+{
+  part:"PART 5 · INTRODUCTION", type:"gaps",
+  title:"Now build your own introduction.",
+  teach:"Use a precise verb of presentation and a strong noun for the topic. Watch the meaning of each option carefully.",
+  text:"The diagram {0} the different {1} in the {2} of bricks, from the digging of raw clay to the delivery of the finished product.",
+  gaps:[
+    {opts:["illustrates","writes","draws"], a:0},
+    {opts:["stages","floors","prices"], a:0},
+    {opts:["manufacture","destruction","sale"], a:0}
+  ],
+  expl:"<b>Illustrates / depicts</b> thay cho shows. <b>Stages</b> = giai đoạn (floors/prices sai nghĩa). <b>Manufacture / production</b> = sản xuất — đúng chủ đề, còn destruction (phá hủy) hay sale (bán) lệch nghĩa hoàn toàn.",
+  quote:"…the different stages in the manufacture of bricks, from raw clay to the finished product."
+},
+
+/* ---------- PART 6 · OVERVIEW ---------- */
+{
+  part:"PART 6 · OVERVIEW", type:"multi", pick:2,
+  title:"Which TWO sentences belong in the overview?",
+  teach:"The overview answers the big-picture questions only: <b>how many main stages?</b> and <b>what shape is the process (start → end)?</b> No fine detail, no opinions.",
+  options:[
+    "Overall, the process consists of seven main stages, beginning with the extraction of clay and ending with delivery.",
+    "The bricks are dried for exactly 24 hours before they are fired.",
+    "It is a linear process in which raw clay is gradually turned into hardened bricks ready for transport.",
+    "In my opinion, making bricks by hand would be far more interesting."
+  ],
+  answers:[0,2],
+  expl:"Overview chỉ chứa 'bức tranh lớn': số giai đoạn chính (câu 1) và bản chất tuyến tính từ nguyên liệu thô đến thành phẩm (câu 3). Con số chi tiết <i>24 hours</i> thuộc về body; ý kiến cá nhân thì không bao giờ có trong Task 1.",
+  quote:"Overall… seven main stages… raw clay is gradually turned into hardened bricks ready for transport."
+},
+{
+  part:"PART 6 · OVERVIEW", type:"gaps",
+  title:"Build the overview sentence.",
+  teach:"The high-band overview pattern for a linear process: <b>Overall, … consists of X stages, beginning with … and ending with …</b>",
+  text:"Overall, the production of bricks {0} seven main stages, {1} with the digging of clay and ending with the {2} of the finished bricks to customers.",
+  gaps:[
+    {opts:["consists of","is consisted of","makes of"], a:0},
+    {opts:["begins","begun","beginning"], a:2},
+    {opts:["delivery","deliver","delivering"], a:0}
+  ],
+  expl:"<b>Consist of</b> không bao giờ dùng bị động (✗ <i>is consisted of</i>). <b>Beginning with… and ending with…</b> là mệnh đề phân từ — gói cả quy trình trong một câu và ghi điểm ngữ pháp. Sau giới từ <i>the</i> cần một danh từ: <b>delivery</b> (không phải động từ <i>deliver</i>).",
+  quote:"Overall, the production of bricks consists of seven main stages, beginning with the digging of clay…"
+},
+
+/* ---------- PART 7 · SEQUENCING & DATA ---------- */
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"gaps",
+  title:"Complete the body paragraph with the best connective.",
+  teach:"Vary your sequencers — never <i>then… then… then</i>. A strong chain: <b>First → Next → Once → Subsequently → Finally</b>.",
+  text:"{0}, the clay is dug from the ground. {1}, it is crushed and mixed with sand and water. {2} the mixture has been shaped into bricks, they are dried and then fired. {3}, they are left to cool for several days. {4}, the finished bricks are packaged and delivered.",
+  gaps:[
+    {opts:["First","Finally","However"], a:0},
+    {opts:["Next","In conclusion","Despite"], a:0},
+    {opts:["Once","Although","Whereas"], a:0},
+    {opts:["Subsequently","Surprisingly","Similarly"], a:0},
+    {opts:["Finally","Firstly","Fortunately"], a:0}
+  ],
+  focus:["st1","st2","st4","st6","st8"],
+  expl:"Chuỗi connectives đa dạng là cách ăn điểm Coherence &amp; Cohesion trực tiếp nhất. Lưu ý hai kiểu nối: trạng từ đầu câu (<i>Next, Subsequently, Finally</i>) và liên từ + mệnh đề (<i>Once the mixture has been shaped…</i>) — kiểu thứ hai 'mượt' và thể hiện câu phức.",
+  quote:"Once the mixture has been shaped into bricks, they are dried and then fired."
+},
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"mcq",
+  title:"The diagram gives times and temperatures (24–48 hrs, 870–1300°C). What should you do with them?",
+  teach:"A process diagram with numbers is a gift: data makes your description specific. But there is a right way to use it.",
+  options:[
+    "Ignore them — a process description is only about the stages.",
+    "Weave them into the relevant stages: “the bricks are fired at between 870 and 1300°C”.",
+    "List all the times and temperatures together in the overview."
+  ],
+  answer:1, focus:["st5","st6","st7"],
+  expl:"Số liệu là <b>chi tiết hỗ trợ</b> → dệt vào body cùng <b>between … and …, approximately, around</b>. Đừng nhồi hết vào overview và cũng đừng liệt kê khô khan. Mỗi con số gắn với đúng giai đoạn của nó (sấy 24–48h, nung 870–1300°C, làm nguội 48–72h) là đẹp nhất.",
+  quote:"…the bricks are fired at temperatures of between 870 and 1300°C."
+},
+{
+  part:"PART 7 · SEQUENCING & DATA", type:"mcq",
+  title:"At the shaping stage the diagram shows a wire cutter OR a mould. How do you describe two alternative methods?",
+  teach:"The little word <b>“or”</b> on a diagram means the same result can be reached two ways. Signal the choice with <b>either … or …</b>.",
+  options:[
+    "First the clay is cut by a wire cutter, and then it is shaped in a mould.",
+    "The clay is shaped into bricks either by a wire cutter or in a mould.",
+    "The clay is cut by a wire cutter. The clay is shaped in a mould."
+  ],
+  answer:1, focus:["st4"],
+  expl:"Sơ đồ ghi <b>or</b> → hai phương pháp <b>thay thế nhau</b>, không phải nối tiếp. Dùng <b>either … or …</b> để diễn đạt sự lựa chọn. Câu A sai vì biến hai cách thành hai bước liên tiếp; câu C là hai câu rời rạc, lặp chủ ngữ và không thể hiện được tính 'thay thế'.",
+  quote:"…the clay is shaped into bricks, either by a wire cutter or in a mould."
+},
+
+/* ---------- PART 8 · COMPLEX SENTENCES ---------- */
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “The bricks are dried for 24–48 hours.” + “Then they are fired in a kiln.”",
+  teach:"To link two passive actions in sequence neatly, use <b>before being + past participle</b>.",
+  options:[
+    "The bricks are dried for 24–48 hours before being fired in a kiln.",
+    "The bricks are dried for 24–48 hours before being fire in a kiln.",
+    "The bricks are dried for 24–48 hours before they fired in a kiln."
+  ],
+  answer:0, focus:["st5","st6"],
+  expl:"<b>before being + V3 (fired)</b> là cấu trúc bị động rút gọn rất 'sang' cho Task 1 process. Câu B sai vì dùng <i>fire</i> (nguyên thể) thay vì <i>fired</i>; câu C thiếu <i>are</i> (đúng phải là <i>before they are fired</i>).",
+  quote:"The bricks are dried before being fired in a kiln."
+},
+{
+  part:"PART 8 · COMPLEX SENTENCES", type:"mcq",
+  title:"Combine: “The bricks are left to cool for 48–72 hours.” + “Then they are packaged and delivered.”",
+  teach:"To add what happens <b>after</b> a stage within the same sentence, use the formal connector <b>, after which …</b>.",
+  options:[
+    "The bricks are left to cool for 48–72 hours. After which they are packaged and delivered.",
+    "The bricks are left to cool for 48–72 hours, after which they are packaged and delivered.",
+    "The bricks are left to cool for 48–72 hours, after that they are packaged and delivered."
+  ],
+  answer:1, focus:["st7","st8"],
+  expl:"<b>', after which'</b> = 'và sau đó' ở văn phong trang trọng — phải đứng sau dấu phẩy trong <b>cùng một câu</b>. Câu A tách thành câu mới → mảnh câu; câu B đúng; câu C dùng sai <i>after that which</i> → không tồn tại cấu trúc này.",
+  quote:"…left to cool for 48 to 72 hours, after which they are packaged and delivered."
+},
+
+/* ---------- PART 9 · ORGANISE & ASSEMBLE ---------- */
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"rows",
+  title:"Divide the seven stages into two balanced body paragraphs.",
+  teach:"The most logical split: <b>Body 1 = preparing &amp; forming the bricks</b> · <b>Body 2 = treating &amp; dispatching them</b>.",
+  rows:[
+    {label:"1 · Digging the clay", opts:["Body 1","Body 2"], a:0},
+    {label:"2 · Crushing &amp; mixing with sand and water", opts:["Body 1","Body 2"], a:0},
+    {label:"3 · Shaping into bricks (cutter or mould)", opts:["Body 1","Body 2"], a:0},
+    {label:"4 · Drying in the oven (24–48 hrs)", opts:["Body 1","Body 2"], a:1},
+    {label:"5 · Firing &amp; cooling", opts:["Body 1","Body 2"], a:1},
+    {label:"6 · Packaging &amp; delivery", opts:["Body 1","Body 2"], a:1}
+  ],
+  focus:["st1","st2","st4","st5","st6","st8"],
+  expl:"Chia theo ranh giới tự nhiên nhất: <b>Body 1</b> = chuẩn bị &amp; tạo hình (đào → nghiền/trộn → tạo hình); <b>Body 2</b> = xử lý nhiệt &amp; xuất xưởng (sấy → nung → làm nguội → đóng gói/giao hàng). Hai đoạn cân đối, mỗi đoạn một 'chương' của câu chuyện.",
+  quote:"Body 1: clay to shaped bricks. Body 2: drying, firing, cooling and delivery."
+},
+{
+  part:"PART 9 · ORGANISE & ASSEMBLE", type:"order",
+  title:"Finally — put the report skeleton in order.",
+  teach:"The Task 1 process skeleton never changes. No conclusion, no opinion — ever.",
+  items:[
+    "Introduction — paraphrase what the diagram shows",
+    "Overview — seven stages, a linear process from clay to delivery",
+    "Body 1 — digging, preparing and shaping the bricks",
+    "Body 2 — drying, firing, cooling, packaging and delivery"
+  ],
+  present:[2,0,3,1],
+  expl:"Khung bài Task 1 process luôn cố định: <b>Introduction → Overview → Body 1 → Body 2</b>. Không có kết luận (đó là việc của Task 2), không có ý kiến. Giờ bạn đã có đủ mọi 'viên gạch' — xem bài mẫu hoàn chỉnh ở màn hình tổng kết nhé!",
+  quote:"Introduction → Overview → Body 1 → Body 2. Nothing else."
+}
+];
+
+const TOTAL = STEPS.length;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let cur = 0;
+let answers = Array(TOTAL).fill(null);   // raw response per step
+let results = Array(TOTAL).fill(null);   // 'ok' | 'half' | 'no'
+let pending = [];                        // working selection for current step
+
+const $ = s => document.querySelector(s);
+const rightPane = $('#rightPane');
+const pathEl = $('#path');
+
+/* ============================================================
+   NODE PATH
+   ============================================================ */
+function buildPath(){
+  pathEl.innerHTML = '';
+  STEPS.forEach((st,i)=>{
+    if(i>0){
+      const c = document.createElement('div');
+      c.className = 'connector'; c.id = 'conn'+i;
+      pathEl.appendChild(c);
+    }
+    const n = document.createElement('button');
+    n.className = 'node'; n.id = 'node'+i; n.textContent = i+1;
+    n.title = st.part;
+    n.addEventListener('click', ()=>{ go(i); });
+    pathEl.appendChild(n);
+  });
+}
+function updatePath(){
+  STEPS.forEach((st,i)=>{
+    const n = document.getElementById('node'+i);
+    n.className = 'node';
+    if(results[i]) n.classList.add(results[i]);
+    if(i===cur) n.classList.add(results[i] ? 'viewing' : 'current');
+    if(i>0){
+      document.getElementById('conn'+i).className = 'connector' + (results[i-1] ? ' fill' : '');
+    }
+  });
+  const done = results.filter(Boolean).length;
+  $('#progFill').style.width = (done/TOTAL*100) + '%';
+  const active = document.getElementById('node'+cur);
+  if(active) active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+}
+
+/* ============================================================
+   DIAGRAM HIGHLIGHT
+   ============================================================ */
+function clearGlow(){ document.querySelectorAll('.stage.glow').forEach(g=>g.classList.remove('glow')); }
+function glow(ids){
+  clearGlow();
+  (ids||[]).forEach(id=>{ const g = document.getElementById(id); if(g) g.classList.add('glow'); });
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function score(){
+  let marks = 0;
+  results.forEach(r=>{ if(r==='ok') marks += 1; else if(r==='half') marks += 0.5; });
+  return marks;
+}
+function allDone(){ return results.every(Boolean); }
+function nextUnanswered(from){
+  for(let k=1;k<=TOTAL;k++){ const i=(from+k)%TOTAL; if(!results[i]) return i; }
+  return -1;
+}
+function fmt(n){ return (n%1===0) ? n : n.toFixed(1); }
+
+function donutSVG(size, r, sw){
+  const C = 2*Math.PI*r;
+  let green = 0, red = 0;
+  results.forEach(x=>{
+    if(x==='ok') green += 1;
+    else if(x==='half'){ green += .5; red += .5; }
+    else if(x==='no') red += 1;
+  });
+  const gFrac = green/TOTAL, rFrac = red/TOTAL;
+  const cx = size/2;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${sw}"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--correct-bd)" stroke-width="${sw}"
+      stroke-dasharray="${gFrac*C} ${C}" stroke-linecap="butt"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--wrong-bd)" stroke-width="${sw}"
+      stroke-dasharray="${rFrac*C} ${C}" stroke-dashoffset="${-gFrac*C}" stroke-linecap="butt"/>
+  </svg>`;
+}
+
+/* ============================================================
+   RENDER STEP
+   ============================================================ */
+function go(i){
+  cur = i;
+  pending = [];
+  renderStep();
+  updatePath();
+  rightPane.scrollTop = 0;
+}
+
+function renderStep(){
+  const st = STEPS[cur];
+  const answered = !!results[cur];
+  if(answered) glow(st.focus); else clearGlow();
+
+  let bodyHtml = '';
+  if(st.type==='mcq')   bodyHtml = renderMcq(st, answered);
+  if(st.type==='multi') bodyHtml = renderMulti(st, answered);
+  if(st.type==='order') bodyHtml = renderOrder(st, answered);
+  if(st.type==='gaps')  bodyHtml = renderGaps(st, answered);
+  if(st.type==='rows')  bodyHtml = renderRows(st, answered);
+
+  const tail = allDone()
+    ? `<button class="btn-summary" id="btnSummary">Xem kết quả tổng kết →</button>`
+    : `<span class="locked-note">Bước này đã hoàn thành — đáp án được khóa.</span>`;
+  const checkBar = answered
+    ? `<div class="checkbar"><button class="btn-review" id="btnReview">Xem lại giải thích</button>${tail}</div>`
+    : `<div class="checkbar"><span class="locked-note">Chọn đáp án — kết quả sẽ hiện ngay khi bạn hoàn tất.</span></div>`;
+
+  rightPane.innerHTML = `
+    <span class="part-tag">${st.part} · BƯỚC ${cur+1}/${TOTAL}</span>
+    <div class="step-card">
+      <div class="step-head">
+        <div class="qbadge">${cur+1}</div>
+        <div class="step-title">${st.title}</div>
+      </div>
+      ${st.teach ? `<div class="teach">${st.teach}</div>` : ''}
+      ${bodyHtml}
+      ${checkBar}
+    </div>`;
+
+  if(answered){
+    $('#btnReview').addEventListener('click', ()=> showOverlay(cur, true));
+    const sb = $('#btnSummary');
+    if(sb) sb.addEventListener('click', showSummary);
+  } else {
+    wireStep(st);
+  }
+}
+
+/* ---------- MCQ ---------- */
+function renderMcq(st, answered){
+  const letters = ['A','B','C','D'];
+  return `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur];
+      if(j===st.answer){ cls += ' correct'; mark = '✓'; }
+      else if(j===u){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+}
+
+/* ---------- MULTI (choose N) ---------- */
+function renderMulti(st, answered){
+  const letters = ['A','B','C','D'];
+  let html = `<div class="opts">` + st.options.map((o,j)=>{
+    let cls = 'opt', mark = '';
+    if(answered){
+      const u = answers[cur] || [];
+      if(st.answers.includes(j)){ cls += ' correct'; mark = '✓'; }
+      else if(u.includes(j)){ cls += ' wrong'; mark = '✕'; }
+      else cls += ' dim';
+    }
+    return `<button class="${cls}" data-j="${j}" ${answered?'disabled':''}>
+      <span class="radio"></span><span><span class="letter">${letters[j]}.</span> ${o}</span>
+      ${mark?`<span class="mark">${mark}</span>`:''}</button>`;
+  }).join('') + `</div>`;
+  if(!answered) html += `<div class="pick-hint" id="pickHint">Đã chọn 0/${st.pick}</div>`;
+  return html;
+}
+
+/* ---------- ORDER ---------- */
+function renderOrder(st, answered){
+  const present = st.present;
+  if(!answered){
+    return `<div class="order-list">` + present.map(origIdx=>{
+      return `<button class="ord" data-orig="${origIdx}"><span class="slot"></span><span>${st.items[origIdx]}</span></button>`;
+    }).join('') + `</div>`;
+  }
+  // review: show user's sequence with right/wrong
+  const u = answers[cur]; // array of orig indices in user's chosen order
+  let html = `<div class="order-list">` + u.map((origIdx,pos)=>{
+    const okPos = origIdx === pos;
+    return `<div class="ord ${okPos?'r-ok':'r-no'}">
+      <span class="slot">${pos+1}</span><span>${st.items[origIdx]}</span>
+      ${okPos?'':`<span class="fix">đúng ra: vị trí ${origIdx+1}</span>`}</div>`;
+  }).join('') + `</div>`;
+  return html;
+}
+
+/* ---------- GAPS (inline) ---------- */
+function gapSelect(g, j){
+  return `<select class="gapsel" data-g="${j}">
+    <option value="">— chọn —</option>
+    ${g.opts.map((o,k)=>`<option value="${k}">${esc(o)}</option>`).join('')}
+  </select>`;
+}
+function gapResult(g, userIdx){
+  if(userIdx===g.a) return `<span class="gap-res ok">${esc(g.opts[g.a])} ✓</span>`;
+  return `<span class="gap-res no">${esc(g.opts[userIdx])}</span> <span class="gap-res ok"><span class="fixv">${esc(g.opts[g.a])}</span></span>`;
+}
+function renderGaps(st, answered){
+  let text = st.text;
+  st.gaps.forEach((g,j)=>{
+    const rep = answered ? gapResult(g, answers[cur][j]) : gapSelect(g,j);
+    text = text.replace('{'+j+'}', rep);
+  });
+  return `<div class="gap-text">${text}</div>`;
+}
+
+/* ---------- ROWS (label + select) ---------- */
+function renderRows(st, answered){
+  return `<div class="rows">` + st.rows.map((r,j)=>{
+    const ctl = answered ? gapResult(r, answers[cur][j]) : gapSelect(r,j);
+    return `<div class="row-item"><span class="rlab">${r.label}</span>${ctl}</div>`;
+  }).join('') + `</div>`;
+}
+
+/* ============================================================
+   WIRE INTERACTIONS (unanswered step)
+   ============================================================ */
+function wireStep(st){
+  // No check button: the answer is registered the moment the step is complete.
+
+  if(st.type==='mcq'){
+    pending = null;
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        rightPane.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+        el.classList.add('sel');
+        pending = +el.dataset.j;
+        check(st);                       // single choice → grade immediately
+      });
+    });
+  }
+
+  if(st.type==='multi'){
+    pending = [];
+    const hint = $('#pickHint');
+    rightPane.querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const j = +el.dataset.j;
+        if(pending.includes(j)){
+          pending = pending.filter(x=>x!==j);
+          el.classList.remove('sel');
+        } else if(pending.length < st.pick){
+          pending.push(j);
+          el.classList.add('sel');
+        }
+        hint.textContent = `Đã chọn ${pending.length}/${st.pick}`;
+        hint.classList.toggle('full', pending.length===st.pick);
+        if(pending.length===st.pick) check(st);   // grade once enough letters picked
+      });
+    });
+  }
+
+  if(st.type==='order'){
+    pending = []; // array of orig indices in click order
+    rightPane.querySelectorAll('.ord').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const orig = +el.dataset.orig;
+        const pos = pending.indexOf(orig);
+        if(pos>=0){ pending.splice(pos,1); }
+        else { pending.push(orig); }
+        // repaint slots
+        rightPane.querySelectorAll('.ord').forEach(x=>{
+          const o = +x.dataset.orig;
+          const p = pending.indexOf(o);
+          x.classList.toggle('picked', p>=0);
+          x.querySelector('.slot').textContent = p>=0 ? (p+1) : '';
+        });
+        if(pending.length===st.items.length) check(st);   // grade when every slot filled
+      });
+    });
+  }
+
+  if(st.type==='gaps' || st.type==='rows'){
+    const n = (st.gaps||st.rows).length;
+    pending = Array(n).fill(null);
+    rightPane.querySelectorAll('.gapsel').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const j = +sel.dataset.g;
+        pending[j] = sel.value==='' ? null : +sel.value;
+        sel.classList.toggle('answered', sel.value!=='');
+        if(pending.every(v=>v!==null)) check(st);   // grade when no gap left blank
+      });
+    });
+  }
+}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+function check(st){
+  let res;
+  if(st.type==='mcq'){
+    answers[cur] = pending;
+    res = (pending===st.answer) ? 'ok' : 'no';
+  }
+  if(st.type==='multi'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter(j=>st.answers.includes(j)).length;
+    res = nC===st.pick ? 'ok' : (nC>0 ? 'half' : 'no');
+  }
+  if(st.type==='order'){
+    answers[cur] = pending.slice();
+    const nC = pending.filter((orig,pos)=>orig===pos).length;
+    res = nC===st.items.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  if(st.type==='gaps' || st.type==='rows'){
+    answers[cur] = pending.slice();
+    const defs = st.gaps||st.rows;
+    const nC = pending.filter((v,j)=>v===defs[j].a).length;
+    res = nC===defs.length ? 'ok' : (nC===0 ? 'no' : 'half');
+  }
+  results[cur] = res;
+  renderStep();        // re-render locked with colors
+  updatePath();
+  glow(st.focus);
+  setTimeout(()=> showOverlay(cur,false), 750);
+}
+
+/* ============================================================
+   FEEDBACK OVERLAY
+   ============================================================ */
+function correctKeyHtml(st){
+  if(st.type==='mcq') return `<b>${'ABC'[st.answer]}.</b> ${st.options[st.answer]}`;
+  if(st.type==='multi') return st.answers.map(j=>`<b>${'ABCD'[j]}.</b> ${st.options[j]}`).join('<br>');
+  if(st.type==='order') return st.items.map((it,i)=>`<b>${i+1}.</b> ${it}`).join('<br>');
+  const defs = st.gaps||st.rows;
+  return defs.map((g,j)=>`<b>${j+1}.</b> ${esc(g.opts[g.a])}`).join(' &nbsp;·&nbsp; ');
+}
+
+function showOverlay(i, readOnly){
+  const st = STEPS[i];
+  const res = results[i];
+  const badge = res==='ok' ? `<span class="ov-badge ok">✓ Chính xác!</span>`
+              : res==='half' ? `<span class="ov-badge half">◐ Đúng một phần</span>`
+              : `<span class="ov-badge no">✕ Chưa đúng</span>`;
+  const done = results.filter(Boolean).length;
+  const marks = score();
+
+  let nextBtn;
+  if(readOnly){
+    nextBtn = `<button class="btn-next" id="btnNext">Đóng</button>`;
+  } else if(allDone()){
+    nextBtn = `<button class="btn-next final" id="btnNext">Xem kết quả tổng kết ✨</button>`;
+  } else {
+    nextBtn = `<button class="btn-next" id="btnNext">Câu tiếp theo →</button>`;
+  }
+
+  $('#ovCard').innerHTML = `
+    ${badge}
+    <div class="donut-wrap">
+      <div class="donut">${donutSVG(110,46,12)}
+        <div class="dn-center"><span class="big">${done}/${TOTAL}</span><span class="sm">${fmt(marks)} điểm</span></div>
+      </div>
+    </div>
+    <div class="ov-key"><span class="klab">ĐÁP ÁN ĐÚNG</span>${correctKeyHtml(st)}</div>
+    <div class="ov-expl"><span class="klab">GIẢI THÍCH</span>${st.expl}
+      ${st.quote ? `<div class="ov-quote">“${st.quote}”</div>` : ''}
+    </div>
+    ${nextBtn}`;
+
+  $('#overlay').classList.add('show');
+  $('#btnNext').onclick = ()=>{
+    $('#overlay').classList.remove('show');
+    if(readOnly){ showQuestion(); return; }
+    if(allDone()){ showSummary(); updatePath(); return; }
+    const nx = nextUnanswered(cur);
+    if(nx>=0) go(nx);
+  };
+}
+
+/* re-render current step in its locked-review state (highlight re-lit) */
+function showQuestion(){ renderStep(); updatePath(); }
+
+/* dismiss overlay without advancing → back to locked review */
+function dismissOverlay(){
+  if(!$('#overlay').classList.contains('show')) return;
+  $('#overlay').classList.remove('show');
+  showQuestion();
+}
+$('#overlay').addEventListener('click', e=>{
+  if(e.target===$('#overlay')) dismissOverlay();
+});
+document.addEventListener('keydown', e=>{
+  if(!$('#overlay').classList.contains('show')) return;
+  if(e.key==='Escape'){ dismissOverlay(); }
+  if(e.key==='Enter'){ e.preventDefault(); const b=$('#btnNext'); if(b) b.click(); }
+});
+
+/* ============================================================
+   FINAL SUMMARY + MODEL ANSWER
+   ============================================================ */
+const MODEL = [
+  `The diagram illustrates the various stages and equipment involved in the commercial <span class="m-verb">manufacture</span> of bricks, from the initial digging of clay to the final delivery of the finished product.`,
+  `<span class="m-seq">Overall</span>, brick production is a linear process that can be divided into seven main stages. It <span class="m-verb">begins</span> with the extraction of raw clay and <span class="m-verb">ends</span> with the packaging and delivery of the completed bricks; in between, the material <span class="m-verb">is shaped</span>, dried and fired so that it becomes hard and durable.`,
+  `<span class="m-seq">To begin with</span>, clay <span class="m-verb">is dug</span> out of the ground using a large mechanical digger. This clay <span class="m-verb">is</span> then <span class="m-verb">placed</span> onto a metal grid, which breaks it into smaller pieces as it <span class="m-verb">passes</span> onto a roller. <span class="m-seq">At this stage</span>, sand and water <span class="m-verb">are added</span> to the mixture, <span class="m-seq">after which</span> the clay <span class="m-verb">is shaped</span> into bricks, either by a wire cutter or in a mould.`,
+  `<span class="m-seq">Once</span> they have been formed, the bricks <span class="m-verb">are placed</span> in a drying oven for between 24 and 48 hours. They <span class="m-seq">are subsequently</span> <span class="m-verb">fired</span> in a kiln, first at a moderate temperature of 200 to 980°C and then at a high temperature of 870 to 1300°C. <span class="m-seq">After this</span>, the bricks <span class="m-verb">are left</span> to cool in a chamber for 48 to 72 hours. <span class="m-seq">Finally</span>, the finished bricks <span class="m-verb">are packaged</span> and <span class="m-verb">delivered</span> to customers by truck.`
+];
+
+function showSummary(){
+  clearGlow();
+  const marks = score();
+  const pct = marks/TOTAL;
+  const enc = pct>=0.9 ? "Xuất sắc! Bạn đã sẵn sàng tự viết một bài miêu tả quy trình hoàn chỉnh." :
+              pct>=0.7 ? "Tốt lắm! Xem lại vài bước chưa đúng rồi thử viết bài hoàn chỉnh nhé." :
+              pct>=0.5 ? "Khá ổn — hãy bấm vào các nốt đỏ trên thanh tiến trình để xem lại giải thích." :
+              "Đừng nản — bấm “Làm lại” và đi chậm qua từng phần giải thích nhé.";
+  const nOk = results.filter(r=>r==='ok').length;
+  const nHalf = results.filter(r=>r==='half').length;
+  const nNo = results.filter(r=>r==='no').length;
+
+  // word count (strip tags)
+  const tmp = document.createElement('div');
+  tmp.innerHTML = MODEL.join(' ');
+  const wc = tmp.textContent.trim().split(/\s+/).length;
+
+  rightPane.innerHTML = `
+  <div class="summary">
+    <div class="sum-card">
+      <h2>Hoàn thành bài học! 🎉</h2>
+      <div class="enc">${enc}</div>
+      <div class="donut-big">${donutSVG(170,72,16)}
+        <div class="dn-center"><span class="big">${fmt(marks)}/${TOTAL}</span><span class="sm">điểm</span></div>
+      </div>
+      <div class="sum-stats">
+        <span class="ok">✓ ${nOk} đúng</span>
+        <span class="half">◐ ${nHalf} đúng một phần</span>
+        <span class="no">✕ ${nNo} chưa đúng</span>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <h3>Model Answer — The Brick Manufacturing Process</h3>
+      <span class="wc">${wc} words ✓ (yêu cầu tối thiểu: 150)</span>
+      ${MODEL.map(p=>`<p>${p}</p>`).join('')}
+      <div class="legend">
+        <span><span class="sw" style="background:var(--hl)"></span>Sequencers &amp; linking devices</span>
+        <span><span class="sw" style="background:#fff;border-bottom:3px solid var(--blue)"></span>Precise process verbs (mostly passive)</span>
+      </div>
+    </div>
+
+    <button class="btn-redo" id="btnRedo">↺ Làm lại từ đầu</button>
+  </div>`;
+  $('#btnRedo').addEventListener('click', restart);
+  rightPane.scrollTop = 0;
+}
+
+/* ============================================================
+   RESTART / INIT
+   ============================================================ */
+function restart(){
+  answers = Array(TOTAL).fill(null);
+  results = Array(TOTAL).fill(null);
+  clearGlow();
+  go(0);
+}
+$('#btnRestart').addEventListener('click', ()=>{
+  if(results.some(Boolean) && !confirm('Bắt đầu lại từ đầu? Toàn bộ tiến trình sẽ bị xóa.')) return;
+  restart();
+});
+
+buildPath();
+go(0);
+</script>
+</body>
+</html>
